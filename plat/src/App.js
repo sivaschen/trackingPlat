@@ -17,7 +17,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React
+          Learn React test git save username and pwd and second commit
         </a>
       <Router />
       </header>
