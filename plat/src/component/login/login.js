@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Input } from 'antd';
+import { Input, Icon } from 'antd';
+import "./login.scss"
 
 export default class Home extends Component {
   render() {
     return (
-      <div className="login">
+      <div className="loginBox">
         <div className="header">
           <img alt=""></img>
         </div>
@@ -12,8 +13,9 @@ export default class Home extends Component {
           <div className="left">
 
           </div>
-          <div className="loginBox">
-            <Input placeholder="Basic usage" />
+          <div className="loginInput">
+            <Input addonBefore="账号" placeholder="请输入用户名" />
+            <Input.Password addonBefore="密码" placeholder="请输入密码"/>
           </div>
         </div>
       </div>
