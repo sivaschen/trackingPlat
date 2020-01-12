@@ -1,4 +1,5 @@
 .loginBox {
+
     .header {
         height: 80px;
         background-color: rgb(159, 190, 54);
@@ -8,16 +9,28 @@
         width: 1200px;
         margin: 0 auto;
         .loginInput{
-            padding: 40px;
             border: 1px solid #eee;
-            width: 340px;
+            width: 400px;
             height: 280px;
-            position: absolute;
-            top: 30px;
-            right: 100px;
+            padding: 32px;
+            margin: 50px auto 50px;
             border-radius: 6px;
             box-sizing: border-box;
             background-color: #fafafa;
+            h3 {
+                text-align: center;
+                font-size: 24px;
+                font-weight: 600;
+            }
+            .ant-input-group-wrapper.ant-input-password {
+                margin-top: 10px;
+            }
+            button {
+                width: 100%;
+                margin-top:30px;
+                background-color: #ee4d2d;
+                border-color: #ee4d2d;
+            }
         }
     }
 }
