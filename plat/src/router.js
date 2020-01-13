@@ -13,6 +13,10 @@ const routes = [
     {
         path: "/home",
         component: Home
+    },
+    {
+        path: "/*",
+        component: Login
     }
 ];
 
