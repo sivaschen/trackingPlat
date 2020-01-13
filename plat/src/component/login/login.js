@@ -25,7 +25,8 @@ export default class Home extends Component {
 
           </div>
           <div className="loginInput">
-            <h3>定位平台</h3>
+            {/* <h3>定位平台</h3> */}
+            <h3>XXXX</h3>
             <Input addonBefore="账号" placeholder="请输入用户名" />
             <Input.Password addonBefore="密码" placeholder="请输入密码" className="password"/>
             <Button type="primary" onClick={this.loginSys}>登 录<Icon type="login" /></Button>
@@ -37,4 +38,4 @@ export default class Home extends Component {
       </div>
     )
   }
-}
+}  

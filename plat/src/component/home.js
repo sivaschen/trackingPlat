@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import {Switch, Route, useRouteMatch } from 'react-router-dom'
+import {Switch, Route } from 'react-router-dom'
 import Monitor from '../component/monitor/monitor'
 import Trace from '../component/trace/trace'
+import { Menu, Icon, Button } from 'antd';
 
 export default class Home extends Component {
   constructor(props) {
@@ -13,20 +14,20 @@ export default class Home extends Component {
   componentDidMount() {
   }
   render() {
-
     return (
       <div className="home">
-        <header>homepage</header>
-        <nav></nav>
-        <Switch>
-          <Route exac path="/home/monitor" >
+       sssssssssss
+       <Switch>
+        <Route path="/home/monitor">
             <Monitor/>
-          </Route>
-          <Route>
+        </Route>
+        <Route path="/home/trace">
             <Trace/>
-          </Route>
-        </Switch>
+        </Route>
+       </Switch>
       </div>
     )
   }
 }
+
+
