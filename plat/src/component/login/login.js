@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Input, Icon, Button } from 'antd';
 import "./login.scss"
 import http from "./../server"
+import md5 from 'md5'
 
 export default class Home extends Component {
   constructor(props) {
@@ -10,8 +11,10 @@ export default class Home extends Component {
     }
   };
   loginSys = () => {
-    http.get("https://5b5e71c98e9f160014b88cc9.mockapi.io/api/v1/lists").then(res => {
-      this.props.history.push('/home');
+    var time = Math.floor(new Date().getTime() / 1000);
+    var url = "/api" + "login/loginByEnt?login_name=rayjay&time=" + time + "&signature=" + md5(md5("666666") + time)
+    http.get(url).then(res => {
+      // this.props.history.push('/home');
     })
   };
   render() {
