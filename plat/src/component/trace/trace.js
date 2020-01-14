@@ -1,42 +1,35 @@
 import React, { Component } from 'react';
-import {Link, Switch, Route, useRouteMatch, useParams} from "react-router-dom"
-function Topic() {
-  // The <Route> that rendered this component has a
-  // path of `/topics/:topicId`. The `:topicId` portion
-  // of the URL indicates a placeholder that we can
-  // get from `useParams()`.
-  let { topicId } = useParams();
+import GoogleMapReact from 'google-map-react';
 
-  return (
-    <div>
-      <h3>{topicId}</h3>
-    </div>
-  );
-}
-export default function Trace(params) {
-    let { path, url } = useRouteMatch();
+const AnyReactComponent = ({ text }) => <div>{text}</div>;
+
+class SimpleMap extends Component {
+  static defaultProps = {
+    center: {
+      lat: 59.95,
+      lng: 30.33
+    },
+    zoom: 11
+  };
+
+  render() {
     return (
-      <div className="home">
-        <header>trace</header>
-        <ul>
-        <li>
-          <Link to={`${url}/rendering`}>Rendering with React</Link>
-        </li>
-        <li>
-          <Link to={`${url}/components`}>Components</Link>
-        </li>
-        <li>
-          <Link to={`${url}/props-v-state`}>Props v. State</Link>
-        </li>
-      </ul>
-         <Switch>
-         <Route exact path={path}>
-           <h3>Please select a topic.</h3>
-         </Route>
-         <Route path={`${path}/:topicId`}>
-           <Topic />
-         </Route>
-       </Switch>
+      // Important! Always set the container height explicitly
+      <div style={{ height: '100%', width: '100%' }}>
+        <GoogleMapReact
+          bootstrapURLKeys={{ key: "AIzaSyCEx3udayM56n8B6eWwEdI_-5evIxSVSmc" }}
+          defaultCenter={this.props.center}
+          defaultZoom={this.props.zoom}
+        >
+          <AnyReactComponent
+            lat={59.955413}
+            lng={30.337844}
+            text="My Marker"
+          />
+        </GoogleMapReact>
       </div>
-    )
+    );
   }
+}
+
+export default SimpleMap;

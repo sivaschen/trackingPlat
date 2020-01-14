@@ -1,7 +1,29 @@
 .home {
+    height: 100vh;
+    width: 100%;
+    position: relative;
     header {
-        height: 80px;
-        background-color: #eee;
-      }
-      
+      height: 80px;
+      background-color: #eee;
+      width: 100%;
+      float: left;
+    }
+    .menu {
+      float: left;
+      width: 100%;
+    }
+    .subPage {
+      padding-top: 126px;
+      height: 100%;
+      box-sizing: border-box;
+      padding-left: 200px;
+    }
+    .tree {
+      position: absolute;
+      top: 126px;
+      padding-left: 20px;
+      width: 200px;
+      box-sizing: border-box;
+      float: left;
+    }
 }
