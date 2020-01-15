@@ -4,11 +4,12 @@ import Monitor from '../component/monitor/monitor'
 import Trace from '../component/trace/trace'
 import About from "./about"
 import { Tree, Menu, Icon, Button } from 'antd';
+import http from "./server"
+import cookie from 'react-cookies'
 import "./home.scss"
 
 const { TreeNode } = Tree;
 const {SubMenu} = Menu;
-
 export default class Home extends Component {
   constructor(props) {
     super(props)
@@ -16,7 +17,14 @@ export default class Home extends Component {
       current: 'mail'
     }
   }
-  componentDidMount() {
+  componentWillMount() {
+    
+  }
+  componentDidMount () {
+    let url = "/apient/getEntInfoByEid?eid=10000"
+    http.get(url).then(res => {
+      console.log(res)
+    })
   }
   onSelect = (selectedKeys, info) => {
     console.log('selected', selectedKeys, info);
