@@ -3,100 +3,172 @@ import {Switch, Route } from 'react-router-dom'
 import Monitor from '../component/monitor/monitor'
 import Trace from '../component/trace/trace'
 import About from "./about"
-import { Tree, Menu, Icon, Button } from 'antd';
+import { Tree, Menu, Icon, Button, message } from 'antd';
 import http from "./server"
-import cookie from 'react-cookies'
 import "./home.scss"
 
 const { TreeNode } = Tree;
 const {SubMenu} = Menu;
+
 export default class Home extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      current: 'mail'
+      eid: '',
+      treeData: [],
+      expandedKeys: [],
+      autoExpandParent: true,
+      selectedKeys: [],  
+      account: {
+        login_name: ''
+      }
     }
   }
-  componentWillMount() {
-    
-  }
   componentDidMount () {
-    let url = "/apient/getEntInfoByEid?eid=10000"
-    http.get(url).then(res => {
-      console.log(res)
+    this.getToken();
+  }
+  getToken = () => {
+    let access_token = document.cookie.split("=")[1];
+    let eidLen = parseInt(access_token.substr(3, 2));
+    let eid = access_token.substr(5, eidLen);
+    let url = "/apient/getEntInfoByEid"
+    http.get(url, {eid: eid}).then(res => {
+      if (res.data.errcode === 0) {
+        this.setState({
+          eid: String(eid),
+          account: res.data.data
+        })
+        this.getSubAcc(String(eid))
+      } else {
+        message.error("获取账户信息失败");
+      }
     })
   }
-  onSelect = (selectedKeys, info) => {
-    console.log('selected', selectedKeys, info);
-  };
-  handleClick = e => {
-    console.log('click ', e);
+  onLoadData = treeNode => {
+    new Promise(async (resolve) => {
+      let res = await this.getSubAcc(treeNode.props.eid);
+    })
+  }
+    
+  onExpand = expandedKeys => {
+    console.log('onExpand', expandedKeys);
+    // if not set autoExpandParent to false, if children expanded, parent can not collapse.
+    // or, you can remove all expanded children keys.
     this.setState({
-      current: e.key,
+      expandedKeys,
+      autoExpandParent: false,
     });
   };
+
+  onCheck = checkedKeys => {
+    console.log('onCheck', checkedKeys);
+    this.setState({ checkedKeys });
+  };
+
+  onSelect = (selectedKeys, info) => {
+    console.log('onSelect', info);
+    this.setState({ selectedKeys });
+  };
+  renderTreeNodes = data =>
+    data.map(item => {
+      if (item.children) {
+        return (
+          <TreeNode title={item.title} key={item.key} dataRef={item}>
+            {this.renderTreeNodes(item.children)}
+          </TreeNode>
+        );
+      }
+      return <TreeNode key={item.key} {...item} />;
+  });
+  getSubAcc = (eid) => {
+    let url = "/apient/getEntChildrenByEid";
+    http.get(url, {eid: eid}).then(res => {
+      if (res.data.errcode === 0) {
+        let data = res.data.data;
+        let newRecords = [];
+        data.records.forEach(item => {
+          newRecords.push({
+            eid: item.eid,
+            pid: item.pid,
+            title: item.text,
+            isLeaf: item.leaf,
+            key: String(item.eid)
+          })
+        })
+        let account = [
+          {
+            eid: data.eid,
+            pid: data.pid,
+            title: data.text,
+            isLeaf: data.leaf,
+            key: String(data.eid),
+            children: newRecords
+          }
+        ]
+        this.setState({
+          expandedKeys: [String(data.eid)],
+          treeData: account
+        })
+        return true
+      } else {
+        message.error("获取下级用户失败")
+        return false
+      }
+    })
+  }
   logout = () => {
     this.props.history.push("/login");
   }
   render() {
     return (
       <div className="home">
-        <header>asdfasdfasdfasdfsaef <Button onClick={this.logout}>退 出</Button></header>
+        <header>
+          <Button onClick={this.logout} type="danger">退 出</Button>
+          <span className="name">{"登陆账户：" + this.state.account.login_name}</span>
+        </header>
         <div className="menu">
-        <Menu onClick={this.handleClick} selectedKeys={[this.state.current]} mode="horizontal">
-          <Menu.Item key="mail">
-            <Icon type="mail" />
-            Navigation One
-          </Menu.Item>
-          <Menu.Item key="app" disabled>
-            <Icon type="appstore" />
-            Navigation Two
-          </Menu.Item>
-          <SubMenu
-            title={
-              <span className="submenu-title-wrapper">
-                <Icon type="setting" />
-                Navigation Three - Submenu
-              </span>
-            }
-          >
-            <Menu.ItemGroup title="Item 1">
-              <Menu.Item key="setting:1">Option 1</Menu.Item>
-              <Menu.Item key="setting:2">Option 2</Menu.Item>
-            </Menu.ItemGroup>
-            <Menu.ItemGroup title="Item 2">
-              <Menu.Item key="setting:3">Option 3</Menu.Item>
-              <Menu.Item key="setting:4">Option 4</Menu.Item>
-            </Menu.ItemGroup>
-          </SubMenu>
-          <Menu.Item key="alipay">
-            <a href="https://ant.design" target="_blank" rel="noopener noreferrer">
-              Navigation Four - Link
-            </a>
-          </Menu.Item>
-        </Menu>
-        </div>
-     
+          <Menu onClick={this.handleClick} selectedKeys={[this.state.current]} mode="horizontal">
+            <Menu.Item key="mail">
+              <Icon type="mail" />
+              Navigation One
+            </Menu.Item>
+            <Menu.Item key="app" disabled>
+              <Icon type="appstore" />
+              Navigation Two
+            </Menu.Item>
+            <SubMenu
+              title={
+                <span className="submenu-title-wrapper">
+                  <Icon type="setting" />
+                  Navigation Three - Submenu
+                </span>
+              }
+            >
+              <Menu.ItemGroup title="Item 1">
+                <Menu.Item key="setting:1">Option 1</Menu.Item>
+                <Menu.Item key="setting:2">Option 2</Menu.Item>
+              </Menu.ItemGroup>
+              <Menu.ItemGroup title="Item 2">
+                <Menu.Item key="setting:3">Option 3</Menu.Item>
+                <Menu.Item key="setting:4">Option 4</Menu.Item>
+              </Menu.ItemGroup>
+            </SubMenu>
+            <Menu.Item key="alipay">
+              <a href="https://ant.design" target="_blank" rel="noopener noreferrer">
+                Navigation Four - Link
+              </a>
+            </Menu.Item>
+          </Menu>
+        </div>     
         <div className="tree">
-          <Tree showLine
-          switcherIcon={<Icon type="down" />}
-          defaultExpandedKeys={['0-0-0']}
-          onSelect={this.onSelect}>
-          <TreeNode title="parent 1" key="0-0">
-            <TreeNode title="parent 1-0" key="0-0-0">
-              <TreeNode title="leaf" key="0-0-0-0" />
-              <TreeNode title="leaf" key="0-0-0-1" />
-              <TreeNode title="leaf" key="0-0-0-2" />
-            </TreeNode>
-            <TreeNode title="parent 1-1" key="0-0-1">
-              <TreeNode title="leaf" key="0-0-1-0" />
-            </TreeNode>
-            <TreeNode title="parent 1-2" key="0-0-2">
-              <TreeNode title="leaf" key="0-0-2-0" />
-              <TreeNode title="leaf" key="0-0-2-1" />
-            </TreeNode>
-          </TreeNode>
-        </Tree>
+          <Tree loadData={this.onLoadData} 
+            onExpand={this.onExpand}
+            expandedKeys={this.state.expandedKeys}
+            autoExpandParent={this.state.autoExpandParent}
+            onSelect={this.onSelect}
+            selectedKeys={this.state.selectedKeys}>
+              {this.renderTreeNodes(this.state.treeData)}
+          </Tree>
         </div>
         <div className="subPage">
           <Switch>
