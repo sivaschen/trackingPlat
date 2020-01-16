@@ -31,24 +31,44 @@ export default class Home extends Component {
     let access_token = document.cookie.split("=")[1];
     let eidLen = parseInt(access_token.substr(3, 2));
     let eid = access_token.substr(5, eidLen);
-    let url = "/apient/getEntInfoByEid"
-    http.get(url, {eid: eid}).then(res => {
+    let url = "/apient/getEntInfoByEid";
+    http.get(url, {eid: eid}).then((res) => {
       if (res.data.errcode === 0) {
+        let data = res.data.data;
         this.setState({
           eid: String(eid),
-          account: res.data.data
+          account: data
         })
-        this.getSubAcc(String(eid))
+        this.getSubAcc(String(eid)).then(res => {
+          if (res) {
+            this.setState({
+              treeData: res,
+              expandedKeys: [String(eid)]
+            })
+          }
+        })
       } else {
         message.error("获取账户信息失败");
       }
     })
   }
-  onLoadData = treeNode => {
-    new Promise(async (resolve) => {
-      let res = await this.getSubAcc(treeNode.props.eid);
-    })
-  }
+  onLoadData = treeNode =>
+  new Promise(async(resolve) => {
+    if (treeNode.props.children) {
+      resolve();
+      return;
+    }
+    this.getSubAcc(treeNode.props.eid).then(res => {
+      if (res) {
+        treeNode.props.dataRef.children = res
+        this.setState({
+          treeData: [...this.state.treeData],
+        });
+        resolve();
+
+      }
+    });
+  });
     
   onExpand = expandedKeys => {
     console.log('onExpand', expandedKeys);
@@ -78,14 +98,25 @@ export default class Home extends Component {
           </TreeNode>
         );
       }
-      return <TreeNode key={item.key} {...item} />;
+      return <TreeNode key={item.key} {...item} dataRef={item} />;
   });
   getSubAcc = (eid) => {
     let url = "/apient/getEntChildrenByEid";
-    http.get(url, {eid: eid}).then(res => {
+    return http.get(url, {eid: eid}).then(res => {
       if (res.data.errcode === 0) {
         let data = res.data.data;
         let newRecords = [];
+        let rootNode = {}
+        if (eid === this.state.eid) {
+          rootNode = {
+            eid: data.eid,
+            title: data.text,
+            pid: data.pid,
+            key: data.eid,
+            isLeaf: data.leaf
+          }
+          
+        }
         data.records.forEach(item => {
           newRecords.push({
             eid: item.eid,
@@ -95,24 +126,13 @@ export default class Home extends Component {
             key: String(item.eid)
           })
         })
-        let account = [
-          {
-            eid: data.eid,
-            pid: data.pid,
-            title: data.text,
-            isLeaf: data.leaf,
-            key: String(data.eid),
-            children: newRecords
-          }
-        ]
-        this.setState({
-          expandedKeys: [String(data.eid)],
-          treeData: account
-        })
-        return true
+        if (eid === this.state.eid) {
+          rootNode.children = newRecords;
+          return [rootNode]
+        }
+        return newRecords
       } else {
         message.error("获取下级用户失败")
-        return false
       }
     })
   }
