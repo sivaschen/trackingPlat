@@ -28,7 +28,13 @@ export default class Home extends Component {
     this.getToken();
   }
   getToken = () => {
-    let access_token = document.cookie.split("=")[1];
+    let cookie = document.cookie.split(";");
+    let cookieParms = {}
+    cookie.forEach(item => {
+      let objArr = item.split("=");
+      cookieParms[objArr[0].trim()] = objArr[1];
+    })
+    let access_token = cookieParms.access_token;
     let eidLen = parseInt(access_token.substr(3, 2));
     let eid = access_token.substr(5, eidLen);
     let url = "/apient/getEntInfoByEid";
