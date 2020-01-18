@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {Switch, Route } from 'react-router-dom'
 import Monitor from '../component/monitor/monitor'
 import Trace from '../component/trace/trace'
-import About from "./about"
+import User from './users/user'
 import { Tree, Menu, Icon, Button, message } from 'antd';
 import http from "./server"
 import "./home.scss"
@@ -49,8 +49,10 @@ export default class Home extends Component {
           if (res) {
             this.setState({
               treeData: res,
-              expandedKeys: [String(eid)]
+              expandedKeys: [String(eid)],
+              selectedKeys: [String(eid)]
             })
+            this.user.init();
           }
         })
       } else {
@@ -94,6 +96,7 @@ export default class Home extends Component {
   onSelect = (selectedKeys, info) => {
     console.log('onSelect', info);
     this.setState({ selectedKeys });
+    this.user.init();
   };
   renderTreeNodes = data =>
     data.map(item => {
@@ -142,6 +145,21 @@ export default class Home extends Component {
       }
     })
   }
+  rightClickNode = (node) => {
+
+  }
+  onRef = (name, ref) => {
+    switch (name) {
+        case 'chatWindow':
+            this.chatWindow = ref
+            break
+        case 'user':
+            this.user = ref
+            break
+        default:
+            break
+    }
+  }
   logout = () => {
     this.props.history.push("/login");
   }
@@ -154,9 +172,9 @@ export default class Home extends Component {
         </header>
         <div className="menu">
           <Menu onClick={this.handleClick} selectedKeys={[this.state.current]} mode="horizontal">
-            <Menu.Item key="mail">
-              <Icon type="mail" />
-              Navigation One
+            <Menu.Item key="user">
+              <Icon type="team"/>
+              客户管理
             </Menu.Item>
             <Menu.Item key="app" disabled>
               <Icon type="appstore" />
@@ -192,23 +210,21 @@ export default class Home extends Component {
             expandedKeys={this.state.expandedKeys}
             autoExpandParent={this.state.autoExpandParent}
             onSelect={this.onSelect}
-            selectedKeys={this.state.selectedKeys}>
+            selectedKeys={this.state.selectedKeys}
+            onRightClick={this.rightClickNode}>
               {this.renderTreeNodes(this.state.treeData)}
           </Tree>
         </div>
         <div className="subPage">
           <Switch>
             <Route exact path="/home">
-                <Monitor/>
+                <User eid={ this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} />
             </Route>
             <Route path="/home/monitor">
                 <Monitor/>
             </Route>
             <Route path="/home/trace">
                 <Trace/>
-            </Route>
-            <Route path="/home/about">
-                <About/>
             </Route>
         </Switch>
         </div>
