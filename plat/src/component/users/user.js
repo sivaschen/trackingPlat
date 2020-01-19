@@ -43,7 +43,8 @@ export default class User extends React.Component {
         return (
             <div className="user">
                 <div className="accInfo">
-                   <MyForm/>
+                    <h3 className="accountTitle">账户信息:</h3>
+                   <MyForm account={this.state.account}/>
                 </div>
                 <Button><Icon type="user-add" />添加下级客户</Button>
                 <Button><Icon type="user-delete" />删除此用户</Button>
