@@ -29,8 +29,8 @@ export default class Home extends Component {
       return
     }
     let time = Math.floor(new Date().getTime() / 1000);
-    let url = "/api" + "login/loginByEnt?login_name=" + userName +"&time=" + time + "&signature=" + md5(md5(pwd) + time);
-    http.get(url).then(res => {
+    let url = "/api" + "login/loginByEnt?login_name=" + userName + "&time=" + time + "&signature=" + md5(md5(pwd) + time)
+    http.post(url).then(res => {
       if (res.data.errcode === 0) {
         let targetUrl = res.data.data.url;
         this.props.history.push(targetUrl);

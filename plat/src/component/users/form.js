@@ -1,13 +1,7 @@
 import {
     Form,
     Input,
-    Tooltip,
-    Icon,
-    Cascader,
     Select,
-    Row,
-    Col,
-    Checkbox,
     Button,
     AutoComplete,
   } from 'antd';
@@ -15,43 +9,8 @@ import {
   
   const { Option } = Select;
   const AutoCompleteOption = AutoComplete.Option;
-  
-  const residences = [
-    {
-      value: 'zhejiang',
-      label: 'Zhejiang',
-      children: [
-        {
-          value: 'hangzhou',
-          label: 'Hangzhou',
-          children: [
-            {
-              value: 'xihu',
-              label: 'West Lake',
-            },
-          ],
-        },
-      ],
-    },
-    {
-      value: 'jiangsu',
-      label: 'Jiangsu',
-      children: [
-        {
-          value: 'nanjing',
-          label: 'Nanjing',
-          children: [
-            {
-              value: 'zhonghuamen',
-              label: 'Zhong Hua Men',
-            },
-          ],
-        },
-      ],
-    },
-  ];
-  
-  class RegistrationForm extends React.Component {
+    
+  class accountForm extends React.Component {
     state = {
       confirmDirty: false,
       autoCompleteResult: [],
@@ -104,11 +63,11 @@ import {
   
       const formItemLayout = {
         labelCol: {
-          xs: { span: 24 },
+          xs: { span: 16 },
           sm: { span: 8 },
         },
         wrapperCol: {
-          xs: { span: 24 },
+          xs: { span: 16 },
           sm: { span: 16 },
         },
       };
@@ -138,7 +97,7 @@ import {
       ));
   
       return (
-        <Form {...formItemLayout} onSubmit={this.handleSubmit}>
+        <Form {...formItemLayout} onSubmit={this.handleSubmit} layout="inline">
           <Form.Item label="E-mail">
             {getFieldDecorator('email', {
               rules: [
@@ -168,7 +127,7 @@ import {
           </Form.Item>
           <Form.Item {...tailFormItemLayout}>
             <Button type="primary" htmlType="submit">
-              Register
+              保 存
             </Button>
           </Form.Item>
         </Form>
@@ -176,6 +135,6 @@ import {
     }
   }
   
-  const WrappedRegistrationForm = Form.create({ name: 'register' })(RegistrationForm);
+  const WrappedAccountForm = Form.create({ name: 'register' })(accountForm);
   
-  export default WrappedRegistrationForm
+  export default WrappedAccountForm

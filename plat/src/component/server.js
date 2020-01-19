@@ -6,7 +6,7 @@ let http = {
 }
 
 http.post = function (api, data) {
-    let params = {params: data};
+    let params = data;
     return new Promise((resolve, reject) => {
         axios.post(api, params).then(res => {
             resolve(res)

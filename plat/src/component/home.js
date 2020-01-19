@@ -94,7 +94,7 @@ export default class Home extends Component {
   };
 
   onSelect = (selectedKeys, info) => {
-    console.log('onSelect', info);
+    if (!info.selected) return
     this.setState({ selectedKeys });
     this.user.init();
   };
