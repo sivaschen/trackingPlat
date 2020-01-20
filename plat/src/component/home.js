@@ -66,17 +66,18 @@ export default class Home extends Component {
   }
   onLoadData = treeNode =>
   new Promise(async(resolve) => {
-    if (treeNode.props.children) {
-      resolve();
-      return;
-    }
+    // if (treeNode.props.children) {
+    //   resolve();
+    //   return;
+    // }
     this.getSubAcc(treeNode.props.eid).then(res => {
       if (res) {
         treeNode.props.dataRef.children = res
         this.setState({
           treeData: [...this.state.treeData],
-        });
-        resolve();
+        }, ()=>{
+          resolve();        });
+        
 
       }
     });
@@ -114,7 +115,7 @@ export default class Home extends Component {
       }
       return <TreeNode key={item.key} {...item} dataRef={item} />;
   });
-  getSubAcc = (eid) => {
+  getSubAcc = (eid) => {    
     let url = "/apient/getEntChildrenByEid";
     return http.get(url, {eid: eid}).then(res => {
       if (res.data.errcode === 0) {
@@ -223,7 +224,7 @@ export default class Home extends Component {
         <div className="subPage">
           <Switch>
             <Route exact path="/home">
-                <User eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} loadTree={this.getToken.bind(this)} />
+                <User eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} loadTree={this.getSubAcc} />
             </Route>
             <Route path="/home/monitor">
                 <Monitor/>

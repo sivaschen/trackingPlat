@@ -3,6 +3,7 @@ import { Button, Icon, message, Popconfirm, Modal, Input } from 'antd'
 import http from './../server'
 import MyForm from './form'
 import "./user.scss"
+import ResizableTextArea from 'antd/lib/input/ResizableTextArea'
 
 
 
@@ -15,7 +16,12 @@ export default class User extends React.Component {
             account: {},
             email: '',
             visible: false,
-            confirmLoading: false
+            confirmLoading: false,
+            newUserName: '',
+            newPwd: '',
+            newAddr: '',
+            newEmail: '',
+            newPhone: ''
         }
     }
     componentDidMount () {
@@ -34,13 +40,58 @@ export default class User extends React.Component {
         http.get(url, data).then(res => {
             if (res.data.errcode === 0) {
                 message.success("删除账户成功");
-                this.props.loadTree();
+                this.props.loadTree(this.state.account.pid);
             } else {
                 message.error("删除失败");
             }
         })
     }
     addUser = () => {
+        const url = "/api" + "ent/addEnt";
+        let data = {
+            pid: this.state.account.eid,
+            login_name: this.state.newUserName,
+            pwd: this.state.newPwd || "123456",
+            phone:this.state.newPhone,
+            addr:this.state.newAddr,
+            email:this.state.newEmail        }
+        http.get(url,data).then(res => {
+            console.log(res)
+            if (res.data.errcode === 0) {
+                message.success("增加成功");
+                this.props.loadTree(this.state.account.eid);
+                this.setState({
+                    visible: false
+                })
+            } else {
+                message.error("增加用户失败");
+            }
+        })
+    }
+    getNewUserName = (e) => {
+        this.setState({
+            newUserName: e.target.value
+        })
+    }
+    getNewPwd = (e) => {
+        this.setState({
+            newPwd: e.target.value
+        })
+    }
+    getNewAddr= (e) => {
+        this.setState({
+            newAddr: e.target.value
+        })
+    }
+    getNewPhone = (e) => {
+        this.setState({
+            newPhone: e.target.value
+        })
+    }
+    getNewEmail = (e) => {
+        this.setState({
+            newEmail: e.target.value
+        })
     }
     cancelAddUser = () => {
         this.setState({
@@ -86,10 +137,11 @@ export default class User extends React.Component {
 
                 </div>
                 <Modal title="添加用户" visible={this.state.visible} onOk={this.addUser} confirmLoading={this.confirmLoading} onCancel={this.cancelAddUser} className="addUser">
-                    <Input addonBefore="登录名" className="addUserInput" />
-                    <Input.Password addonBefore="密码" defaultValue="123456" className="addUserInput" />
-                    <Input addonBefore="地址" className="addUserInput" />
-                    <Input addonBefore="Email" className="addUserInput" />
+                    <Input addonBefore="登录名" className="addUserInput" onChange={this.getNewUserName}/>
+                    <Input.Password addonBefore="密码" defaultValue="123456" className="addUserInput" onChange={this.getNewPwd} />
+                    <Input addonBefore="电话" className="addUserInput" onChange={this.getNewPhone} />
+                    <Input addonBefore="地址" className="addUserInput" onChange={this.getNewAddr} />
+                    <Input addonBefore="Email" className="addUserInput" onChange={this.getNewEmail} />
                 </Modal>
             </div>
         )

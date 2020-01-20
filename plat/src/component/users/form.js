@@ -12,8 +12,6 @@ import http from '../server';
     constructor (props) {
       super(props);
       this.state = {
-        confirmDirty: false,
-        autoCompleteResult: [],
       };
     }
     handleSubmit = e => {
@@ -26,7 +24,6 @@ import http from '../server';
     };
     saveAccountInfo = (values) => {
       const url = "/api/ent/updateEnt";
-      console.log(this.props.account.pid);
       let data = {
         pid: this.props.account.pid,
         eid: this.props.account.eid,
@@ -42,14 +39,7 @@ import http from '../server';
         }
       })
     }
-    mapPropsToFields(props) {
-      return {
-        addr: Form.createFormField({
-          ...props.account.addr,
-          value: props.accopunt.addr.value,
-        }),
-      };
-    }
+
     render() {
       const { getFieldDecorator } = this.props.form;
       const formItemLayout = {

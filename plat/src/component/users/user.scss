@@ -1,5 +1,9 @@
 .userManage {
-    text-align: center;
+    text-align: left;
+    padding: 10px 0px;
+    button {
+        margin-right: 30px;
+    }
 }
 .addUser  {    
     .ant-input-group-addon {
