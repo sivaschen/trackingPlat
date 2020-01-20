@@ -44,17 +44,21 @@ export default class Home extends Component {
         this.setState({
           eid: String(eid),
           account: data
+        }, () => {
+          this.getSubAcc(String(eid)).then(res => {
+            if (res) {
+              this.setState({
+                treeData: res,
+                expandedKeys: [String(eid)],
+                selectedKeys: [String(eid)]
+              }, () => {
+                this.user.init();
+              })
+              
+            }
+          })
         })
-        this.getSubAcc(String(eid)).then(res => {
-          if (res) {
-            this.setState({
-              treeData: res,
-              expandedKeys: [String(eid)],
-              selectedKeys: [String(eid)]
-            })
-            this.user.init();
-          }
-        })
+        
       } else {
         message.error("获取账户信息失败");
       }
@@ -94,8 +98,10 @@ export default class Home extends Component {
 
   onSelect = (selectedKeys, info) => {
     if (!info.selected) return
-    this.setState({ selectedKeys });
-    this.user.init();
+    this.setState({ selectedKeys }, () => {
+      this.user.init();
+    });
+    
   };
   renderTreeNodes = data =>
     data.map(item => {
@@ -217,7 +223,7 @@ export default class Home extends Component {
         <div className="subPage">
           <Switch>
             <Route exact path="/home">
-                <User eid={ this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} />
+                <User eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} loadTree={this.getToken.bind(this)} />
             </Route>
             <Route path="/home/monitor">
                 <Monitor/>

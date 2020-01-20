@@ -5,6 +5,7 @@ import {
     message
   } from 'antd';
   import React from 'react';
+import http from '../server';
   
     
   class accountForm extends React.Component {
@@ -19,11 +20,28 @@ import {
       e.preventDefault();
       this.props.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
-          console.log('Received values of form: ', values);
-
+          this.saveAccountInfo(values);
         }
       });
-    };  
+    };
+    saveAccountInfo = (values) => {
+      const url = "/api/ent/updateEnt";
+      console.log(this.props.account.pid);
+      let data = {
+        pid: this.props.account.pid,
+        eid: this.props.account.eid,
+        phone: values.phone,
+        addr: values.addr,
+        email: values.email
+      }
+      http.get(url, data).then(res => {
+        if (res.data.errcode === 0) {
+          message.success("保存信息成功");
+        } else {
+          message.error("保存信息失败");
+        }
+      })
+    }
     mapPropsToFields(props) {
       return {
         addr: Form.createFormField({
@@ -64,17 +82,15 @@ import {
               <span>名称</span>
             }
           >
-            {getFieldDecorator('nickname', {
-              initialValue: this.props.account.login_name
-             })(<Input onChange={this.getName} />)}
+            {getFieldDecorator('name', {
+             })(<Input disabled />)}
           </Form.Item>          
           <Form.Item label="地址">
-            {getFieldDecorator('address', {
+            {getFieldDecorator('addr', {
             })(<Input />)}
           </Form.Item>
           <Form.Item label="联系电话">
             {getFieldDecorator('phone', {
-              initialValue: this.props.account.phone
             })(<Input />)}
           </Form.Item>
           <Form.Item label="E-mail">
@@ -85,7 +101,6 @@ import {
                   message: '邮件格式错误',
                 }
               ],
-              initialValue: this.props.account.email
             })(<Input />)}
           </Form.Item>
           <Form.Item {...tailFormItemLayout}>
@@ -100,11 +115,18 @@ import {
   
   const WrappedAccountForm = Form.create({ name: 'register',
   mapPropsToFields(props) {
-    console.log(props)
     return {
-      address: Form.createFormField({
-        ...props.account.addr,
+      name: Form.createFormField({
+        value: props.account.login_name,
+      }),
+      addr: Form.createFormField({
         value: props.account.addr,
+      }),
+      phone: Form.createFormField({
+        value: props.account.phone,
+      }),
+      email: Form.createFormField({
+        value: props.account.email,
       }),
     };
   } })(accountForm);
