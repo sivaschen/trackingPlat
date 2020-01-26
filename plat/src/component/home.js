@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import {Switch, Route } from 'react-router-dom'
+import {Switch, Route, NavLink } from 'react-router-dom'
 import Monitor from '../component/monitor/monitor'
 import Trace from '../component/trace/trace'
+import YJCenter from '../component/yjcenter/yjcenter'
 import User from './users/user'
 import { Tree, Menu, Icon, Button, message } from 'antd';
 import http from "./server"
@@ -14,6 +15,7 @@ export default class Home extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      current: '/home/user',
       eid: '',
       treeData: [],
       expandedKeys: [],
@@ -37,6 +39,9 @@ export default class Home extends Component {
     let access_token = cookieParms.access_token;
     let eidLen = parseInt(access_token.substr(3, 2));
     let eid = access_token.substr(5, eidLen);
+    if (eid == 8888) {
+      eid = 10000
+    }
     let url = "/apient/getEntInfoByEid";
     http.get(url, {eid: eid}).then((res) => {
       if (res.data.errcode === 0) {
@@ -52,7 +57,7 @@ export default class Home extends Component {
                 expandedKeys: [String(eid)],
                 selectedKeys: [String(eid)]
               }, () => {
-                this.user.init();
+                this.subpage.init();
               })
               
             }
@@ -65,24 +70,60 @@ export default class Home extends Component {
     })
   }
   onLoadData = treeNode =>
-  new Promise(async(resolve) => {
-    // if (treeNode.props.children) {
-    //   resolve();
-    //   return;
-    // }
+  new Promise((resolve) => {
+    if (treeNode.props.children) {
+      resolve();
+      return;
+    }
     this.getSubAcc(treeNode.props.eid).then(res => {
       if (res) {
         treeNode.props.dataRef.children = res
         this.setState({
           treeData: [...this.state.treeData],
         }, ()=>{
-          resolve();        });
-        
-
+          resolve();
+        });
       }
     });
   });
-    
+  updateTreeNode = async(type, eid, newNode) => {
+    let { treeData } = this.state;
+    const getSubAcc = this.getSubAcc;        
+    let searchNode = async(type, arr, eid) => {
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i].eid === eid) {
+          if (type === 'delete') {
+            arr.splice(i, 1);
+          } else {
+              let children = await getSubAcc(eid);  
+              arr[i].isLeaf = false;            
+              arr[i].children = children;
+              console.log(eid)
+              console.log(treeData);
+              this.setState({
+                treeData: treeData,
+                expandedKeys: [String(eid)]
+              })
+          }
+          return
+        } 
+        if (arr[i].children) {
+          searchNode(type, arr[i].children, eid)
+        }   
+      }
+    }
+    await searchNode(type,treeData, eid);
+    if (type === 'delete') {
+      this.setState({
+        treeData: treeData
+      })
+    } else {
+      
+    }
+
+
+  }
+
   onExpand = expandedKeys => {
     // if not set autoExpandParent to false, if children expanded, parent can not collapse.
     // or, you can remove all expanded children keys.
@@ -96,11 +137,14 @@ export default class Home extends Component {
     console.log('onCheck', checkedKeys);
     this.setState({ checkedKeys });
   };
-
+  loadTree = (keys, obj) => {
+    console.log(keys);
+    console.log(obj)
+  }
   onSelect = (selectedKeys, info) => {
     if (!info.selected) return
     this.setState({ selectedKeys }, () => {
-      this.user.init();
+      this.subpage.init();
     });
     
   };
@@ -151,20 +195,13 @@ export default class Home extends Component {
       }
     })
   }
-  rightClickNode = (node) => {
-
-  }
   onRef = (name, ref) => {
-    switch (name) {
-        case 'chatWindow':
-            this.chatWindow = ref
-            break
-        case 'user':
-            this.user = ref
-            break
-        default:
-            break
-    }
+    this.subpage = ref;
+  }
+  handleMenuClick = e => {
+    this.setState({
+      current: e.key,
+    });
   }
   logout = () => {
     this.props.history.push("/login");
@@ -177,14 +214,12 @@ export default class Home extends Component {
           <span className="name">{"登陆账户：" + this.state.account.login_name}</span>
         </header>
         <div className="menu">
-          <Menu onClick={this.handleClick} selectedKeys={[this.state.current]} mode="horizontal">
-            <Menu.Item key="user">
-              <Icon type="team"/>
-              客户管理
+          <Menu onClick={this.handleMenuClick} selectedKeys={[this.state.current]} mode="horizontal">
+            <Menu.Item key="/home/user">              
+              <NavLink to="/home/user"><Icon type="team"/>客户管理</NavLink>
             </Menu.Item>
-            <Menu.Item key="app" disabled>
-              <Icon type="appstore" />
-              Navigation Two
+            <Menu.Item key="/home/monitor">              
+              <NavLink to="/home/monitor">监控</NavLink>              
             </Menu.Item>
             <SubMenu
               title={
@@ -216,6 +251,7 @@ export default class Home extends Component {
             expandedKeys={this.state.expandedKeys}
             autoExpandParent={this.state.autoExpandParent}
             onSelect={this.onSelect}
+            onLoad={this.loadTree}
             selectedKeys={this.state.selectedKeys}
             onRightClick={this.rightClickNode}>
               {this.renderTreeNodes(this.state.treeData)}
@@ -224,13 +260,16 @@ export default class Home extends Component {
         <div className="subPage">
           <Switch>
             <Route exact path="/home">
-                <User eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} loadTree={this.getSubAcc} />
+                <User addNode={this.addNodeCallback} eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} loadTree={this.updateTreeNode} />
             </Route>
             <Route path="/home/monitor">
-                <Monitor/>
+                <Monitor onRef={this.onRef.bind(this)}/>
             </Route>
             <Route path="/home/trace">
                 <Trace/>
+            </Route>
+            <Route path="/home/yjcenter">
+                <YJCenter onRef={this.onRef.bind(this)} eid={this.state.selectedKeys[0]}/>
             </Route>
         </Switch>
         </div>
