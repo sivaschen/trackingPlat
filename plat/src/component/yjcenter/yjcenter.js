@@ -15,7 +15,7 @@ export default class YJCenter extends Component {
     }
     componentDidMount () {
     	// 调用父组件方法把当前实例传给父组件
-        this.props.onRef('yjcenter', this)
+        this.props.onRef('yjcenter', this);
     }
     getProductType = (e) => {
         this.setState({
@@ -34,7 +34,7 @@ export default class YJCenter extends Component {
         console.log('aaaaaaaaaa')
     }
     importImeis = ()=> {
-        const url = "/apidevice/importDevices";
+        const url = "/api" + "/device/importDevices";
         let data = {
             target_eid: this.props.eid,
             product_type: this.state.product_type,

@@ -23,7 +23,7 @@ import http from '../server';
       });
     };
     saveAccountInfo = (values) => {
-      const url = "/api/ent/updateEnt";
+      const url = "/api" + "/ent/updateEnt";
       let data = {
         pid: this.props.account.pid,
         eid: this.props.account.eid,

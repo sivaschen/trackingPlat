@@ -13,3 +13,23 @@
         margin-bottom: 10px;
     }
 }
+.deviceSearch {
+    padding: 5px 0px;
+    .searchTitle {
+        display: inline-block;
+        background-color: rgb(39, 160, 241);
+        color: #fff;
+        width: 100px;
+        text-align: center;
+        margin-right: 10px  ;
+    }
+}
+.deviceList {
+    h3 {
+        background-color: rgb(39, 160, 241);
+        color: #fff;
+        padding: 3px 10px;
+        text-align: center;
+        margin: 0;
+    }
+}

@@ -1,8 +1,12 @@
 .loginBox {
 
     .header {
-        height: 80px;
-        background-color: rgb(159, 190, 54);
+        height: 65px;
+        background-color: #fff;
+        padding: 5px 20px;
+        img {
+            width: 200px;
+        }
     }
     .main {
         position: relative;

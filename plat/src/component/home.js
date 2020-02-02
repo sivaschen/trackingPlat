@@ -3,10 +3,12 @@ import {Switch, Route, NavLink } from 'react-router-dom'
 import Monitor from '../component/monitor/monitor'
 import Trace from '../component/trace/trace'
 import YJCenter from '../component/yjcenter/yjcenter'
+import Bms from './bms/bms.js'
 import User from './users/user'
 import { Tree, Menu, Icon, Button, message } from 'antd';
 import http from "./server"
 import "./home.scss"
+import Logo from './../asset/images/logo.jpg'
 
 const { TreeNode } = Tree;
 const {SubMenu} = Menu;
@@ -42,7 +44,7 @@ export default class Home extends Component {
     if (eid == 8888) {
       eid = 10000
     }
-    let url = "/apient/getEntInfoByEid";
+    let url = "/api" + "/ent/getEntInfoByEid";
     http.get(url, {eid: eid}).then((res) => {
       if (res.data.errcode === 0) {
         let data = res.data.data;
@@ -160,7 +162,7 @@ export default class Home extends Component {
       return <TreeNode key={item.key} {...item} dataRef={item} />;
   });
   getSubAcc = (eid) => {    
-    let url = "/apient/getEntChildrenByEid";
+    let url = "/api" + "/ent/getEntChildrenByEid";
     return http.get(url, {eid: eid}).then(res => {
       if (res.data.errcode === 0) {
         let data = res.data.data;
@@ -210,6 +212,7 @@ export default class Home extends Component {
     return (
       <div className="home">
         <header>
+          <img src={Logo}/>
           <Button onClick={this.logout} type="danger">退 出</Button>
           <span className="name">{"登陆账户：" + this.state.account.login_name}</span>
         </header>
@@ -219,18 +222,18 @@ export default class Home extends Component {
               <NavLink to="/home/user"><Icon type="team"/>客户管理</NavLink>
             </Menu.Item>
             <Menu.Item key="/home/monitor">              
-              <NavLink to="/home/monitor">监控</NavLink>              
+              <NavLink to="/home/monitor"><Icon type="environment" />监控</NavLink>              
             </Menu.Item>
             <SubMenu
               title={
                 <span className="submenu-title-wrapper">
                   <Icon type="setting" />
-                  Navigation Three - Submenu
+                  其他功能
                 </span>
               }
             >
               <Menu.ItemGroup title="Item 1">
-                <Menu.Item key="setting:1">Option 1</Menu.Item>
+                <Menu.Item key="setting:1"><NavLink to="/home/bms"><Icon type="api" />电池管理</NavLink></Menu.Item>
                 <Menu.Item key="setting:2">Option 2</Menu.Item>
               </Menu.ItemGroup>
               <Menu.ItemGroup title="Item 2">
@@ -238,11 +241,6 @@ export default class Home extends Component {
                 <Menu.Item key="setting:4">Option 4</Menu.Item>
               </Menu.ItemGroup>
             </SubMenu>
-            <Menu.Item key="alipay">
-              <a href="https://ant.design" target="_blank" rel="noopener noreferrer">
-                Navigation Four - Link
-              </a>
-            </Menu.Item>
           </Menu>
         </div>     
         <div className="tree">
@@ -263,13 +261,19 @@ export default class Home extends Component {
                 <User addNode={this.addNodeCallback} eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} loadTree={this.updateTreeNode} />
             </Route>
             <Route path="/home/monitor">
-                <Monitor onRef={this.onRef.bind(this)}/>
+                <Monitor onRef={this.onRef.bind(this)} eid={this.state.selectedKeys[0]} />
             </Route>
             <Route path="/home/trace">
                 <Trace/>
             </Route>
             <Route path="/home/yjcenter">
                 <YJCenter onRef={this.onRef.bind(this)} eid={this.state.selectedKeys[0]}/>
+            </Route>
+            <Route path="/home/bms">
+                <Bms eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} />
+            </Route>
+            <Route path="/home/user">
+                <User addNode={this.addNodeCallback} eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} loadTree={this.updateTreeNode} />
             </Route>
         </Switch>
         </div>

@@ -3,28 +3,37 @@
     width: 100%;
     position: relative;
     header {
-      height: 80px;
-      background-color: #eee;
+      height: 65px;
+      background-color: #fff;
       width: 100%;
       float: left;
+      padding: 5px 20px;
+      position: fixed;
+      overflow: hidden;
+      z-index: 99;
+      img {
+        width: 200px;
+      }
       span.name {
         color: blue;
-        float: right;
-        margin-right: 15px;
-        margin-top: 40px;
+        position: absolute;
+        right: 180px;
+        top: 50%;
         transform: translateY(-50%);
       }
       button {
-        float: right;
-        margin-right: 100px;
-        margin-top: 40px;
+        position: absolute;
+        right: 100px;
+        top: 50%;
         transform: translateY(-50%);
       }
 
     }
     .menu {
-      float: left;
+      position: fixed;
       width: 100%;
+      top: 66px;
+      z-index: 99;
     }
     .subPage {
       padding-top: 126px;
@@ -39,5 +48,8 @@
       width: 200px;
       box-sizing: border-box;
       float: left;
+      .ant-tree {
+        font-size: 12px;
+      }
     }
 }

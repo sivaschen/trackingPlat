@@ -1,12 +1,50 @@
 import React from 'react'
-import { Button, Icon, message, Popconfirm, Modal, Input } from 'antd'
-import DeviceList from './../deviceList/deviceList.js'
+import { Button, Icon, message, Popconfirm, Modal, Input, AutoComplete, Select, Table,Divider } from 'antd'
 import http from './../server'
 import MyForm from './form'
 import "./user.scss"
-
-
-
+const { Option } = Select;
+const deviceColums = [
+    {
+        title: '设备名',
+        dataIndex: 'dev_name',
+        key: 'dev_name',
+      },
+    {
+        title: 'IMEI',
+        dataIndex: 'imei',
+        key: 'imei'
+    },{
+        title: 'Msisdn',
+        dataIndex: 'msisdn',
+        key: 'msisdn'
+    },
+      {
+        title: '设备型号',
+        dataIndex: 'product_type',
+        key: 'product_type',
+      },{
+        title: '导入时间',
+        dataIndex: 'CREATE_TIME',
+        key: 'CREATE_TIME',
+      },{
+        title: '车牌号',
+        dataIndex: 'plateno',
+        key: 'plateno',
+      }
+      ,{
+        title: '操作',
+        dataIndex: '',
+        key: 'plateno',
+        render: (text, record) => (
+            <span>
+              <a>跟踪</a>
+              <Divider type="vertical" />
+              <a>监控</a>
+            </span>
+          )
+      }
+    ];
 
 export default class User extends React.Component {
     constructor(props) {
@@ -21,7 +59,11 @@ export default class User extends React.Component {
             newPwd: '',
             newAddr: '',
             newEmail: '',
-            newPhone: ''
+            newPhone: '',
+            searchValue: '',
+            searchDataSource: [],
+            searchType: 'device',
+            deviceList: []
         }
     }
     componentDidMount () {
@@ -31,9 +73,42 @@ export default class User extends React.Component {
     onRef = () => {
         this.props.onRef('user', this)
     }
+    onSearchSelect = () => {
+
+    }
+    onSearch = searchText => {
+        let url, data;
+        if (this.state.searchType === "device") {
+            url = "/api" + "/device/searchByImei";
+            data = {
+                imei: searchText
+            }
+        } else {
+            url = "/api" + "/ent/searchEntByLName";   
+            data = {
+                login_name: searchText
+            }        
+        }
+        http.get(url, data).then(res => {
+            console.log(res);
+            if (res.data.errcode === 0) {
+                let data = res.data
+            }
+        });
+    }
+    onSearchChange = value => {
+        this.setState({
+            searchValue: value
+        })
+    }
+    searchTypeChange = value => {
+        this.setState({
+            searchType: value
+        })
+    }
     deleteSubAccount = () => {
         let eid = this.props.eid;
-        const url = "/api"+"ent/deleteEnt"
+        const url = "/api" + "/ent/deleteEnt"
         let data = {
             eid
         }
@@ -47,7 +122,7 @@ export default class User extends React.Component {
         })
     }
     addUser = () => {
-        const url = "/api" + "ent/addEnt";
+        const url = "/api" + "/ent/addEnt";
         let data = {
             pid: this.state.account.eid,
             login_name: this.state.newUserName,
@@ -112,17 +187,25 @@ export default class User extends React.Component {
         })
     }
     getDeviceList () {
-        const url = "/apient/getSubDeviceInfo"
+        const url = "/api" + "/ent/getSubDeviceInfo"
         let data = {
             eid: this.state.eid
         }
         http.get(url, data).then(res => {
-            console.log(res)
+            if (res.data.errcode === 0) {
+                if (res.data.errcode === 0) {
+                    this.setState({
+                        deviceList: res.data.data.records
+                    })
+                }
+            } else {
+                message.error("获取设备列表失败");
+            }
         })
     }
     init = () => {
         let eid = this.props.eid;
-        let url = "/apient/getEntInfoByEid";
+        let url = "/api" + "/ent/getEntInfoByEid";
         http.get(url, {eid: eid}).then((res) => {
         if (res.data.errcode === 0) {
             let data = res.data.data;
@@ -141,18 +224,27 @@ export default class User extends React.Component {
     render () {       
         return (
             <div className="user">
+                <div className="deviceSearch">
+                    <h3 className="searchTitle">搜索:</h3>
+                    <Select defaultValue="device" style={{ width: 120 }} onChange={this.searchTypeChange}>
+                        <Option value="account">账户搜索</Option>
+                        <Option value="device">设备搜索</Option>
+                    </Select>
+                    <AutoComplete value={this.state.searchValue} dataSource={this.state.searchDataSource} style={{ width: 200 }} onSelect={this.state.onSearchSelect} onSearch={this.onSearch} onChange={this.onSearchChange} placeholder="请输入搜索的关键字"/>
+                </div>
                 <div className="accInfo">
                     <h3 className="accountTitle">账户信息:</h3>
                    <MyForm account={this.state.account}/>
                 </div>
                 <div className="userManage">
-                    <Button onClick={this.showAddUser}><Icon type="user-add" />添加下级客户</Button>
+                    <Button onClick={this.showAddUser} type="primary"><Icon type="user-add" />添加下级客户</Button>
                     <Popconfirm placement="top" title="删除当前账户" onConfirm={this.deleteSubAccount} okText="确定" cancelText="取消">
-                        <Button><Icon type="user-delete" onClick={this.deleteSubAccount} />删除此用户</Button>
+                        <Button type="danger"><Icon type="user-delete" onClick={this.deleteSubAccount} />删除当前用户</Button>
                     </Popconfirm>
                 </div>
                 <div className="deviceList">
-                    <DeviceList eid={this.state.eid} />
+                    <h3>设备列表</h3>
+                    <Table columns={deviceColums} dataSource={this.state.deviceList} rowKey="dev_id" />
                 </div>
                 <Modal title="添加用户" visible={this.state.visible} onOk={this.addUser} confirmLoading={this.confirmLoading} onCancel={this.cancelAddUser} className="addUser">
                     <Input addonBefore="登录名" className="addUserInput" onChange={this.getNewUserName}/>

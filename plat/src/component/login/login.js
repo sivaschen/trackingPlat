@@ -3,6 +3,7 @@ import { Input, Icon, Button, message  } from 'antd';
 import "./login.scss"
 import http from "./../server"
 import md5 from 'md5'
+import Logo from './../../asset/images/logo.jpg'
 
 export default class Home extends Component {
   constructor(props) {
@@ -29,7 +30,7 @@ export default class Home extends Component {
       return
     }
     let time = Math.floor(new Date().getTime() / 1000);
-    let url = "/api" + "login/loginByEnt?login_name=" + userName + "&time=" + time + "&signature=" + md5(md5(pwd) + time)
+    let url = "/api" + "/login/loginByEnt?login_name=" + userName + "&time=" + time + "&signature=" + md5(md5(pwd) + time)
     http.post(url).then(res => {
       if (res.data.errcode === 0) {
         let targetUrl = res.data.data.url;
@@ -43,15 +44,14 @@ export default class Home extends Component {
     return (
       <div className="loginBox">
         <div className="header">
-          <img alt=""></img>
+          <img  src={Logo} alt=""></img>
         </div>
         <div className="main">
           <div className="left">
 
           </div>
           <div className="loginInput">
-            {/* <h3>定位平台</h3> */}
-            <h3>XXXX</h3>
+            <h3>云集定位平台</h3>
             <Input addonBefore="账号" placeholder="请输入用户名" value={this.state.userName} onChange={this.setUserName}/>
             <Input.Password addonBefore="密码" placeholder="请输入密码" className="password" value={this.state.pwd} onChange={this.setPwd.bind(this)}/>
             <Button type="primary" onClick={this.loginSys}>登 录<Icon type="login" /></Button>
