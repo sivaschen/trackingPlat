@@ -3836,16 +3836,16 @@ ecc-jsbn@~0.1.1:
 
 echarts-for-react@^2.0.15-beta.1:
   version "2.0.15-beta.1"
-  resolved "https://registry.npm.taobao.org/echarts-for-react/download/echarts-for-react-2.0.15-beta.1.tgz#1afa21ee0f08f9023eff0b5ab3351f2fe0f708b6"
-  integrity sha1-Gvoh7g8I+QI+/wtaszUfL+D3CLY=
+  resolved "https://registry.yarnpkg.com/echarts-for-react/-/echarts-for-react-2.0.15-beta.1.tgz#1afa21ee0f08f9023eff0b5ab3351f2fe0f708b6"
+  integrity sha512-wR8XaI3j/4JvTidZrrJVfP/RqSggLRlzKOwcruytyLSA6AyE51T7mK+EucfwZ0NkX8H6tPFCHCvgJH1LyXjiIg==
   dependencies:
     fast-deep-equal "^2.0.1"
     size-sensor "^0.2.0"
 
 echarts@^4.6.0:
   version "4.6.0"
-  resolved "https://registry.npm.taobao.org/echarts/download/echarts-4.6.0.tgz#b5a47a1046cec93ceeef954f9ee54751340558ec"
-  integrity sha1-taR6EEbOyTzu75VPnuVHUTQFWOw=
+  resolved "https://registry.yarnpkg.com/echarts/-/echarts-4.6.0.tgz#b5a47a1046cec93ceeef954f9ee54751340558ec"
+  integrity sha512-xKkcr6v9UVOSF+PMuj7Ngt3bnzLwN1sSXWCvpvX+jYb3mePYsZnABq7wGkPac/m0nV653uGHXoHK8DCKCprdNg==
   dependencies:
     zrender "4.2.0"
 

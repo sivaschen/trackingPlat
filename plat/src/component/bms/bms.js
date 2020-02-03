@@ -63,16 +63,16 @@ export default class Bms extends Component {
                                 <Row className="batteryParamTop batteryRow">
                                         <Col span={8}><span><i className="title">额定容量</i><br/>{data.rated_capacity+"Ah"}</span></Col>
                                         <Col span={8}><span><i className="title">累计放电容量</i><br/>{data.discharge_capacity+"Ah"}</span></Col>
-                                        <Col span={8}><span><i className="title">充放电次数</i><br/>{(data.discharge_count + data.charge_count)+"次"}</span></Col>
+                                        <Col span={8}><span><i className="title">充放电次数</i><br/>{(Number(data.discharge_count) + Number(data.charge_count))+"次"}</span></Col>
                                 </Row>
                                 <Row className="batteryParamMiddle batteryRow">
                                         <Col span={12}><span><i className="title">压差</i><br/>{data.rated_capacity+"mV"}</span></Col>
-                                        <Col span={12}><span><i className="title">电池串数</i><br/>{(data.high_pack_cnt + data.low_pack_cnt)+"串"}</span></Col>
+                                        <Col span={12}><span><i className="title">电池串数</i><br/>{(Number(data.high_pack_cnt) + Number(data.low_pack_cnt))+"串"}</span></Col>
                                 </Row>
                                 <Row className="batteryParamBottom batteryRow">
                                         <Col span={6}><span><i className="title">最高电压</i><br/>{data.max_vol+"mV"}</span></Col>
                                         <Col span={6}><span><i className="title">最低电压</i><br/>{data.min_vol+"mV"}</span></Col>
-                                        <Col span={6}><span><i className="title">最低温度</i><br/>{data.max_temp +"℃"}</span></Col>
+                                        <Col span={6}><span><i className="title">最高温度</i><br/>{data.max_temp +"℃"}</span></Col>
                                         <Col span={6}><span><i className="title">最低温度</i><br/>{data.min_temp+"℃"}</span></Col>
                                 </Row>
                             </Col>
@@ -81,8 +81,8 @@ export default class Bms extends Component {
                                     <span><i className={data.min_temp > 25 ? "red" : "green"}></i>{"均衡板温度 "+data.min_temp+"℃"}</span><br/>
                                     <span><i className={data.min_temp > 25 ? "red" : "green"}></i>{"功率板温度 "+data.min_temp+"℃"}</span><br/>
                                     <span><i className={data.min_temp > 25 ? "red" : "green"}></i>{"环境温度 "+data.min_temp+"℃"}</span><br/>
-                                    <span><i className={data.min_temp > 25 ? "red" : "green"} style={{marginRight:"5px"}}></i>{"T1 "+data.min_temp+"℃"}</span><span style={{marginLeft: '5px'}}><i className={data.min_temp > 25 ? "red" : "green"} style={{marginRight:"5px"}}></i>{"T2 "+data.min_temp+"℃"}</span><br/>
-                                    <span><i className={data.min_temp > 25 ? "red" : "green"} style={{marginRight:"5px"}}></i>{"T3 "+data.min_temp+"℃"}</span><span style={{marginLeft: '5px'}}><i className={data.min_temp > 25 ? "red" : "green"} style={{marginRight:"5px"}}></i>{"T4 "+data.min_temp+"℃"}</span><br/>
+                                    <span><i className={data.min_temp > 25 ? "red" : "green"} style={{marginRight:"5px"}}></i>{"T1 "+data.single_temp1+"℃"}</span><span style={{marginLeft: '5px'}}><i className={data.min_temp > 25 ? "red" : "green"} style={{marginRight:"5px"}}></i>{"T2 "+data.single_temp2+"℃"}</span><br/>
+                                    <span><i className={data.min_temp > 25 ? "red" : "green"} style={{marginRight:"5px"}}></i>{"T3 "+data.single_temp3+"℃"}</span><span style={{marginLeft: '5px'}}><i className={data.min_temp > 25 ? "red" : "green"} style={{marginRight:"5px"}}></i>{"T4 "+data.single_temp4+"℃"}</span><br/>
                             </Col>
                         </Row>
                     </div>

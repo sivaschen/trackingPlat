@@ -4,47 +4,6 @@ import http from './../server'
 import MyForm from './form'
 import "./user.scss"
 const { Option } = Select;
-const deviceColums = [
-    {
-        title: '设备名',
-        dataIndex: 'dev_name',
-        key: 'dev_name',
-      },
-    {
-        title: 'IMEI',
-        dataIndex: 'imei',
-        key: 'imei'
-    },{
-        title: 'Msisdn',
-        dataIndex: 'msisdn',
-        key: 'msisdn'
-    },
-      {
-        title: '设备型号',
-        dataIndex: 'product_type',
-        key: 'product_type',
-      },{
-        title: '导入时间',
-        dataIndex: 'CREATE_TIME',
-        key: 'CREATE_TIME',
-      },{
-        title: '车牌号',
-        dataIndex: 'plateno',
-        key: 'plateno',
-      }
-      ,{
-        title: '操作',
-        dataIndex: '',
-        key: 'plateno',
-        render: (text, record) => (
-            <span>
-              <a>跟踪</a>
-              <Divider type="vertical" />
-              <a>监控</a>
-            </span>
-          )
-      }
-    ];
 
 export default class User extends React.Component {
     constructor(props) {
@@ -63,18 +22,81 @@ export default class User extends React.Component {
             searchValue: '',
             searchDataSource: [],
             searchType: 'device',
-            deviceList: []
+            deviceList: [],
+            deviceColumns: [],
+            ancestors: []
         }
     }
     componentDidMount () {
     	// 调用父组件方法把当前实例传给父组件
-        this.props.onRef('user', this)
+        this.props.onRef('user', this);
+        this.setState({
+            deviceColumns: [
+                {
+                    title: '设备名',
+                    dataIndex: 'dev_name',
+                    key: 'dev_name',
+                  },
+                {
+                    title: 'IMEI',
+                    dataIndex: 'imei',
+                    key: 'imei'
+                },{
+                    title: 'Msisdn',
+                    dataIndex: 'msisdn',
+                    key: 'msisdn'
+                },
+                  {
+                    title: '设备型号',
+                    dataIndex: 'product_type',
+                    key: 'product_type',
+                  },{
+                    title: '导入时间',
+                    dataIndex: 'CREATE_TIME',
+                    key: 'CREATE_TIME',
+                  },{
+                    title: '车牌号',
+                    dataIndex: 'plateno',
+                    key: 'plateno',
+                  }
+                  ,{
+                    title: '操作',
+                    dataIndex: 'action',
+                    key: 'action',
+                    render: (text, record) => (
+                        <span>
+                          <a>跟踪</a>
+                          <Divider type="vertical" />
+                          <a onClick={this.monitorDevice.bind(this, record.dev_id)}>监控</a>
+                        </span>
+                      )
+                  }]
+        })
+    }
+    monitorDevice = (devid) => {
+        this.props.monitorDevice(devid);
     }
     onRef = () => {
         this.props.onRef('user', this)
     }
-    onSearchSelect = () => {
-
+    onSearchSelect = (value) => {
+        let url, data;
+        if (this.state.searchType === "device") {
+            url = "/api" + "/device/searchByImei";
+            data = {
+                imei: value
+            }
+        } else {
+            url = "/api" + "/ent/searchEntByLName";   
+            data = {
+                login_name: value
+            }        
+        }
+        http.get(url, data).then(res => {
+            if (res.data.errcode === 0) {
+                this.props.expandAncestors(res.data.data);
+            }
+        });
     }
     onSearch = searchText => {
         let url, data;
@@ -90,9 +112,10 @@ export default class User extends React.Component {
             }        
         }
         http.get(url, data).then(res => {
-            console.log(res);
             if (res.data.errcode === 0) {
-                let data = res.data
+                this.setState({
+                    searchDataSource: [res.data.data.login_name]
+                })
             }
         });
     }
@@ -230,7 +253,7 @@ export default class User extends React.Component {
                         <Option value="account">账户搜索</Option>
                         <Option value="device">设备搜索</Option>
                     </Select>
-                    <AutoComplete value={this.state.searchValue} dataSource={this.state.searchDataSource} style={{ width: 200 }} onSelect={this.state.onSearchSelect} onSearch={this.onSearch} onChange={this.onSearchChange} placeholder="请输入搜索的关键字"/>
+                    <AutoComplete value={this.state.searchValue} dataSource={this.state.searchDataSource} style={{ width: 200 }} onSelect={this.onSearchSelect} onSearch={this.onSearch} onChange={this.onSearchChange} placeholder="请输入搜索的关键字"/>
                 </div>
                 <div className="accInfo">
                     <h3 className="accountTitle">账户信息:</h3>
@@ -244,7 +267,7 @@ export default class User extends React.Component {
                 </div>
                 <div className="deviceList">
                     <h3>设备列表</h3>
-                    <Table columns={deviceColums} dataSource={this.state.deviceList} rowKey="dev_id" />
+                    <Table columns={this.state.deviceColumns} dataSource={this.state.deviceList} rowKey="dev_id" />
                 </div>
                 <Modal title="添加用户" visible={this.state.visible} onOk={this.addUser} confirmLoading={this.confirmLoading} onCancel={this.cancelAddUser} className="addUser">
                     <Input addonBefore="登录名" className="addUserInput" onChange={this.getNewUserName}/>

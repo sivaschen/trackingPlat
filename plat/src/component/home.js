@@ -19,6 +19,7 @@ export default class Home extends Component {
     this.state = {
       current: '/home/user',
       eid: '',
+      devid: '',
       treeData: [],
       expandedKeys: [],
       autoExpandParent: true,
@@ -29,7 +30,11 @@ export default class Home extends Component {
     }
   }
   componentDidMount () {
-    this.getToken();
+    this.setState({
+      current: this.props.history.location.pathname
+    }, () => {
+      this.getToken();
+    })
   }
   getToken = () => {
     let cookie = document.cookie.split(";");
@@ -73,6 +78,7 @@ export default class Home extends Component {
   }
   onLoadData = treeNode =>
   new Promise((resolve) => {
+    console.log(treeNode);
     if (treeNode.props.children) {
       resolve();
       return;
@@ -100,8 +106,6 @@ export default class Home extends Component {
               let children = await getSubAcc(eid);  
               arr[i].isLeaf = false;            
               arr[i].children = children;
-              console.log(eid)
-              console.log(treeData);
               this.setState({
                 treeData: treeData,
                 expandedKeys: [String(eid)]
@@ -127,8 +131,7 @@ export default class Home extends Component {
   }
 
   onExpand = expandedKeys => {
-    // if not set autoExpandParent to false, if children expanded, parent can not collapse.
-    // or, you can remove all expanded children keys.
+    console.log(expandedKeys)
     this.setState({
       expandedKeys,
       autoExpandParent: false,
@@ -145,7 +148,7 @@ export default class Home extends Component {
   }
   onSelect = (selectedKeys, info) => {
     if (!info.selected) return
-    this.setState({ selectedKeys }, () => {
+    this.setState({ selectedKeys, devid: '' }, () => {
       this.subpage.init();
     });
     
@@ -205,6 +208,43 @@ export default class Home extends Component {
       current: e.key,
     });
   }
+  // 90uuuou
+  expandAncestors = async(data) => {
+    let { treeData } = this.state;
+    let ancestors = data.ancestors;    
+    let children = treeData;
+    let keys = [];
+    for (let j = 0; j < ancestors.length; j++) {
+      keys.push(String(ancestors[j].eid));
+      for (let i = 0; i < children.length; i++) {
+        if (ancestors[j].eid === children[i].eid) {
+          if (children[i].children) {
+            children = children[i].children;
+          } else {
+              children[i].children = await this.getSubAcc(children[i].eid);
+              children = children[i].children; 
+            }
+          break;
+        }        
+      }
+    }
+    console.log(keys);
+    this.setState({
+        treeData: treeData,
+        expandedKeys: keys
+    })
+  }
+  expandEid = obj => {
+    
+  }
+  monitorDevice = (devid) => {
+    this.setState({
+      devid: devid,
+      current: "/home/monitor"
+    }, () => {
+      this.props.history.push("/home/monitor")
+    })
+  }
   logout = () => {
     this.props.history.push("/login");
   }
@@ -258,10 +298,10 @@ export default class Home extends Component {
         <div className="subPage">
           <Switch>
             <Route exact path="/home">
-                <User addNode={this.addNodeCallback} eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} loadTree={this.updateTreeNode} />
+                <User addNode={this.addNodeCallback} eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} loadTree={this.updateTreeNode} monitorDevice={this.monitorDevice} expandAncestors={this.expandAncestors} />
             </Route>
             <Route path="/home/monitor">
-                <Monitor onRef={this.onRef.bind(this)} eid={this.state.selectedKeys[0]} />
+                <Monitor onRef={this.onRef.bind(this)} eid={this.state.selectedKeys[0]} devid={this.state.devid} />
             </Route>
             <Route path="/home/trace">
                 <Trace/>
@@ -273,7 +313,7 @@ export default class Home extends Component {
                 <Bms eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} />
             </Route>
             <Route path="/home/user">
-                <User addNode={this.addNodeCallback} eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} loadTree={this.updateTreeNode} />
+                <User addNode={this.addNodeCallback} eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} loadTree={this.updateTreeNode} monitorDevice={this.monitorDevice} expandAncestors={this.expandAncestors} />
             </Route>
         </Switch>
         </div>

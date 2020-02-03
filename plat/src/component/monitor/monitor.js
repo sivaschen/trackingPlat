@@ -47,6 +47,7 @@ export default class Monitor extends Component {
   changeLabel = e => {
     let content = e.target.content;
     let point = e.target.getPosition();
+    this.map.panTo(point);
     let heartTime = tool.formatTimestamp(content.heart_time || content.sys_time);
     let gpsTime = tool.formatTimestamp(content.gps_time);
     let label = new window.BMap.Label('<span>速 度：'+content.speed+' km/h</span><br/><span>GPS：'+ gps_status[content.gps_status]+'</span><br/><span>ACC:'+ acc_status[content.acc_status] +'</span><br/><span>定位时间：'+ gpsTime +'</span><br/><span>心跳时间：'+ heartTime+'</span><br/>', {
@@ -72,7 +73,7 @@ export default class Monitor extends Component {
     }) 
   }
   getLocationByAccount = (newAccount) => {
-    console.log(newAccount);
+    console.log(this.props.devid)
     const url = "/api" + "/ent/getRunInfoByEid";
     let data = {
       eid: this.props.eid
@@ -87,18 +88,32 @@ export default class Monitor extends Component {
           let icon = new window.BMap.Icon(car, new window.BMap.Size(50,50));
           let marker = new window.BMap.Marker(point, {icon: icon});  // 创建标注
           marker.content = item;
-          if (!this.state.selectedMarker && (i === 0)) {
-            selectedMarker = marker;
-            this.map.panTo(point);
-            this.updateLabel(marker);
-            this.geoc.getLocation(point, (rs)=> {
-              var addComp = rs.addressComponents;
-              this.setState({
-                parsedAddress: addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber,
-                deviceId: item.devid
-              })
-            }); 
-          } else if (this.state.selectedMarker && this.state.selectedMarker.content.devid === item.devid) {
+          if (!this.state.selectedMarker) {
+            if (this.props.devid && this.props.devid === item.devid) {
+              console.log(item.devid)
+              selectedMarker = marker;
+              this.map.panTo(point);
+              this.updateLabel(marker);
+              this.geoc.getLocation(point, (rs)=> {
+                var addComp = rs.addressComponents;
+                this.setState({
+                  parsedAddress: addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber,
+                  deviceId: item.devid
+                })
+              }); 
+            } else if (i === 0) {
+              selectedMarker = marker;
+              this.map.panTo(point);
+              this.updateLabel(marker);
+              this.geoc.getLocation(point, (rs)=> {
+                var addComp = rs.addressComponents;
+                this.setState({
+                  parsedAddress: addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber,
+                  deviceId: item.devid
+                })
+              }); 
+            }
+          } else if (this.state.selectedMarker.content.devid === item.devid) {
             this.updateLabel(marker);    
           }
 
