@@ -2,17 +2,41 @@ import {
     Form,
     Input,
     Button,
-    message
+    message,
+    Select
   } from 'antd';
   import React from 'react';
 import http from '../server';
+import './form.scss'
   
-    
+  const {Option} = Select;
   class accountForm extends React.Component {
     constructor (props) {
       super(props);
       this.state = {
+        showBmsControl: false
       };
+    }
+    componentWillReceiveProps() {
+      let cookie = document.cookie.split(";");
+      let cookieParms = {}
+      cookie.forEach(item => {
+        let objArr = item.split("=");
+        cookieParms[objArr[0].trim()] = objArr[1];
+      })
+      let access_token = cookieParms.access_token;
+      let eidLen = parseInt(access_token.substr(3, 2));
+      let eid = access_token.substr(5, eidLen);
+
+      if (this.props.account.eid === Number(eid)){
+        this.setState({
+          showBmsControl:false
+        })
+      } else {
+        this.setState({
+          showBmsControl:true
+        })
+      }
     }
     handleSubmit = e => {
       e.preventDefault();
@@ -22,14 +46,18 @@ import http from '../server';
         }
       });
     };
+    handleSelectChange = e => {
+      console.log(e)
+    }
     saveAccountInfo = (values) => {
-      const url = "/api" + "/ent/updateEnt";
+      const url = "http://webbo.yunjiwulian.com" + "/ent/updateEnt";
       let data = {
         pid: this.props.account.pid,
         eid: this.props.account.eid,
         phone: values.phone,
         addr: values.addr,
-        email: values.email
+        email: values.email,
+        permission: values.permission
       }
       http.get(url, data).then(res => {
         if (res.data.errcode === 0) {
@@ -82,7 +110,7 @@ import http from '../server';
           <Form.Item label="联系电话">
             {getFieldDecorator('phone', {
             })(<Input />)}
-          </Form.Item>
+          </Form.Item>          
           <Form.Item label="E-mail">
             {getFieldDecorator('email', {
               rules: [
@@ -92,6 +120,14 @@ import http from '../server';
                 }
               ],
             })(<Input />)}
+          </Form.Item>
+          <Form.Item label="BMS权限" style={{width: "230px"}} className={this.state.showBmsControl ? 'show' : "hide"} labelCol={{  
+          xs: { span: 8 },
+          sm: { span:8 }}}  wrapperCol={{ xs: { span: 16 }, sm: { span: 16 }}} >
+            {getFieldDecorator('permission')(<Select placeholder="BMS权限" onChange={this.handleSelectChange}>
+              <Option value="1">开启</Option>
+              <Option value="0">关闭</Option>
+            </Select>)}
           </Form.Item>
           <Form.Item {...tailFormItemLayout}>
             <Button type="primary" htmlType="submit">
@@ -117,6 +153,9 @@ import http from '../server';
       }),
       email: Form.createFormField({
         value: props.account.email,
+      }),
+      permission: Form.createFormField({
+        value: props.account.permission
       }),
     };
   } })(accountForm);

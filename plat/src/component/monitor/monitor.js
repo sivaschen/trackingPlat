@@ -12,6 +12,10 @@ const acc_status = {
   0: "关闭",
   1: "开启"
 }
+const dev_status = {
+  offline: '离线',
+  online: '在线'
+}
 export default class Monitor extends Component {
   constructor(props) {
     super(props)
@@ -50,7 +54,12 @@ export default class Monitor extends Component {
     this.map.panTo(point);
     let heartTime = tool.formatTimestamp(content.heart_time || content.sys_time);
     let gpsTime = tool.formatTimestamp(content.gps_time);
-    let label = new window.BMap.Label('<span>速 度：'+content.speed+' km/h</span><br/><span>GPS：'+ gps_status[content.gps_status]+'</span><br/><span>ACC:'+ acc_status[content.acc_status] +'</span><br/><span>定位时间：'+ gpsTime +'</span><br/><span>心跳时间：'+ heartTime+'</span><br/>', {
+    let str = '<span>速 度：'+content.speed+' km/h</span><br/><span>GPS：'+ gps_status[content.gps_status]+'</span><br/><span>ACC:'+ acc_status[content.acc_status] +'</span><br/><span>定位时间：'+ gpsTime +'</span><br/><span>心跳时间：'+ heartTime+'</span><br/>' + '<span>状态：'+ dev_status[content.dev_status] +'</span><br/>';
+    if (content.dev_status === 'offline') {
+      let offlineTime = this.formatTimeSpan(content.offline_time);
+      str += '<span>离线时长：'+ offlineTime +'</span><br/>'
+    }
+    let label = new window.BMap.Label(str, {
       offset: new window.BMap.Size(40, -65)
     })
     label.setStyle({
@@ -73,8 +82,7 @@ export default class Monitor extends Component {
     }) 
   }
   getLocationByAccount = (newAccount) => {
-    console.log(this.props.devid)
-    const url = "/api" + "/ent/getRunInfoByEid";
+    const url = "http://webbo.yunjiwulian.com" + "/ent/getRunInfoByEid";
     let data = {
       eid: this.props.eid
     }
@@ -88,9 +96,18 @@ export default class Monitor extends Component {
           let icon = new window.BMap.Icon(car, new window.BMap.Size(50,50));
           let marker = new window.BMap.Marker(point, {icon: icon});  // 创建标注
           marker.content = item;
+          if (newAccount) {
+            marker.setRotation(item.course);
+            marker.addEventListener("click", this.changeLabel)
+            markers[item.devid] = marker;
+            this.map.addOverlay(marker);
+          } else {
+            markers[item.devid].setPosition(point);
+            markers[item.devid].setRotation(item.course);    
+            markers[item.devid].content = item;      
+          }
           if (!this.state.selectedMarker) {
             if (this.props.devid && this.props.devid === item.devid) {
-              console.log(item.devid)
               selectedMarker = marker;
               this.map.panTo(point);
               this.updateLabel(marker);
@@ -101,7 +118,7 @@ export default class Monitor extends Component {
                   deviceId: item.devid
                 })
               }); 
-            } else if (i === 0) {
+            } else if (!this.props.devid && i === 0) {
               selectedMarker = marker;
               this.map.panTo(point);
               this.updateLabel(marker);
@@ -114,19 +131,10 @@ export default class Monitor extends Component {
               }); 
             }
           } else if (this.state.selectedMarker.content.devid === item.devid) {
-            this.updateLabel(marker);    
+            this.updateLabel(markers[item.devid]);
           }
 
-          if (newAccount) {
-            marker.setRotation(item.course);
-            marker.addEventListener("click", this.changeLabel)
-            markers[item.devid] = marker;
-            this.map.addOverlay(marker);
-          } else {
-            markers[item.devid].setPosition(point);
-            markers[item.devid].setRotation(item.course);
-            
-          }
+          
         }
         let timer = setTimeout(() => {
           this.getLocationByAccount(false);
@@ -140,7 +148,7 @@ export default class Monitor extends Component {
     })
   }
   getDeviceList = () => {
-    const url = "/api" + "/ent/getSubDeviceInfo"
+    const url = "http://webbo.yunjiwulian.com" + "/ent/getSubDeviceInfo"
     let data = {
         eid: this.props.eid
     }
@@ -155,22 +163,56 @@ export default class Monitor extends Component {
         }
     })
   }
+  formatTimeSpan = (time) => {
+    console.log(time);
+    let str = "";
+    if ((time/(24*3600)) > 1) {
+      str += parseInt(time / (24*3600)) + '天';
+    }
+    let hour = time % (24*3600);
+    console.log(hour);
+    if ((hour/3600) > 1) {
+      str += parseInt(hour / 3600) + '小时';
+    }
+    let minute = hour % 3600;
+    console.log(minute);
+
+    if ((minute/60) > 1) {
+      str += parseInt(minute / 60) + '分钟';
+    }
+    let second = minute % 60;
+    console.log(second);
+
+      str += parseInt(second) + '秒';
+    return str
+  }
   updateLabel = marker => {
     let content = marker.content;
     let heartTime = tool.formatTimestamp(content.heart_time || content.sys_time);
     let gpsTime = tool.formatTimestamp(content.gps_time);
     let point = marker.getPosition();
-    let label = new window.BMap.Label('<span>速 度：'+content.speed+' km/h</span><br/><span>GPS：'+ gps_status[content.gps_status]+'</span><br/><span>ACC:'+ acc_status[content.acc_status] +'</span><br/><span>定位时间：'+ gpsTime +'</span><br/><span>心跳时间：'+ heartTime+'</span><br/>', {
-      offset: new window.BMap.Size(40, -65)
-    })
-    label.setStyle({
-      fontSize : "12px",
-      fontFamily:"微软雅黑",
-      padding: '5px',
-      borderColor: 'black',
-      borderRadius: "5px"
-    });
-    marker.setLabel(label);
+    let str = '<span>速 度：'+content.speed+' km/h</span><br/><span>GPS：'+ gps_status[content.gps_status]+'</span><br/><span>ACC:'+ acc_status[content.acc_status] +'</span><br/><span>定位时间：'+ gpsTime +'</span><br/><span>心跳时间：'+ heartTime+'</span><br/>' + '<span>状态：'+ dev_status[content.dev_status] +'</span><br/>';
+    if (content.dev_status === 'offline') {
+      let offlineTime = this.formatTimeSpan(content.offline_time);
+      str += '<span>离线时长：'+ offlineTime +'</span><br/>'
+    }
+    let label = marker.getLabel();
+    if (label) {
+      label.setContent(str);
+    } else {
+      let firstLabel = new window.BMap.Label(str, {
+        offset: new window.BMap.Size(40, -65)
+      })
+      firstLabel.setStyle({
+        fontSize : "12px",
+        fontFamily:"微软雅黑",
+        padding: '5px',
+        borderColor: 'black',
+        borderRadius: "5px"
+      });
+      marker.setLabel(firstLabel);
+    }
+    
     this.geoc.getLocation(point, rs => {
       var addComp = rs.addressComponents;
       this.setState({
@@ -179,7 +221,7 @@ export default class Monitor extends Component {
     })
   }
   getLocation = () => {
-    const url = "/api" + "/device/getRunInfoByDevid";
+    const url = "http://webbo.yunjiwulian.com" + "/device/getRunInfoByDevid";
     let data = {
       dev_id: this.state.deviceId
     }
