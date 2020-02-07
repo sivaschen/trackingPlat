@@ -29,7 +29,13 @@ export default class Home extends Component {
       }
     }
   }
+
   componentDidMount () {
+    this.props.history.listen(()=>{
+      if (this.props.history.location.pathname === "/home/user") {
+        
+      }
+    })
     this.setState({
       current: this.props.history.location.pathname
     }, () => {
@@ -65,8 +71,7 @@ export default class Home extends Component {
                 selectedKeys: [String(eid)]
               }, () => {
                 this.subpage.init();
-              })
-              
+              })              
             }
           })
         })
@@ -129,7 +134,6 @@ export default class Home extends Component {
 
 
   }
-
   onExpand = expandedKeys => {
     console.log(expandedKeys)
     this.setState({
@@ -228,14 +232,13 @@ export default class Home extends Component {
         }        
       }
     }
-    console.log(keys);
     this.setState({
         treeData: treeData,
-        expandedKeys: keys
+        expandedKeys: keys,
+        selectedKeys: [String(ancestors[ancestors.length - 1].eid)]
+    }, () => {
+      this.subpage.init();
     })
-  }
-  expandEid = obj => {
-    
   }
   monitorDevice = (devid) => {
     this.setState({
@@ -264,23 +267,9 @@ export default class Home extends Component {
             <Menu.Item key="/home/monitor">              
               <NavLink to="/home/monitor"><Icon type="environment" />监控</NavLink>              
             </Menu.Item>
-            <SubMenu
-              title={
-                <span className="submenu-title-wrapper">
-                  <Icon type="setting" />
-                  其他功能
-                </span>
-              }
-            >
-              <Menu.ItemGroup title="Item 1">
-                <Menu.Item key="setting:1"><NavLink to="/home/bms"><Icon type="api" />电池管理</NavLink></Menu.Item>
-                <Menu.Item key="setting:2">Option 2</Menu.Item>
-              </Menu.ItemGroup>
-              <Menu.ItemGroup title="Item 2">
-                <Menu.Item key="setting:3">Option 3</Menu.Item>
-                <Menu.Item key="setting:4">Option 4</Menu.Item>
-              </Menu.ItemGroup>
-            </SubMenu>
+            <Menu.Item key="/home/bms">              
+              <NavLink to="/home/bms"><Icon type="api" />电池管理</NavLink>              
+            </Menu.Item>
           </Menu>
         </div>     
         <div className="tree">

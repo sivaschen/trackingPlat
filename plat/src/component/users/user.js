@@ -28,7 +28,8 @@ export default class User extends React.Component {
         }
     }
     componentDidMount () {
-    	// 调用父组件方法把当前实例传给父组件
+        // 调用父组件方法把当前实例传给父组件
+        
         this.props.onRef('user', this);
         this.setState({
             deviceColumns: [
@@ -71,8 +72,13 @@ export default class User extends React.Component {
                         </span>
                       )
                   }]
+        }, () => {
+        if (this.props.eid) {
+            this.init();
+        }
         })
     }
+
     monitorDevice = (devid) => {
         this.props.monitorDevice(devid);
     }
@@ -248,11 +254,12 @@ export default class User extends React.Component {
                 this.getDeviceList();
             })
         } else {
+        console.log('aaaaa')
+
             message.error("获取账户信息失败");
         }
         })
     }
-
     render () {       
         return (
             <div className="user">
