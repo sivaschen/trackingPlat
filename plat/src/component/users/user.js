@@ -88,12 +88,12 @@ export default class User extends React.Component {
     onSearchSelect = (value) => {
         let url, data;
         if (this.state.searchType === "device") {
-            url = "http://webbo.yunjiwulian.com" + "/device/searchByImei";
+            url = "/api" + "/device/searchByImei";
             data = {
                 imei: value
             }
         } else {
-            url = "http://webbo.yunjiwulian.com" + "/ent/searchEntByLName";   
+            url = "/api" + "/ent/searchEntByLName";   
             data = {
                 login_name: value
             }        
@@ -107,12 +107,12 @@ export default class User extends React.Component {
     onSearch = searchText => {
         let url, data;
         if (this.state.searchType === "device") {
-            url = "http://webbo.yunjiwulian.com" + "/device/searchByImei";
+            url = "/api" + "/device/searchByImei";
             data = {
                 imei: searchText.trim()
             }
         } else {
-            url = "http://webbo.yunjiwulian.com" + "/ent/searchEntByLName";   
+            url = "/api" + "/ent/searchEntByLName";   
             data = {
                 login_name: searchText
             }        
@@ -146,7 +146,7 @@ export default class User extends React.Component {
     }
     deleteSubAccount = () => {
         let eid = this.props.eid;
-        const url = "http://webbo.yunjiwulian.com" + "/ent/deleteEnt"
+        const url = "/api" + "/ent/deleteEnt"
         let data = {
             eid
         }
@@ -160,7 +160,7 @@ export default class User extends React.Component {
         })
     }
     addUser = () => {
-        const url = "http://webbo.yunjiwulian.com" + "/ent/addEnt";
+        const url = "/api" + "/ent/addEnt";
         let data = {
             pid: this.state.account.eid,
             login_name: this.state.newUserName,
@@ -225,7 +225,7 @@ export default class User extends React.Component {
         })
     }
     getDeviceList () {
-        const url = "http://webbo.yunjiwulian.com" + "/ent/getSubDeviceInfo"
+        const url = "/api" + "/ent/getSubDeviceInfo"
         let data = {
             eid: this.state.eid
         }
@@ -243,7 +243,7 @@ export default class User extends React.Component {
     }
     init = () => {
         let eid = this.props.eid;
-        let url = "http://webbo.yunjiwulian.com" + "/ent/getEntInfoByEid";
+        let url = "/api" + "/ent/getEntInfoByEid";
         http.get(url, {eid: eid}).then((res) => {
         if (res.data.errcode === 0) {
             let data = res.data.data;

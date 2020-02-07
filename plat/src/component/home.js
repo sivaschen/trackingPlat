@@ -55,7 +55,7 @@ export default class Home extends Component {
     if (eid == 8888) {
       eid = 10000
     }
-    let url = "http://webbo.yunjiwulian.com" + "/ent/getEntInfoByEid";
+    let url = "/api" + "/ent/getEntInfoByEid";
     http.get(url, {eid: eid}).then((res) => {
       if (res.data.errcode === 0) {
         let data = res.data.data;
@@ -169,7 +169,7 @@ export default class Home extends Component {
       return <TreeNode key={item.key} {...item} dataRef={item} />;
   });
   getSubAcc = (eid) => {    
-    let url = "http://webbo.yunjiwulian.com" + "/ent/getEntChildrenByEid";
+    let url = "/api" + "/ent/getEntChildrenByEid";
     return http.get(url, {eid: eid}).then(res => {
       if (res.data.errcode === 0) {
         let data = res.data.data;

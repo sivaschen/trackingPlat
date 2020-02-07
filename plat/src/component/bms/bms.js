@@ -200,7 +200,7 @@ export default class Bms extends Component {
 
     getBms = (dev_id, dev_name) => {
         console.log(dev_id);
-        const url = "http://webbo.yunjiwulian.com/device/getBmsInfoByDevid";
+        const url = "/api/device/getBmsInfoByDevid";
         let data = {
             dev_id: 44
         }
@@ -254,7 +254,7 @@ export default class Bms extends Component {
         })
     }
     getDeviceList = () => {
-        const url = "http://webbo.yunjiwulian.com" + "/ent/getSubDeviceInfo";
+        const url = "/api" + "/ent/getSubDeviceInfo";
         let data = {
             eid: this.props.eid
         }

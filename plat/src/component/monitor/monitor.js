@@ -4,6 +4,7 @@ import http from './../server.js'
 import { List, message } from 'antd'
 import car from './../../asset/images/car.png'
 import tool from './../../asset/js/util.js'
+import { Map, Marker, APILoader, Label } from '@uiw/react-baidu-map';
 const gps_status = {
   0: "未定位",
   1: "已定位"
@@ -25,8 +26,9 @@ export default class Monitor extends Component {
       location: {},
       timer: null,
       selectedMarker: null,
-      markers: {},
-      parsedAddress: ''
+      markers: [],
+      parsedAddress: '',
+      markerIndex: 0
     }
   }
   init = () => {
@@ -43,7 +45,16 @@ export default class Monitor extends Component {
   componentDidMount () {
     // 调用父组件方法把当前实例传给父组件
     this.props.onRef('monitor', this);
-    this.getCurrrentLocation();
+    this.init();
+  }
+  labelCmdClick = (e) => {
+    console.log(e)
+    this.getCmdList();
+  }
+  componentDidUpdate () {
+    if(document.getElementsByClassName('labelCmd')[0]) {
+      document.getElementsByClassName('labelCmd')[0].addEventListener('click', this.labelCmdClick);
+    }
   }
   onRef = () => {
       this.props.onRef('monitor', this);
@@ -82,73 +93,27 @@ export default class Monitor extends Component {
     }) 
   }
   getLocationByAccount = (newAccount) => {
-    const url = "http://webbo.yunjiwulian.com" + "/ent/getRunInfoByEid";
+    const url = "/api" + "/ent/getRunInfoByEid";
     let data = {
       eid: this.props.eid
     }
     http.get(url, data).then(res => {
       if (res.data.errcode === 0) {
         let data = res.data.data;
-        let { markers, selectedMarker } = this.state;
-        for (let i = 0; i < data.length; i++) {          
-          let item = data[i];
-          let point = new window.BMap.Point(item.longitude / 1000000, item.latitude / 1000000);
-          let icon = new window.BMap.Icon(car, new window.BMap.Size(50,50));
-          let marker = new window.BMap.Marker(point, {icon: icon});  // 创建标注
-          marker.content = item;
-          if (newAccount) {
-            marker.setRotation(item.course);
-            marker.addEventListener("click", this.changeLabel)
-            markers[item.devid] = marker;
-            this.map.addOverlay(marker);
-          } else {
-            markers[item.devid].setPosition(point);
-            markers[item.devid].setRotation(item.course);    
-            markers[item.devid].content = item;      
-          }
-          if (!this.state.selectedMarker) {
-            if (this.props.devid && this.props.devid === item.devid) {
-              selectedMarker = marker;
-              this.map.panTo(point);
-              this.updateLabel(marker);
-              this.geoc.getLocation(point, (rs)=> {
-                var addComp = rs.addressComponents;
-                this.setState({
-                  parsedAddress: addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber,
-                  deviceId: item.devid
-                })
-              }); 
-            } else if (!this.props.devid && i === 0) {
-              selectedMarker = marker;
-              this.map.panTo(point);
-              this.updateLabel(marker);
-              this.geoc.getLocation(point, (rs)=> {
-                var addComp = rs.addressComponents;
-                this.setState({
-                  parsedAddress: addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber,
-                  deviceId: item.devid
-                })
-              }); 
-            }
-          } else if (this.state.selectedMarker.content.devid === item.devid) {
-            this.updateLabel(markers[item.devid]);
-          }
-
-          
-        }
+        let markers = data;
+        
         let timer = setTimeout(() => {
           this.getLocationByAccount(false);
         }, 4000)
         this.setState({
-          timer,
-          selectedMarker,
-          markers
+          markers,
+          timer
         })
       }
     })
   }
   getDeviceList = () => {
-    const url = "http://webbo.yunjiwulian.com" + "/ent/getSubDeviceInfo"
+    const url = "/api" + "/ent/getSubDeviceInfo"
     let data = {
         eid: this.props.eid
     }
@@ -157,14 +122,12 @@ export default class Monitor extends Component {
           this.setState({
             deviceList: res.data.data.records
           }, () => {
-            this.map.clearOverlays(); 
             this.getLocationByAccount(true);
           })
         }
     })
   }
   formatTimeSpan = (time) => {
-    console.log(time);
     let str = "";
     if ((time/(24*3600)) > 1) {
       str += parseInt(time / (24*3600)) + '天';
@@ -185,43 +148,10 @@ export default class Monitor extends Component {
 
       str += parseInt(second) + '秒';
     return str
-  }
-  updateLabel = marker => {
-    let content = marker.content;
-    let heartTime = tool.formatTimestamp(content.heart_time || content.sys_time);
-    let gpsTime = tool.formatTimestamp(content.gps_time);
-    let point = marker.getPosition();
-    let str = '<span>速 度：'+content.speed+' km/h</span><br/><span>GPS：'+ gps_status[content.gps_status]+'</span><br/><span>ACC:'+ acc_status[content.acc_status] +'</span><br/><span>定位时间：'+ gpsTime +'</span><br/><span>心跳时间：'+ heartTime+'</span><br/>' + '<span>状态：'+ dev_status[content.dev_status] +'</span><br/>';
-    if (content.dev_status === 'offline') {
-      let offlineTime = this.formatTimeSpan(content.offline_time);
-      str += '<span>离线时长：'+ offlineTime +'</span><br/>'
-    }
-    let label = marker.getLabel();
-    if (label) {
-      label.setContent(str);
-    } else {
-      let firstLabel = new window.BMap.Label(str, {
-        offset: new window.BMap.Size(40, -65)
-      })
-      firstLabel.setStyle({
-        fontSize : "12px",
-        fontFamily:"微软雅黑",
-        padding: '5px',
-        borderColor: 'black',
-        borderRadius: "5px"
-      });
-      marker.setLabel(firstLabel);
-    }
-    
-    this.geoc.getLocation(point, rs => {
-      var addComp = rs.addressComponents;
-      this.setState({
-        parsedAddress: addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber
-      })
-    })
-  }
+  };
+ 
   getLocation = () => {
-    const url = "http://webbo.yunjiwulian.com" + "/device/getRunInfoByDevid";
+    const url = "/api" + "/device/getRunInfoByDevid";
     let data = {
       dev_id: this.state.deviceId
     }
@@ -235,33 +165,11 @@ export default class Monitor extends Component {
       }
     })
   }
-  getCurrrentLocation = () => {
-    if (navigator.geolocation){
-      navigator.geolocation.getCurrentPosition((obj) => {
-        this.setState({
-          location:obj.coords
-        }, () => {
-          this.renderMap();
-        })
-      }, (error) => {
-        switch(error.code)
-        {
-        case error.PERMISSION_DENIED:
-          message.error("定位信息获取失败")
-          break;
-        case error.POSITION_UNAVAILABLE:
-          message.error("定位信息获取失败")
-          break;
-        case error.TIMEOUT:
-          message.error("定位信息获取失败")
-          break;
-        case error.UNKNOWN_ERROR:
-          message.error("定位信息获取失败")
-          break;
-        }
-        this.renderMap();
-      }); 
-    }
+  getCmdList = () => {
+    const url = "/api" + "/device/getCmdListByType?product_type=yj03";
+    http.get(url).then(res => {
+      console.log(res)
+    })
   }
   selectDevice = (devId) => {
     let {markers} = this.state;
@@ -270,16 +178,38 @@ export default class Monitor extends Component {
       target: marker
     })
   }
-  renderMap = () => {
-    this.map = new window.BMap.Map("map");
-    this.map.centerAndZoom(new window.BMap.Point(this.state.location.longitude || 116.404, this.state.location.latitude ||39.915), 11); // 初始化地图,设置中心点坐标和地图级别
-    this.map.addControl(new window.BMap.MapTypeControl()); //添加地图类型控件
-    this.map.enableScrollWheelZoom();
-    this.geoc = new window.BMap.Geocoder();  
-    this.init(); 
+  renderMarker = (marker) => {
+    let icon = new window.BMap.Icon(car, new window.BMap.Size(50,50));
+    return <Marker key={marker.devid} icon={icon} position={{lng: marker.longitude / 1000000, lat: marker.latitude / 1000000}} rotation={marker.course} />
+  }
+  renderLabel = () => {
+    const {markers, markerIndex} = this.state;
+    let marker = markers[markerIndex];
+    let position = {lng: marker.longitude / 1000000, lat: marker.latitude / 1000000};
+    let heartTime = tool.formatTimestamp(marker.heart_time || marker.sys_time);
+    let gpsTime = tool.formatTimestamp(marker.gps_time);
+    let labelContent = '<span>速 度：'+marker.speed+' km/h</span><br/><span>GPS：'+ gps_status[marker.gps_status]+'</span><br/><span>ACC:'+ acc_status[marker.acc_status] +'</span><br/><span>定位时间：'+ gpsTime +'</span><br/><span>心跳时间：'+ heartTime+'</span><br/>' + '<span>状态：'+ dev_status[marker.dev_status] +'</span><br/>'
+    
+    if (marker.dev_status === 'offline') {
+      let offlineTime = this.formatTimeSpan(marker.offline_time);
+      labelContent += '<span>离线时长：'+ offlineTime +'</span><br/>'
+    }
+    labelContent += '<a class="labelCmd">指令</a>'
+    return <Label position={ position } 
+    content={labelContent}
+    style={{fontSize : "12px",
+    fontFamily:"微软雅黑",
+    padding: '5px',
+    borderColor: 'black',
+    borderRadius: "5px"}} offset={new window.BMap.Size(40, -65)} onClick={this.clickLabel} />
   }
   render() {
-    let {selectedMarker} = this.state;
+    let { markers, markerIndex } = this.state;
+    let center = {};
+    if (markers.length) {
+      center = {lng: markers[markerIndex].longitude / 1000000, lat: markers[markerIndex].latitude / 1000000}
+
+    }
     return (      
       <div className="monitor">
         <div className="deviceList">
@@ -291,7 +221,16 @@ export default class Monitor extends Component {
         </div>
         <div className="mapBox">
           <div className="parseAddress">{this.state.parsedAddress}</div>
-          <div id="map"></div>
+          <div id="map" >
+            <APILoader akay="MwFWKXwW1eu3Rxtyh8jos8Vc64QAlvtl">
+              <Map widget={['NavigationControl']} autoLocalCity enableScrollWheelZoom center={center}>
+                {markers.map(marker => {
+                  return this.renderMarker(marker)
+                })}
+                {markers.length && this.renderLabel()}
+              </Map>
+            </APILoader>
+          </div>
         </div>
       </div>
     )
