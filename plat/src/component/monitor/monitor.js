@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './monitor.scss'
 import http from './../server.js'
-import { List, message, Modal, Select, Input, Button } from 'antd'
+import { List, message, Modal, Select, Input, Button, Spin } from 'antd'
 import car from './../../asset/images/car.png'
 import tool from './../../asset/js/util.js'
 import cmd from './cmd.js'
@@ -33,7 +33,9 @@ export default class Monitor extends Component {
       cmdVisible: false,
       cmdList: [],
       selectedCmd: {},
-      cmdInput: ''
+      cmdInput: '',
+      loading: false,
+      cmdResponse: ''
     }
   }
   init = () => {
@@ -73,7 +75,7 @@ export default class Monitor extends Component {
       let offlineTime = this.formatTimeSpan(content.offline_time);
       str += '<span>离线时长：'+ offlineTime +'</span><br/>'
     }
-    str +=  '<a class="labelCmd">指令</a>';
+    str +=  '<a class="labelCmd" data-type='+ content.product_type +'>指令</a>';
     let label = new window.BMap.Label(str, {
       offset: new window.BMap.Size(40, -65)
     })
@@ -97,6 +99,7 @@ export default class Monitor extends Component {
     }) 
   }
   getLocationByAccount = (newAccount) => {
+    let {deviceList} = this.state;
     const url = "/api" + "/ent/getRunInfoByEid";
     let data = {
       eid: this.props.eid
@@ -107,6 +110,11 @@ export default class Monitor extends Component {
         let { markers, selectedMarker } = this.state;
         for (let i = 0; i < data.length; i++) {          
           let item = data[i];
+          for (let j = 0; j < deviceList.length; j++) {
+            if (item.dev_id === deviceList[j].devid) {
+              item.product_type = deviceList[i].product_type;
+            }           
+          }
           let point = new window.BMap.Point(item.longitude / 1000000, item.latitude / 1000000);
           let icon = new window.BMap.Icon(car, new window.BMap.Size(30,30));
           let marker = new window.BMap.Marker(point, {icon: icon});  // 创建标注
@@ -205,7 +213,7 @@ export default class Monitor extends Component {
       let offlineTime = this.formatTimeSpan(content.offline_time);
       str += '<span>离线时长：'+ offlineTime +'</span><br/>'
     }
-    str +=  '<a class="labelCmd">指令</a>'
+    str +=  '<a class="labelCmd" data-type='+ content.product_type +'>指令</a>';
     let label = marker.getLabel();
     if (label) {
       label.setContent(str);
@@ -232,12 +240,18 @@ export default class Monitor extends Component {
   }
   handleCmdCancel = () => {
     this.setState({
-      cmdVisible: false
+      cmdVisible: false,
+      cmdResponse: '',
+      selectedCmd: {},
+      cmdList: []
     })
   }
   handleCmdOK = () => {
     this.setState({
-      cmdVisible: false
+      cmdVisible: false,
+      cmdResponse: '',
+      selectedCmd: {},
+      cmdList: []
     })
   }
   getLocation = () => {
@@ -255,13 +269,13 @@ export default class Monitor extends Component {
       }
     })
   }
-  getCmdList = () => {
+  getCmdList = (e) => {
+    let product_type = e.target.getAttribute("data-type");
     const url = "/api" + "/device/getCmdListByType";
     let data = {
-      product_type: "yj03"
+      product_type: product_type
     }
     http.get(url,data).then(res => {
-      console.log(res)
       if(res.data.errcode === 0) {
         this.setState({
           cmdVisible: true,
@@ -316,7 +330,7 @@ export default class Monitor extends Component {
     })
   }
   renderInputCmd = () => {
-    const { selectedCmd } = this.state;
+    const { selectedCmd, cmdResponse } = this.state;
     let inputType = cmd[selectedCmd.cmd_id].type;
     let str;
     switch (inputType) {
@@ -338,6 +352,7 @@ export default class Monitor extends Component {
         <span className="cmdName">{selectedCmd.name}</span>
           {str}
           <Button type="primary" onClick={this.sendCmd}>发送</Button>
+          <div className="cmdResult"><span style={{fontWeight:'bolder'}}>指令结果：</span>{cmdResponse}</div>
       </div>
     )
   }
@@ -362,14 +377,37 @@ export default class Monitor extends Component {
       cmd_content: cmd_content 
     }
     http.get(url, data).then(res => {
-      console.log(res);
       if (res.data.errcode === 0) {
-        this.getCmdResult()
+        message.success("指令已发送，请等待");
+        this.setState({
+          loading:true
+        }, () => {
+          this.getCmdResult(res.data.data.id)
+        })
       }
     })
   }
   getCmdResult = (id) => {
-
+    const url = "/api" + "/device/getCmdRsp";
+    let data = {
+      id: 66 // id
+    }
+      http.get(url, data).then(res => {
+        this.setState({
+          loading:false
+        },() => {
+          if (res.data.errcode === 0) {
+            message.success("指令已执行。")
+            this.setState({
+              cmdResponse: res.data.data.response
+            })
+          } else {
+            message.error(res.data.message)
+          }
+        })
+        
+     })
+    
   }
   renderMap = () => {
     this.map = new window.BMap.Map("map");
@@ -394,14 +432,18 @@ export default class Monitor extends Component {
           <div className="parseAddress">{this.state.parsedAddress}</div>
           <div id="map"></div>
         </div>
-        <Modal title="发送指令" visible={this.state.cmdVisible} onOk={this.handleCmdOK} onCancel={this.handleCmdCancel}>
-          <Select onChange={this.cmdChange} style={{minWidth: "130px"}} placeholder="请选择指令">
-            {this.state.cmdList.map((cmd, index) => {
-              return <Option value={cmd.cmd_id} key={cmd.cmd_id}>{cmd.name}</Option>
-            })}
-          </Select>
-            {this.state.selectedCmd.cmd_id && this.renderInputCmd()}         
-        </Modal>
+          <Modal title="发送指令" visible={this.state.cmdVisible} onOk={this.handleCmdOK} onCancel={this.handleCmdCancel}>
+        <Spin spinning={this.state.loading} tip="获取指令结果">
+            <Select onChange={this.cmdChange} style={{minWidth: "130px"}} placeholder="请选择指令">
+              {this.state.cmdList.map((cmd, index) => {
+                return <Option value={cmd.cmd_id} key={cmd.cmd_id}>{cmd.name}</Option>
+              })}
+            </Select>
+              {this.state.selectedCmd.cmd_id && this.renderInputCmd()} 
+
+        </Spin>
+          </Modal>
+
       </div>
     )
   }
