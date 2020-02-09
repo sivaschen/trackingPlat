@@ -11,7 +11,6 @@ import "./home.scss"
 import Logo from './../asset/images/logo.jpg'
 
 const { TreeNode } = Tree;
-const {SubMenu} = Menu;
 
 export default class Home extends Component {
   constructor(props) {
@@ -251,6 +250,9 @@ export default class Home extends Component {
   logout = () => {
     this.props.history.push("/login");
   }
+  bmsNoPerm = () => {
+    this.props.history.push("/home/user")
+  }
   render() {
     return (
       <div className="home">
@@ -260,14 +262,14 @@ export default class Home extends Component {
           <span className="name">{"登陆账户：" + this.state.account.login_name}</span>
         </header>
         <div className="menu">
-          <Menu onClick={this.handleMenuClick} selectedKeys={[this.state.current]} mode="horizontal">
+          <Menu onClick={this.handleMenuClick} selectedKeys={[this.state.current]} mode="horizontal" >
             <Menu.Item key="/home/user">              
               <NavLink to="/home/user"><Icon type="team"/>客户管理</NavLink>
             </Menu.Item>
             <Menu.Item key="/home/monitor">              
               <NavLink to="/home/monitor"><Icon type="environment" />监控</NavLink>              
             </Menu.Item>
-            <Menu.Item key="/home/bms">              
+            <Menu.Item key="/home/bms" style={this.state.account.permission > 0 ? {display: 'inline-block'}: {display: 'none'}}>              
               <NavLink to="/home/bms"><Icon type="api" />电池管理</NavLink>              
             </Menu.Item>
           </Menu>
@@ -299,7 +301,7 @@ export default class Home extends Component {
                 <YJCenter onRef={this.onRef.bind(this)} eid={this.state.selectedKeys[0]}/>
             </Route>
             <Route path="/home/bms">
-                <Bms eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} />
+                <Bms eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} permission={Number(this.state.account.permission)} bmsNoPerm={this.bmsNoPerm} />
             </Route>
             <Route path="/home/user">
                 <User addNode={this.addNodeCallback} eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} loadTree={this.updateTreeNode} monitorDevice={this.monitorDevice} expandAncestors={this.expandAncestors} />

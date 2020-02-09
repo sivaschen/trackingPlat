@@ -18,6 +18,9 @@ export default class Bms extends Component {
         }
     }
     componentDidMount () {
+        if (this.props.permission === 0) {
+            this.props.bmsNoPerm();
+        }
         this.props.onRef('yjcenter', this);
         this.init();
     }

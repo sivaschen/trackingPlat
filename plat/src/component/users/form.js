@@ -125,8 +125,9 @@ import './form.scss'
           xs: { span: 8 },
           sm: { span:8 }}}  wrapperCol={{ xs: { span: 16 }, sm: { span: 16 }}} >
             {getFieldDecorator('permission')(<Select placeholder="BMS权限" onChange={this.handleSelectChange}>
-              <Option value="1">开启</Option>
               <Option value="0">关闭</Option>
+              <Option value="1">监控</Option>
+              <Option value="2">控制</Option>
             </Select>)}
           </Form.Item>
           <Form.Item {...tailFormItemLayout}>

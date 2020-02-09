@@ -51,7 +51,7 @@ export default class Home extends Component {
 
           </div>
           <div className="loginInput">
-            <h3>云集定位平台</h3>
+            <h3>云集智能锂电系统</h3>
             <Input addonBefore="账号" placeholder="请输入用户名" value={this.state.userName} onChange={this.setUserName}/>
             <Input.Password addonBefore="密码" placeholder="请输入密码" className="password" value={this.state.pwd} onChange={this.setPwd.bind(this)}/>
             <Button type="primary" onClick={this.loginSys}>登 录<Icon type="login" /></Button>
