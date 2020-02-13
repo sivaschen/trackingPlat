@@ -192,6 +192,16 @@ export default class Bms extends Component {
         return arr
 
     }
+    handleCancel = () => {
+        this.setState({
+            visible: false
+        })
+    }
+    handleOk = () => {
+        this.setState({
+            visible: false
+        })
+    }
     renderTabData = data => {
         return (
            <> 
@@ -357,10 +367,44 @@ export default class Bms extends Component {
                 </Col>
             </Row>
             <Row className="bmsContentBottom">
-                
+                <Col span={8} className="lineGraph"></Col>
+                <Col span={15} className="singleBatteryStatus">
+                    <header>
+                        <i className="sp"></i>
+                        <span>单体电池状态</span>
+                    </header>
+                    <ul className="singleBattery">
+                        {this.renderSingleBattery(data)}
+                    </ul>
+                </Col>
             </Row>
         </>
         )
+    }
+    renderSingleBattery = (data) => {
+        let arr = [];
+        let htmlArr = [];
+        for (const key in data) {
+            if (/sigvol_([0-9])_bat[1-4]_vol/.test(key)) {
+                let group = key.substr(7,1);
+                if (!arr[group]) {
+                    arr[group]  = [];
+                }
+                let index = key.substr(12,1) -1;
+                arr[group][index] = data[key];
+            }
+        }
+        for (let i = 0; i < arr.length; i++) {
+            let groupData = arr[i];
+            for (let j = 0; j < groupData.length; j++) {
+                let str = 
+                    <li className="singleBattery" key={ i + "-" + j}>
+                        <div className="percentage">{groupData[j]}</div>
+                    </li>
+                        htmlArr.push(str);
+            }
+        }
+        return htmlArr
     }
     setProtectedData = () => {
         this.setState({
@@ -376,7 +420,6 @@ export default class Bms extends Component {
     }
 
     getBms = (dev_id, dev_name) => {
-        console.log(dev_id);
         const url = "/api/device/getBmsInfoByDevid";
         let data = {
             dev_id: 44

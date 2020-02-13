@@ -22,7 +22,7 @@ ul, li {
     padding-left: 20px;
     box-sizing: border-box;
     background-color: rgb(27,53,78);
-    color: #eee;
+    color: #ddd;
     .selectDevice {
         padding: 5px 0px;
         height: 42px;
@@ -40,7 +40,9 @@ ul, li {
         }
         .bmsContent {
             color: #fff;
-
+            float: left;
+            width: 100%;
+            z-index: 99;
             .version {
                 background-color: rgb(43, 71, 93);
                 height: 373px;
@@ -55,7 +57,7 @@ ul, li {
                 }
                 .specifics {
                     padding: 10px;
-                    color: #eee;
+                    color: #ddd;
                     font-size: 14px;
                     .sp {
                         display: inline-block;
@@ -103,11 +105,11 @@ ul, li {
                                 }
                                 span {
                                     font-size: 14px;
-                                    color: #eee;
+                                    color: #ddd;
                                     i.title {
                                         font-style: normal;
                                         line-height: 24px;
-                                        color: #eee;
+                                        color: #ddd;
                                         font-size: 12px;
                                         padding-left: 5px;
                                     }
@@ -183,7 +185,7 @@ ul, li {
                 }
                 .protectedData {
                     color:#333;
-                    color: #eee;
+                    color: #ddd;
                     margin-top: 11px;
                     position: relative;
                     padding-top: 26px;
@@ -261,6 +263,79 @@ ul, li {
                             .unit {
                                 margin-left: 5px;
                             }
+                        }
+                    }
+                }
+            }
+        }
+        .bmsContentBottom {
+            padding-top: 383px;
+            height: 583px;
+            box-sizing: border-box;
+            .singleBatteryStatus {
+                height: 100%;
+                background-color:  rgb(43, 71, 93);
+                    padding-top: 40px;
+                    margin-left: 20px;
+                    padding-bottom: 10px;
+                    box-sizing: border-box;
+                header {
+                    height: 40px;
+                    padding-left: 10px;
+                    line-height: 40px;
+                    font-size: 14px;
+                    position: absolute;
+                    left: 0px;
+                    top: 0;
+                    width: 100%;
+                    z-index: 5;
+                    background-color: rgb(43, 71, 93);
+                    color: #ddd;
+                    .sp {
+                        display: inline-block;
+                        height: 17px;
+                        width: 5px;
+                        background-color: rgb(90,165, 227);
+                        vertical-align: middle;
+                        margin-right: 10px;
+                    }
+                    span {
+                        vertical-align: middle;
+                    }
+                }
+                ul {
+                    box-sizing: border-box;
+                    overflow: auto;
+                    width: 90%;
+                    display: inline-block;
+                    height: 100%;
+                    &::-webkit-scrollbar {
+                        width: 8px;
+                    }
+                        &::-webkit-scrollbar-track {
+                        background-color: rgb(27,53,78);
+                        -webkit-border-radius: 2em;
+                        -moz-border-radius: 2em;
+                        border-radius:2em;
+                    }
+                        &::-webkit-scrollbar-thumb {
+                        background-color:rgb(82, 168, 242);
+                        -webkit-border-radius: 2em;
+                        -moz-border-radius: 2em;
+                        border-radius:2em;
+                        height: 10px;
+                        }
+                    li {
+                        float: left;
+                        width: 25%;
+                        background: url("./../../asset/images/battery.png") no-repeat center center;
+                        background-size: 70px 70px;
+                        height: 40px;
+                        text-align: center;
+
+                        .percentage {
+                            display: inline-block;
+                            line-height: 40px;
                         }
                     }
                 }
