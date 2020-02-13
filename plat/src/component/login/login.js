@@ -18,6 +18,9 @@ export default class Home extends Component {
       userName: e.target.value
     })
   }
+  componentDidMount () {
+    this.addEnterEvent();
+  }
   setPwd = (e) => {
     this.setState({
       pwd: e.target.value
@@ -40,6 +43,17 @@ export default class Home extends Component {
       }
     })
   };
+  componentWillUnmount () {
+    document.body.removeEventListener('keyup', this.loginWithEnter)
+  }
+  loginWithEnter = (e) => {
+      if (e.keyCode === 13) {
+        this.loginSys();
+      }
+  }
+  addEnterEvent = () => {
+    document.body.addEventListener("keyup", this.loginWithEnter);
+  }
   render() {
     return (
       <div className="loginBox">

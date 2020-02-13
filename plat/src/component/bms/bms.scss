@@ -1,5 +1,7 @@
 ul, li {
     list-style: none;
+    margin: 0;
+    padding: 0;
 }
 .clearfix:after {
     visibility: hidden;
@@ -14,48 +16,105 @@ ul, li {
   * html .clearfix { height: 1%; }
   .clearfix { display: block; }
 .bms {
+    background-color: #fff;
+    height: 100%;
+    width: 100%;
+    padding-left: 20px;
+    box-sizing: border-box;
+    background-color: rgb(27,53,78);
+    color: #eee;
     .selectDevice {
         padding: 5px 0px;
+        height: 42px;
+        width: 100%;
+        float: left;
         .title {
             margin-right: 10px;
         }
     }
     .tab {
+        padding-top: 42px;
+        box-sizing: border-box;
         .ant-tabs-bar {
             margin-bottom: 0px;
         }
         .bmsContent {
+            color: #fff;
+
             .version {
+                background-color: rgb(43, 71, 93);
+                height: 373px;
+                box-sizing: border-box;
                 .header {
-                    border-bottom: 1px solid #ccc;
-                    height: 30px;
-                    line-height: 30px;
+                    border-bottom: 1px solid #999;
+                    height: 40px;
+                    line-height: 40px;
                     font-size: 12px;
-                    padding: 0px 10px;
+                    padding: 0px 15px;
                     box-sizing: border-box;
                 }
                 .specifics {
-                    span {
-                        font-size: 12px;
+                    padding: 10px;
+                    color: #eee;
+                    font-size: 14px;
+                    .sp {
+                        display: inline-block;
+                        height: 15px;
+                        width: 3px;
+                        background-color: rgb(175, 175, 68);
+                        vertical-align: middle;
+                        margin-right: 3px;
                     }
+                    
+                    
                     .top {
-
+                        .hardware {
+                            .isDischarge {
+                                margin-top: 10px;
+                                margin-bottom: 10px;
+                                .circle {
+                                    display: inline-block;
+                                    height: 12px;
+                                    width: 12px;
+                                    border-radius: 50%;
+                                    vertical-align: middle;
+                                    &.red {
+                                        background-color: red;
+                                    }
+                                    &.green {
+                                        background-color: rgb(130, 205,88);
+                                    }
+                                }
+                                .dischargeTxt {
+                                    margin-left: 10px;
+                                    vertical-align: middle;
+                                }
+                            }
+                        }
                     }
                     .bottom {
                         margin-top: 10px;
+                        
                         .batteryParam {
+                           
                             .batteryRow {
                                 +.batteryRow {
                                     margin-top: 10px;
                                 }
                                 span {
-                                    font-size: 12px;
-                                    color: #808695;
+                                    font-size: 14px;
+                                    color: #eee;
                                     i.title {
                                         font-style: normal;
-                                        font-size: 14px;
                                         line-height: 24px;
-                                        color: #515a6e;
+                                        color: #eee;
+                                        font-size: 12px;
+                                        padding-left: 5px;
+                                    }
+                                    &.data {
+                                        font-size: 14px;
+
+                                        vertical-align: middle;
                                     }
                                 }
                             }
@@ -91,12 +150,119 @@ ul, li {
                 
             }
             .currentGraph {
+                margin-left: 10px;
+
+                height: 373px;
+                margin-left: 10px;
+                background-color: rgb(43, 71, 93);
+                padding: 0 10px;
+                box-sizing: border-box;
                 .graphTop {
-                    border-bottom: 1px solid #ccc;
+                    border-bottom: 1px solid #999;
+                    height: 50%;
                 }
                 .voltageBox, .currentBox, .capacityBox, .socBox {
                     float: left;
                     width: 50%;
+                }
+            }
+            .alarmAndData {
+                height: 373px;
+                margin-left: 10px;
+                
+                >div {
+                    width: 100%;
+                    height: 181px;
+                background-color: rgb(43, 71, 93);
+                padding: 5px 10px;
+                box-sizing: border-box;
+
+                }
+                .alarm {
+                    
+                }
+                .protectedData {
+                    color:#333;
+                    color: #eee;
+                    margin-top: 11px;
+                    position: relative;
+                    padding-top: 26px;
+                    padding-bottom: 5px;
+                    box-sizing: border-box;
+                    header {
+                        height: 21px;
+                        padding-left: 10px;
+                        line-height: 21px;
+                        font-size: 14px;
+                        position: absolute;
+                        left: 0px;
+                        top: 0;
+                        width: 100%;
+                        z-index: 5;
+                        background-color: #fff;
+                        background-color: rgb(43, 71, 93);
+                        .sp {
+                            display: inline-block;
+                            height: 17px;
+                            width: 5px;
+                            background-color: rgb(90,165, 227);
+                            vertical-align: middle;
+                            margin-right: 10px;
+                        }
+                        span {
+                            vertical-align: middle;
+                        }
+                        .setParams {
+                            float: right;
+                            margin-right: 15px;
+                            color: rgb(150, 180, 235);
+                            cursor: pointer;
+                        }
+                    }
+                    ul {
+                        box-sizing: border-box;
+                        overflow: auto;
+                        height: 100%;
+                        padding-left: 15px;
+                        &::-webkit-scrollbar {
+                            width: 8px;
+                        }
+                            &::-webkit-scrollbar-track {
+                            background-color: rgb(27,53,78);
+                            -webkit-border-radius: 2em;
+                            -moz-border-radius: 2em;
+                            border-radius:2em;
+                        }
+                            &::-webkit-scrollbar-thumb {
+                            background-color:rgb(62, 112, 121);
+                            -webkit-border-radius: 2em;
+                            -moz-border-radius: 2em;
+                            border-radius:2em;
+                            height: 20px;
+                            }
+                        li {
+                            width: 50%;
+                            float: left;
+                            font-size: 12px;
+                            margin-bottom: 3px;
+                            .title {
+                                min-width: 130px;
+                                display: inline-block;
+                                text-align: right;
+                            }
+
+                            .data {
+                                display: inline-block;
+                                color: rgb(150, 180, 235);
+                                width: 50px;
+                                text-align: center;
+                                background-color: rgb(28, 54, 78);
+                            }
+                            .unit {
+                                margin-left: 5px;
+                            }
+                        }
+                    }
                 }
             }
         }

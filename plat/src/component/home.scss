@@ -32,26 +32,33 @@
     .menu {
       position: fixed;
       width: 100%;
-      top: 66px;
+      top: 65px;
       z-index: 99;
+      border-top: 1px solid #ccc;
     }
     .subPage {
-      padding-top: 126px;
+      padding-top: 114px;
       height: 100%;
       box-sizing: border-box;
       padding-left: 200px;
     }
     .tree {
       position: absolute;
-      top: 126px;
-      padding-left: 20px;
+      padding-top: 114px;
       width: 200px;
       box-sizing: border-box;
       float: left;
+      // background-color: rgb(76, 145, 197);
+      background-color: #ddd;
+      height: 100%;
       .ant-tree {
         font-size: 12px;
         max-height: 100%;
         overflow: auto;
+
+        li .ant-tree-node-content-wrapper.ant-tree-node-selected {
+          background-color: rgb(94, 158, 160);
+        }
       }
     }
 }
