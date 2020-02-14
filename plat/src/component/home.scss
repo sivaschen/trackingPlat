@@ -10,7 +10,7 @@
       padding: 5px 20px;
       position: fixed;
       overflow: hidden;
-      z-index: 99;
+      z-index: 999;
       img {
         width: 200px;
       }
@@ -33,7 +33,7 @@
       position: fixed;
       width: 100%;
       top: 65px;
-      z-index: 99;
+      z-index: 999;
       border-top: 1px solid #ccc;
     }
     .subPage {

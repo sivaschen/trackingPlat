@@ -57,6 +57,6 @@ const RenderMap = (props) => {
           })}
           {props.markers.length && renderLabel()}
         </Map>
-      </APILoader>)
+      </apiLoader>)
   }
 export default RenderMap

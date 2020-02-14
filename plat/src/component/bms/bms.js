@@ -144,7 +144,277 @@ mos_high_temp_recovery:{
     }
 }
 
+const alarms =[
+    {
+        name: "电压采集",
+        value: 1 << 0
+    },{
+        name: "温度异常",
+        value: 1 << 1
+    },{
+        name: "通讯故障",
+        value: 1 << 2
+    },{
+        name: "总压过压",
+        value: 1 << 8
+    },{
+        name: "总压欠压",
+        value: 1 << 9
+    },{
+        name: "单压过压",
+        value: 1 << 10
+    },{
+        name: "单压欠压",
+        value: 1 << 11
+    },{
+        name: "放电过温",
+        value: 1 << 12
+    },{
+        name: "充电过温",
+        value: 1 << 13
+    },{
+        name: "放电低温",
+        value: 1 << 14
+    },{
+        name: "充电低温",
+        value: 1 << 15
+    },{
+        name: "充电短路",
+        value: 1 << 16
+    },{
+        name: "放电短路",
+        value: 1 << 17
+    },{
+        name: "充电过流",
+        value: 1 << 18
+    },{
+        name: "放电过流",
+        value: 1 << 19
+    },{
+        name: "分流器或MOS管过温",
+        value: 1 << 20
+    },{
+        name: "单体压差",
+        value: 1 << 21
+    },{
+        name: "SOC",
+        value: 1 << 22
+    },{
+        name: "SOH",
+        value: 1 << 23
+    },
+    
+]
+const option = {
+    title: {
+        text: '实时电压曲线 V',
+        show: true,
+        textStyle: {
+            color: "#ccc",
+            fontWeight: 'normal',
+            fontSize: "12px",
+            height:"14px"
 
+        }
+    },
+    tooltip: {
+        trigger: 'axis'
+    },
+    grid: {
+        top: 25,
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true,
+        color: "#fff"
+    },
+    xAxis: {
+        type: 'time',
+        splitLine: {
+            show: false
+        },
+        nameTextStyle: {
+            color: "#ddd"
+        },
+        axisLabel:{
+            color: '#ddd'
+        },
+        axisLine: {
+            lineStyle: {
+                color: "#ddd"
+            }
+        }
+        
+    },
+    yAxis: {
+        boundaryGap: [0, "100%"],
+        type: 'value',
+        axisLabel:{
+            color: '#ddd'
+        },
+        axisLine: {
+            lineStyle: {
+                color: "#ddd"
+            }
+        },
+        min: 0,
+        max: 100,
+        splitNumber: 2
+    },
+    series: [
+        {
+            name: '电压',
+            type: 'line',
+            data: [
+                {
+                    name: "2020/2/13 02:00:00",
+                    value: ["2020/2/13 00:00:00", 87]
+                },{
+                    name: "0:00",
+                    value: ["2020/2/13 02:04:00", 34]
+                },{
+                    name: "2020/2/13 08:07:00",
+                    value: ["2020/2/13 04:07:00", 54]
+                },{
+                    name: "2020/2/13 08:07:00",
+                    value: ["2020/2/13 6:07:00", 65]
+                },{
+                    name: "2020/2/13 08:07:00",
+                    value: ["2020/2/13 08:07:00", 23]
+                },{
+                    name: "2020/2/13 08:07:00",
+                    value: ["2020/2/13 10:07:00", 14]
+                },{
+                    name: "2020/2/13 08:07:00",
+                    value: ["2020/2/13 12:07:00", 76]
+                },{
+                    name: "2020/2/13 08:07:00",
+                    value: ["2020/2/13 14:07:00", 87]
+                },{
+                    name: "2020/2/13 08:07:00",
+                    value: ["2020/2/13 16:07:00", 54]
+                },{
+                    name: "2020/2/13 08:07:00",
+                    value: ["2020/2/13 18:07:00", 34]
+                },{
+                    name: "2020/2/13 08:07:00",
+                    value: ["2020/2/13 20:07:00", 23]
+                },{
+                    name: "2020/2/13 08:07:00",
+                    value: ["2020/2/13 22:07:00", 23]
+                },{
+                    name: "2020/2/13 08:07:00",
+                    value: ["2020/2/13 24:00:00", 65]
+                }
+            ]
+        }
+    ]
+}
+const optionForCurrent = {
+    title: {
+        text: '实时电流曲线 A',
+        show: true,
+        textStyle: {
+            color: "#ccc",
+            fontWeight: 'normal',
+            fontSize: "12px",
+            height:"14px"
+
+        }
+    },
+    tooltip: {
+        trigger: 'axis'
+    },
+    grid: {
+        top: 25,
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true,
+        color: "#fff"
+    },
+    xAxis: {
+        type: 'time',
+        splitLine: {
+            show: false
+        },
+        nameTextStyle: {
+            color: "#ddd"
+        },
+        axisLabel:{
+            color: '#ddd'
+        },
+        axisLine: {
+            lineStyle: {
+                color: "#ddd"
+            }
+        }
+        
+    },
+    yAxis: {
+        boundaryGap: [0, "100%"],
+        type: 'value',
+        axisLabel:{
+            color: '#ddd'
+        },
+        axisLine: {
+            lineStyle: {
+                color: "#ddd"
+            }
+        },
+        min: 0,
+        max: 100,
+        splitNumber: 2
+    },
+    series: [
+        {
+            name: '电压',
+            type: 'line',
+            data: [
+                {
+                    name: "2020/2/13 02:00:00",
+                    value: ["2020/2/13 00:00:00", 87]
+                },{
+                    name: "0:00",
+                    value: ["2020/2/13 02:04:00", 34]
+                },{
+                    name: "2020/2/13 08:07:00",
+                    value: ["2020/2/13 04:07:00", 54]
+                },{
+                    name: "2020/2/13 08:07:00",
+                    value: ["2020/2/13 6:07:00", 65]
+                },{
+                    name: "2020/2/13 08:07:00",
+                    value: ["2020/2/13 08:07:00", 23]
+                },{
+                    name: "2020/2/13 08:07:00",
+                    value: ["2020/2/13 10:07:00", 14]
+                },{
+                    name: "2020/2/13 08:07:00",
+                    value: ["2020/2/13 12:07:00", 76]
+                },{
+                    name: "2020/2/13 08:07:00",
+                    value: ["2020/2/13 14:07:00", 87]
+                },{
+                    name: "2020/2/13 08:07:00",
+                    value: ["2020/2/13 16:07:00", 54]
+                },{
+                    name: "2020/2/13 08:07:00",
+                    value: ["2020/2/13 18:07:00", 34]
+                },{
+                    name: "2020/2/13 08:07:00",
+                    value: ["2020/2/13 20:07:00", 23]
+                },{
+                    name: "2020/2/13 08:07:00",
+                    value: ["2020/2/13 22:07:00", 23]
+                },{
+                    name: "2020/2/13 08:07:00",
+                    value: ["2020/2/13 24:00:00", 65]
+                }
+            ]
+        }
+    ]
+}
 export default class Bms extends Component {
     constructor (props){
         super(props);
@@ -203,182 +473,191 @@ export default class Bms extends Component {
         })
     }
     renderTabData = data => {
-        return (
-           <> 
-            <Row className="bmsContent">
-                <Col className="version" span={10}>
-                    <header className="header">
-                        <span></span>
-                        <span style={{ float:'right' }}>版本信息<Icon type="info-circle" style={{marginLeft:"5px"}} /></span>
-                    </header>
-                    <div className="specifics">
-                        <Row className="top">
-                            <Col className="graph" span={8}>
-                                <Wave socPercentage={data.SOC} />
-                            </Col>
-                            <Col className="hardware" span={8}>
-        <div className="isDischarge"><i className={data.current > 0 ? "circle green" : "circle red"}></i><span className="dischargeTxt">{data.current > 0 ? "放电中" : "没电"}</span></div>
-                                <span className="sn">{"产品编号："+ data.SN}</span><br/>
-                                <span className="sn">{"设备id："+ data.SN}</span><br/>
-                                <span className="sn">{"产品型号：易电"}</span><br/>
-                                <span className="sn">{"电池类型：钴酸锂"}</span><br/>
-                            </Col>
-                            <Col className="manufacture" span={8}>
-                                    <span className="sn">{"出厂日期："+ data.Date}</span><br/>
-                                    <span className="sn">{"开始使用时间："+ data.SN}</span><br/>
-                                    <span className="sn">{"设备制造厂商：易电"}</span><br/>
-                            </Col>
-                        </Row>
-                        <Row className="bottom">
-                            <Col className="batteryParam" span={16}>
-                                <Row className="batteryParamTop batteryRow">                            
-                                        <Col span={12}><span><i className="title">额定容量</i><br/><i className="sp"></i><span className="data">{data.rated_capacity+" Ah"}</span></span></Col>
-                                        <Col span={12}><span><i className="title">累计放电容量</i><br/><i className="sp"></i><span className="data">{data.discharge_capacity+" Ah"}</span></span></Col>
-                                </Row>
-                                <Row className="batteryParamMiddle batteryRow">
-                                        <Col span={12}><span><i className="title">充放电次数</i><br/><i className="sp"></i><span className="data">{(Number(data.discharge_count) + Number(data.charge_count))+" 次"}</span></span></Col>
-                                        <Col span={12}><span><i className="title">电池串数</i><br/><i className="sp"></i><span className="data">{(Number(data.high_pack_cnt) + Number(data.low_pack_cnt))+" 串"}</span></span></Col>
-                                </Row>
-                                <Row className="batteryParamBottom batteryRow">
-                                        <Col span={6}><span><i className="title">最高单体电压</i><br/><i className="sp"></i><span className="data">{data.max_vol+" mV"}</span></span></Col>
-                                        <Col span={6}><span><i className="title">最低单体电压</i><br/><i className="sp"></i><span className="data">{data.min_vol+" mV"}</span></span></Col>
-                                        <Col span={6}><span><i className="title">最高单体温度</i><br/><i className="sp"></i><span className="data">{data.max_temp +" ℃"}</span></span></Col>
-                                        <Col span={6}><span><i className="title">最低单体温度</i><br/><i className="sp"></i><span className="data">{data.min_temp+" ℃"}</span></span></Col>
-                                </Row>
-                            </Col>
-                            <Col span={8} className="temperature">
-                                    <span><i className={data.averge_temp > 25 ? "red" : "green"}></i>{"MOS温度 "+data.averge_temp+"℃"}</span><br/>
-                            </Col>
-                        </Row>
-                    </div>
-                </Col>
-                <Col span={5} className="currentGraph">
-                    <div className="graphTop clearfix">
-                        <div className="voltageBox">
-                        <ReactEcharts style={{width:"100%",height: "175px", fontSize: "10px",display: "inline-block", float: "left"}}  option={{
-                        textStyle: {fontSize: 12},
-                            tooltip: {
-                                formatter: '{a} <br/>{b} : {c}%'
-                            },
-                        series: [                            
-                            {
-                                name: '电压',
-                                type: 'gauge',
-                                detail: {formatter: '{value}V', fontSize: 12, offsetCenter: [0, "60%"]},
-                                data: [{value: data.total_vol, name: '电压'}],
-                                min: 0,
-                                max: 1000,
-                                title: {
-                                    color: red,
-                                    offsetCenter: [0, '40%']
-                                },
-                                axisLabel: {
-                                    show: false
-                                }
-                            }
-                        ]}} />
-                    </div>
-                        <div className="currentBox">
-                            <ReactEcharts style={{width:"100%",height: "175px",  fontSize: "10px",display: "inline-block"}} option={{
-                            tooltip: {
-                                formatter: '{a} <br/>{b} : {c}%'
-                            },
-                        series: [                            
-                            {
-                                name: '电流',
-                                type: 'gauge',
-                                detail: {formatter: '{value}A',fontSize: 12, offsetCenter: [0, "60%"]},
-                                data: [{value: data.current, name: '电流'}],
-                                min: 0,
-                                max: 1000,
-                                title: {
-                                    color: red,
-                                    offsetCenter: [0, '40%']
-                                },
-                                axisLabel: {
-                                    show: false
-                                }
-                            }
-                        ]}} />
-                    </div>
-                    </div>
-                    <div className="graphBottom clearfix">
-                    <div className="capacityBox">
-                        <ReactEcharts style={{width:"100%",height: "175px",  fontSize: "10px",display: "inline-block" ,float: "left"}} option={{
-                            tooltip: {
-                                formatter: '{a} <br/>{b} : {c}%'
-                            },
-                        series: [                            
-                            {
-                                name: '容量',
-                                type: 'gauge',
-                                detail: {formatter: '{value}Ah',fontSize: 12, offsetCenter: [0, "60%"]},
-                                data: [{value: data.remaining_capacity, name: '容量'}],
-                                min: 0,
-                                max: data.rated_capacity,
-                                title: {
-                                    color: red,
-                                    offsetCenter: [0, '40%']
-                                },
-                                axisLabel: {
-                                    show: false
-                                }
-                            }
-                        ]}} />
-                    </div>
-                    <div className="socBox">
-                        <ReactEcharts style={{width:"100%",height: "175px",  fontSize: "10px",display: "inline-block", float: "left"}}  option={{
-                            tooltip: {
-                                formatter: '{a} <br/>{b} : {c}%'
-                            },
-                        series: [                            
-                            {
-                                name: 'SOC',
-                                type: 'gauge',
-                                detail: {formatter: '{value}',fontSize: 12, offsetCenter: [0, "60%"]},
-                                data: [{value: data.SOH, name: 'SOH'}],
-                                min: 0,
-                                max: 1000,
-                                title: {
-                                    color: red,
-                                    offsetCenter: [0, '40%']
-                                },
-                                axisLabel: {
-                                    show: false
-                                }
-                            }
-                        ]}} />
-                    </div>
-                    </div>                    
-                </Col>
-                <Col span={8} className="alarmAndData">
-                    <div className="alarm"></div>
-                    <div className="protectedData">
-                        <header>
-                            <i className="sp"></i>
-                            <span className="title">参数配置信息</span>
-                            <span className="setParams" style={this.props.permission === 2 ? {display: 'inline-block'} : {display:'none'}} onClick={this.setProtectedData}>设置<Icon type="right-circle" style={{marginLeft: "3px"}}/></span>
+        return (<div style={{overflow: 'auto'}}> 
+                <Row className="bmsContent">
+                    <Col className="version" span={10}>
+                        <header className="header">
+                            <span></span>
+                            <span style={{ float:'right' }}>版本信息<Icon type="info-circle" style={{marginLeft:"5px"}} /></span>
                         </header>
-                        <ul>
-                            {this.renderProtectedData(data)}
-                        </ul>
+                        <div className="specifics">
+                            <Row className="top">
+                                <Col className="graph" span={8}>
+                                    <Wave socPercentage={data.SOC} />
+                                </Col>
+                                <Col className="hardware" span={8}>
+            <div className="isDischarge"><i className={data.current > 0 ? "circle green" : "circle red"}></i><span className="dischargeTxt">{data.current > 0 ? "放电中" : "设备未上电"}</span></div>
+                                    <span className="sn">{"产品编号："+ data.SN}</span><br/>
+                                    <span className="sn">{"设备id："+ data.SN}</span><br/>
+                                    <span className="sn">{"产品型号：易电"}</span><br/>
+                                    <span className="sn">{"电池类型：钴酸锂"}</span><br/>
+                                </Col>
+                                <Col className="manufacture" span={8}>
+                                        <span className="sn">{"出厂日期："+ data.Date}</span><br/>
+                                        <span className="sn">{"开始使用时间："+ data.SN}</span><br/>
+                                        <span className="sn">{"设备制造厂商：易电"}</span><br/>
+                                </Col>
+                            </Row>
+                            <Row className="bottom">
+                                <Col className="batteryParam" span={16}>
+                                    <Row className="batteryParamTop batteryRow">                            
+                                            <Col span={12}><span><i className="title">额定容量</i><br/><i className="sp"></i><span className="data">{data.rated_capacity+" Ah"}</span></span></Col>
+                                            <Col span={12}><span><i className="title">累计放电容量</i><br/><i className="sp"></i><span className="data">{data.discharge_capacity+" Ah"}</span></span></Col>
+                                    </Row>
+                                    <Row className="batteryParamMiddle batteryRow">
+                                            <Col span={12}><span><i className="title">充放电次数</i><br/><i className="sp"></i><span className="data">{(Number(data.discharge_count) + Number(data.charge_count))+" 次"}</span></span></Col>
+                                            <Col span={12}><span><i className="title">电池串数</i><br/><i className="sp"></i><span className="data">{(Number(data.high_pack_cnt) + Number(data.low_pack_cnt))+" 串"}</span></span></Col>
+                                    </Row>
+                                    <Row className="batteryParamBottom batteryRow">
+                                            <Col span={6}><span><i className="title">最高单体电压</i><br/><i className="sp"></i><span className="data">{data.max_vol+" mV"}</span></span></Col>
+                                            <Col span={6}><span><i className="title">最低单体电压</i><br/><i className="sp"></i><span className="data">{data.min_vol+" mV"}</span></span></Col>
+                                            <Col span={6}><span><i className="title">最高单体温度</i><br/><i className="sp"></i><span className="data">{data.max_temp +" ℃"}</span></span></Col>
+                                            <Col span={6}><span><i className="title">最低单体温度</i><br/><i className="sp"></i><span className="data">{data.min_temp+" ℃"}</span></span></Col>
+                                    </Row>
+                                </Col>
+                                <Col span={8} className="temperature">
+                                        <span><i className={data.averge_temp > 25 ? "red" : "green"}></i>{"MOS温度 "+data.averge_temp+"℃"}</span><br/>
+                                </Col>
+                            </Row>
+                        </div>
+                    </Col>
+                    <Col span={5} className="currentGraph">
+                        <div className="graphTop clearfix">
+                            <div className="voltageBox">
+                            <ReactEcharts style={{width:"100%",height: "175px", fontSize: "10px",display: "inline-block", float: "left"}}  option={{
+                            textStyle: {fontSize: 12},
+                                tooltip: {
+                                    formatter: '{a} <br/>{b} : {c}%'
+                                },
+                            series: [                            
+                                {
+                                    name: '电压',
+                                    type: 'gauge',
+                                    detail: {formatter: '{value}V', fontSize: 12, offsetCenter: [0, "60%"]},
+                                    data: [{value: data.total_vol, name: '电压'}],
+                                    min: 0,
+                                    max: 1000,
+                                    title: {
+                                        color: red,
+                                        offsetCenter: [0, '40%']
+                                    },
+                                    axisLabel: {
+                                        show: false
+                                    }
+                                }
+                            ]}} />
+                        </div>
+                            <div className="currentBox">
+                                <ReactEcharts style={{width:"100%",height: "175px",  fontSize: "10px",display: "inline-block"}} option={{
+                                tooltip: {
+                                    formatter: '{a} <br/>{b} : {c}%'
+                                },
+                            series: [                            
+                                {
+                                    name: '电流',
+                                    type: 'gauge',
+                                    detail: {formatter: '{value}A',fontSize: 12, offsetCenter: [0, "60%"]},
+                                    data: [{value: data.current, name: '电流'}],
+                                    min: 0,
+                                    max: 1000,
+                                    title: {
+                                        color: red,
+                                        offsetCenter: [0, '40%']
+                                    },
+                                    axisLabel: {
+                                        show: false
+                                    }
+                                }
+                            ]}} />
+                        </div>
+                        </div>
+                        <div className="graphBottom clearfix">
+                        <div className="capacityBox">
+                            <ReactEcharts style={{width:"100%",height: "175px",  fontSize: "10px",display: "inline-block" ,float: "left"}} option={{
+                                tooltip: {
+                                    formatter: '{a} <br/>{b} : {c}%'
+                                },
+                            series: [                            
+                                {
+                                    name: '容量',
+                                    type: 'gauge',
+                                    detail: {formatter: '{value}Ah',fontSize: 12, offsetCenter: [0, "60%"]},
+                                    data: [{value: data.remaining_capacity, name: '容量'}],
+                                    min: 0,
+                                    max: data.rated_capacity,
+                                    title: {
+                                        color: red,
+                                        offsetCenter: [0, '40%']
+                                    },
+                                    axisLabel: {
+                                        show: false
+                                    }
+                                }
+                            ]}} />
+                        </div>
+                        <div className="socBox">
+                            <ReactEcharts style={{width:"100%",height: "175px",  fontSize: "10px",display: "inline-block", float: "left"}}  option={{
+                                tooltip: {
+                                    formatter: '{a} <br/>{b} : {c}%'
+                                },
+                            series: [                            
+                                {
+                                    name: 'SOC',
+                                    type: 'gauge',
+                                    detail: {formatter: '{value}',fontSize: 12, offsetCenter: [0, "60%"]},
+                                    data: [{value: data.SOH, name: 'SOH'}],
+                                    min: 0,
+                                    max: 1000,
+                                    title: {
+                                        color: red,
+                                        offsetCenter: [0, '40%']
+                                    },
+                                    axisLabel: {
+                                        show: false
+                                    }
+                                }
+                            ]}} />
+                        </div>
+                        </div>                    
+                    </Col>
+                    <Col span={8} className="alarmAndData">
+                        <div className="alarm">
+                            {this.renderAlarms(data)}
+                        </div>
+                        <div className="protectedData">
+                            <header>
+                                <i className="sp"></i>
+                                <span className="title">参数配置信息</span>
+                                <span className="setParams" style={this.props.permission === 2 ? {display: 'inline-block'} : {display:'none'}} onClick={this.setProtectedData}>设置<Icon type="right-circle" style={{marginLeft: "3px"}}/></span>
+                            </header>
+                            <ul className="clearfix">
+                                {this.renderProtectedData(data)}
+                            </ul>
+
+                        </div>
+                    </Col>
+                </Row>
+                <Row className="bmsContentBottom">
+                <Col span={8} className="lineGraph">
+                    <div className="voltageGraph">
+                        <ReactEcharts style={{width:"100%",height: "100px", fontSize: "10px",display: "inline-block", float: "left"}} option={option} />
+                    </div>
+                    <div className="currentGraph">
+                    <ReactEcharts style={{width:"100%",height: "100px", fontSize: "10px",display: "inline-block", float: "left"}} option={optionForCurrent} />
 
                     </div>
                 </Col>
-            </Row>
-            <Row className="bmsContentBottom">
-                <Col span={8} className="lineGraph"></Col>
                 <Col span={15} className="singleBatteryStatus">
                     <header>
                         <i className="sp"></i>
                         <span>单体电池状态</span>
                     </header>
-                    <ul className="singleBattery">
+                    <ul className="singleBattery clearfix">
                         {this.renderSingleBattery(data)}
                     </ul>
                 </Col>
             </Row>
-        </>
+             </div>
         )
     }
     renderSingleBattery = (data) => {
@@ -419,6 +698,22 @@ export default class Bms extends Component {
         })
     }
 
+    renderAlarms = (data) => {
+        return <>
+            <header>
+                <i className="sp"></i>
+                <span className="title">告警状态</span>
+            </header>
+            <ul className="clearfix">
+                {alarms.map(alarm => {
+                    let alarmClass = (data.bms_status & alarm.value) ? "notice" : '';
+                    return <li>
+                        <span className={alarmClass}>{alarm.name}</span>
+                    </li>
+                })}
+            </ul>
+        </>
+    }
     getBms = (dev_id, dev_name) => {
         const url = "/api/device/getBmsInfoByDevid";
         let data = {

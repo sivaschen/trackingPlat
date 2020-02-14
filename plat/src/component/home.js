@@ -257,7 +257,7 @@ export default class Home extends Component {
     return (
       <div className="home">
         <header>
-          <img src={Logo}/>
+          {/* <img src={Logo}/> */}
           <Button onClick={this.logout} type="danger">退 出</Button>
           <span className="name">{"登陆账户：" + this.state.account.login_name}</span>
         </header>
