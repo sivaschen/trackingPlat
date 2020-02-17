@@ -691,7 +691,7 @@ export default class Bms extends Component {
         let data = {
             cmd_content: "BMSPARAM," + str+ '#'
         }
-        const url = "http://webbo.yunjiwulian.com" + "device/sendCmd?dev_id=" + this.state.activeKey +  "&cmd_id=100&cmd_name=bms";
+        const url = "/api" + "/device/sendCmd?dev_id=" + this.state.activeKey +  "&cmd_id=100&cmd_name=bms";
         http.get(url, data).then(res => {
             if (res.data.errcode === 0) {
                 console.log(Math.ceil(arr.length / 8));
@@ -720,7 +720,7 @@ export default class Bms extends Component {
         let {newProtectedData} = this.state;
         let arr = [];
         for (const key in newProtectedData) {
-            arr.push(protectedData[key].index + ',' + newProtectedData[key])
+            arr.push(protectedData[key].index + ',' + protectedData[key].counterOperation(newProtectedData[key]))
         }
         this.sendBmsCmd(arr,1);
     }
@@ -922,8 +922,8 @@ export default class Bms extends Component {
                                 <i className="sp"></i>
                                 <span className="title">参数配置信息</span>
                                 <span className="setParams" style={this.props.permission === 2 ? {display: 'inline-block'} : {display:'none'}} onClick={this.setProtectedData}>设置<Icon type="right-circle" style={{marginLeft: "3px"}}/></span>
-                                <span className="powerOff" data-devid={dev_id} onClick={this.switchOff.bind(this)}>断油电</span>
-                                <span className="powerOn" data-devid={dev_id} onClick={this.switchOn.bind(this)}>开油电</span>
+                                <span className="powerOff" style={this.props.permission === 2 ? {display: 'inline-block'} : {display:'none'}} data-devid={dev_id} onClick={this.switchOff.bind(this)}>断油电</span>
+                                <span className="powerOn" style={this.props.permission === 2 ? {display: 'inline-block'} : {display:'none'}} data-devid={dev_id} onClick={this.switchOn.bind(this)}>开油电</span>
                             </header>
                             <ul className="clearfix">
                                 {this.renderProtectedData(data)}
@@ -961,7 +961,7 @@ export default class Bms extends Component {
         this.setState({
             loading: true
         }, () => {
-            const url = "http://webbo.yunjiwulian.com" + "/device/sendBmsRelayCmd";
+            const url = "/api" + "/device/sendBmsRelayCmd";
             let data = {
                 dev_id: dev_id,
                 cmd_content: "RELAY,0#"
@@ -988,7 +988,7 @@ export default class Bms extends Component {
         this.setState({
             loading: true,
         }, () => {
-            const url = "http://webbo.yunjiwulian.com" + "/device/sendBmsRelayCmd";
+            const url = "/api" + "/device/sendBmsRelayCmd";
             let data = {
                 dev_id: dev_id,
                 cmd_content: "RELAY,0#"
@@ -1062,7 +1062,7 @@ export default class Bms extends Component {
         </>
     }
     getBms = (dev_id, dev_name) => {
-        const url = "http://webbo.yunjiwulian.com/device/getBmsInfoByDevid";
+        const url = "/api/device/getBmsInfoByDevid";
         let data = {
             dev_id: 44
         }
@@ -1116,7 +1116,7 @@ export default class Bms extends Component {
         })
     }
     getDeviceList = () => {
-        const url = "http://webbo.yunjiwulian.com" + "/ent/getSubDeviceInfo";
+        const url = "/api" + "/ent/getSubDeviceInfo";
         let data = {
             eid: this.props.eid
         }

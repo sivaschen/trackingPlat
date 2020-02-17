@@ -34,7 +34,7 @@ export default class YJCenter extends Component {
         console.log('aaaaaaaaaa')
     }
     importImeis = ()=> {
-        const url = "http://webbo.yunjiwulian.com" + "/device/importDevices";
+        const url = "/api" + "/device/importDevices";
         let data = {
             target_eid: this.props.eid,
             product_type: this.state.product_type,
