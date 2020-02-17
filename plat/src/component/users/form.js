@@ -50,7 +50,7 @@ import './form.scss'
       console.log(e)
     }
     saveAccountInfo = (values) => {
-      const url = "/api" + "/ent/updateEnt";
+      const url = "http://webbo.yunjiwulian.com" + "/ent/updateEnt";
       let data = {
         pid: this.props.account.pid,
         eid: this.props.account.eid,

@@ -15,6 +15,12 @@ ul, li {
   /* start commented backslash hack \*/
   * html .clearfix { height: 1%; }
   .clearfix { display: block; }
+  .ant-spin-nested-loading {
+    height: 100%;
+    .ant-spin-container {
+        height: 100%;
+    }
+}
 .bms {
     background-color: #fff;
     height: 100%;
@@ -24,6 +30,8 @@ ul, li {
     background-color: rgb(27,53,78);
     color: #ddd;
     overflow: auto;
+    position: relative;
+    
     .selectDevice {
         padding: 5px 0px;
         height: 42px;
@@ -247,7 +255,7 @@ ul, li {
                         left: 0px;
                         top: 0;
                         width: 100%;
-                        z-index: 5;
+                        z-index: 99;
                         background-color: #fff;
                         background-color: rgb(43, 71, 93);
                         .sp {
@@ -260,7 +268,15 @@ ul, li {
                         }
                         span {
                             vertical-align: middle;
+                            &.powerOn, &.powerOff {
+                                color: rgb(150, 180, 235);
+                                float: right;
+                                margin-right: 5px;
+                            cursor: pointer;
+
+                            }
                         }
+                        
                         .setParams {
                             float: right;
                             margin-right: 15px;
@@ -319,17 +335,21 @@ ul, li {
             padding-top: 383px;
             height: 583px;
             box-sizing: border-box;
-            .voltageGraph {
-                width: 100%;
-                height: 100px;
+            .lineGraph {
+                background-color: rgb(43, 71, 93);
+                .voltageGraph {
+                    width: 100%;
+                    height: 100px;
+                }
             }
+            
             .singleBatteryStatus {
                 height: 100%;
                 background-color:  rgb(43, 71, 93);
-                    padding-top: 40px;
-                    margin-left: 20px;
-                    padding-bottom: 10px;
-                    box-sizing: border-box;
+                padding-top: 40px;
+                margin-left: 20px;
+                padding-bottom: 10px;
+                box-sizing: border-box;
                 header {
                     height: 40px;
                     padding-left: 10px;
@@ -339,7 +359,7 @@ ul, li {
                     left: 0px;
                     top: 0;
                     width: 100%;
-                    z-index: 5;
+                    z-index: 99;
                     background-color: rgb(43, 71, 93);
                     color: #ddd;
                     .sp {
@@ -389,6 +409,26 @@ ul, li {
                             line-height: 40px;
                         }
                     }
+                }
+            }
+        }
+    }
+    
+}
+.ant-modal.setProtectedData {
+    width: 600px!important;
+    .ant-modal-body {
+        ul {
+            li {
+                float: left;
+                width: 50%;
+                margin-bottom: 10px;
+                .title {
+                    width: 145px;
+                    display: inline-block;
+                }
+                .ant-input-group-wrapper.data {
+                    width: 100px;
                 }
             }
         }

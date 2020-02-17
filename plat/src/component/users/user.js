@@ -43,9 +43,9 @@ export default class User extends React.Component {
                     dataIndex: 'imei',
                     key: 'imei'
                 },{
-                    title: 'Msisdn',
-                    dataIndex: 'msisdn',
-                    key: 'msisdn'
+                    title: 'ICCID',
+                    dataIndex: 'iccid',
+                    key: 'iccid'
                 },
                   {
                     title: '设备型号',
@@ -56,11 +56,6 @@ export default class User extends React.Component {
                     dataIndex: 'CREATE_TIME',
                     key: 'CREATE_TIME',
                   },{
-                    title: '车牌号',
-                    dataIndex: 'plateno',
-                    key: 'plateno',
-                  }
-                  ,{
                     title: '操作',
                     dataIndex: 'action',
                     key: 'action',
@@ -88,12 +83,12 @@ export default class User extends React.Component {
     onSearchSelect = (value) => {
         let url, data;
         if (this.state.searchType === "device") {
-            url = "/api" + "/device/searchByImei";
+            url = "http://webbo.yunjiwulian.com" + "/device/searchByImei";
             data = {
                 imei: value
             }
         } else {
-            url = "/api" + "/ent/searchEntByLName";   
+            url = "http://webbo.yunjiwulian.com" + "/ent/searchEntByLName";   
             data = {
                 login_name: value
             }        
@@ -107,12 +102,12 @@ export default class User extends React.Component {
     onSearch = searchText => {
         let url, data;
         if (this.state.searchType === "device") {
-            url = "/api" + "/device/searchByImei";
+            url = "http://webbo.yunjiwulian.com" + "/device/searchByImei";
             data = {
                 imei: searchText.trim()
             }
         } else {
-            url = "/api" + "/ent/searchEntByLName";   
+            url = "http://webbo.yunjiwulian.com" + "/ent/searchEntByLName";   
             data = {
                 login_name: searchText
             }        
@@ -146,7 +141,7 @@ export default class User extends React.Component {
     }
     deleteSubAccount = () => {
         let eid = this.props.eid;
-        const url = "/api" + "/ent/deleteEnt"
+        const url = "http://webbo.yunjiwulian.com" + "/ent/deleteEnt"
         let data = {
             eid
         }
@@ -160,7 +155,7 @@ export default class User extends React.Component {
         })
     }
     addUser = () => {
-        const url = "/api" + "/ent/addEnt";
+        const url = "http://webbo.yunjiwulian.com" + "/ent/addEnt";
         let data = {
             pid: this.state.account.eid,
             login_name: this.state.newUserName,
@@ -225,7 +220,7 @@ export default class User extends React.Component {
         })
     }
     getDeviceList () {
-        const url = "/api" + "/ent/getSubDeviceInfo"
+        const url = "http://webbo.yunjiwulian.com" + "/ent/getSubDeviceInfo"
         let data = {
             eid: this.state.eid
         }
@@ -243,7 +238,7 @@ export default class User extends React.Component {
     }
     init = () => {
         let eid = this.props.eid;
-        let url = "/api" + "/ent/getEntInfoByEid";
+        let url = "http://webbo.yunjiwulian.com" + "/ent/getEntInfoByEid";
         http.get(url, {eid: eid}).then((res) => {
         if (res.data.errcode === 0) {
             let data = res.data.data;

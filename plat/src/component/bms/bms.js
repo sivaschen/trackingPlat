@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import ReactEcharts from "echarts-for-react";
 import './bms.scss';
 import http from './../server.js'
-import { Select, Tabs, Row, Col, Icon,Modal, Input } from 'antd';
+import { Select, Tabs, Row, Col, Icon,Modal, Input, Spin, message } from 'antd';
 import { red } from 'ansi-colors';
 import Wave from './wave.js'
 const { Option } = Select;
@@ -12,149 +12,350 @@ const protectedData = {
     total_over_vol_threshold: {
         name: "总压过压阈值",
         index: 0,
-        unit: "100mV"
+        unit: "V",
+        operation: function (value) {
+            return value * 100 / 1000
+        },
+        counterOperation: function (value) {
+            return value * 10
+        }
     },
     total_under_vol_threshold: {
         name: "总压欠压阈值",
         index: 1,
-        unit: "单位100mV"
+        unit: "V",
+        operation: function (value) {
+            return value * 100 / 1000
+        },
+        counterOperation: function (value) {
+            return value * 10
+        }
     },
     singlel_over_vol_threshold: {
         name: "单体过压阈值",
         index:2,
-        unit: "单位1mV"
+        unit: "mV",
+        operation: function (value) {
+            return value
+        },
+        counterOperation: function (value) {
+            return value
+        }
     },
     single_under_vol_threshold: {
         name: "单压欠压阈值",
         index:3,
-        unit: "单位1mV"},
+        unit: "mV",
+        operation: function (value) {
+            return value
+        },
+        counterOperation: function (value) {
+            return value 
+        }
+    },
     total_over_vol_recovery: {
         name: "总压过压恢复值",
         index:4,
-        unit: "单位100mV"},
+        unit: "V",
+        operation: function (value) {
+            return value * 100 / 1000
+        },
+        counterOperation: function (value) {
+            return value * 10
+        }
+    },
     total_under_vol_recovery: {
         name: "总压欠压恢复值",
         index:5,
-        unit: "单位100mV"},
+        unit: "V",
+        operation: function (value) {
+            return value * 100 / 1000
+        },
+        counterOperation: function (value) {
+            return value * 10
+        }
+    },
     single_over_vol_recovery: {
         name: "单体过压恢复值",
         index:6,
-        unit: "单位1mV"},
+        unit: "mV",
+        operation: function (value) {
+            return value
+        },
+        counterOperation: function (value) {
+            return value
+        }
+    },
     single_under_vol_recovery: {
         name: "单体欠压恢复值",
         index:7,
-        unit: "单位1mV"},
+        unit: "mV",
+        operation: function (value) {
+            return value
+        },
+        counterOperation: function (value) {
+            return value
+        }
+    },
     temp_charge_high_threshold: {
         name: "充电高温阈值",
         index:8,
-       unit: "单位1℃"},
+        unit: "℃",
+        operation: function (value) {
+            return value
+        },
+        counterOperation: function (value) {
+            return value
+        }
+        
+    },
     temp_charge_low_threshold: {
         name: "充电低温阈值",
         index:9,
-       unit: "单位1℃"},
+       unit: "℃",
+       operation: function (value) {
+           return value - 40
+       },
+        counterOperation: function (value) {
+            return value + 40
+        }
+    },
     temp_discharge_high_threshold: {
         name: "放电高温阈值",
         index: 10,
-        unit: "单位1℃"},
+        unit: "℃",
+        operation: function (value) {
+            return value - 40
+        },
+        counterOperation: function (value) {
+            return value + 40
+        }
+    },
     temp_discharge_low_threshold: {
         name: "放电低温阈值",
         index: 11,
-        unit: "单位1℃"},
-        temp_charge_high_recovery: {
+        unit: "℃",
+        operation: function (value) {
+            return value - 40
+        },
+        counterOperation: function (value) {
+            return value + 40
+        }
+    },
+    temp_charge_high_recovery: {
         name: "充电高温恢复值",
         index: 12,
-        unit: "单位1℃"},
-        temp_charge_low_recovery: {
+        unit: "℃",
+        operation: function (value) {
+            return value - 40
+        },
+        counterOperation: function (value) {
+            return value + 40
+        }
+    },
+    temp_charge_low_recovery: {
         name: "充电低温恢复值",
         index: 13,
-        unit: "单位1℃"},
+        unit: "℃",
+        operation: function (value) {
+            return value - 40
+        },
+        counterOperation: function (value) {
+            return value + 40
+        }
+    },
     temp_discharge_high_recovery: {
         name: "放电高温恢复值",
         index: 14,
-        unit: "单位1℃"},
+        unit: "℃",
+        operation: function (value) {
+            return value - 40
+        },
+        counterOperation: function (value) {
+            return value + 40
+        }
+    },
     temp_discharge_low_recovery: {
         name: "放电低温恢复值",
         index: 15,
-        unit: "单位1℃"
+        unit: "℃",
+        operation: function (value) {
+            return value - 40
+        },
+        counterOperation: function (value) {
+            return value + 40
+        }
     },
-curr_charge_over_threshold: {
+    curr_charge_over_threshold: {
         name: "充电过流阈值",
         index: 16,
-        unit: "单位10mA"},
+        unit: "mA",
+        operation: function (value) {
+            return value * 10
+        },
+        counterOperation: function (value) {
+            return value / 10
+        }
+    },
     curr_discharge_over_threshold: {
         name: "放电过流阈值",
         index: 17,
-        unit: "单位10mA"},
+        unit: "mA",
+        operation: function (value) {
+            return value * 10
+        },
+        counterOperation: function (value) {
+            return value / 10
+        }
+    },
     curr_charge_over_recovery: {
         name: "充电过流恢复值",
         index: 18,
-        unit: "单位10mA"},
+        unit: "mA",
+        operation: function (value) {
+            return value * 10
+        },
+        counterOperation: function (value) {
+            return value / 10
+        }
+    },
     curr_discharge_over_recovery: {
         name: "放电过流恢复值",
         index: 19,
-        unit: "单位10mA"},
+        unit: "mA",
+        operation: function (value) {
+            return value * 10
+        },
+        counterOperation: function (value) {
+            return value / 10
+        }
+    },
     balence_open_vol: {
         name: "均衡开启电压",
         index: 20,
-        unit: "单位1mV"},
+        unit: "mV",
+        operation: function (value) {
+            return value
+        },
+        counterOperation: function (value) {
+            return value
+        }
+    },
     balence_open_dp: {
         name:"均衡开启压差",
         index:21,
-        unit: "单位1mV"},
+        unit: "mV",
+        operation: function (value) {
+            return value
+        },
+        counterOperation: function (value) {
+            return value
+        }
+    },
     balence_close_dp: {
         name:"均衡关闭压差",
         index:22,
-        unit: "单位1mV"},
+        unit: "mV",
+        operation: function (value) {
+            return value
+        },
+        counterOperation: function (value) {
+            return value
+        }
+    },
     over_vol_delay: {
         name:"过压保护延时",
         index:23,
-        unit: "单位1s"},
+        unit: "S",
+        operation: function (value) {
+            return value
+        },
+        counterOperation: function (value) {
+            return value
+        }
+    },
     under_vol_delay: {
         name:"欠压保护延时",
         index:24,
-        unit: "单位1s"},
+        unit: "S",
+        operation: function (value) {
+            return value
+        },
+        counterOperation: function (value) {
+            return value
+        }
+    },
     over_current_delay: {
         name:"过流保护延时",
         index:25,
-        unit: "单位1s"},
+        unit: "S",
+        operation: function (value) {
+            return value
+        },
+        counterOperation: function (value) {
+            return value
+        }
+    },
     single_high_temp_delay: {
         name:"单体高温保护延时",
         index:26,
-        unit: "单位1s"
+        unit: "S",
+        operation: function (value) {
+            return value
+        },
+        counterOperation: function (value) {
+            return value
+        }
     },
-single_low_temp_delay: {
-        name:"单体低温保护延时",
-        index:27,
-        unit:"单位1s"
-    },
-mos_high_temp_delay: {
+    single_low_temp_delay: {
+            name:"单体低温保护延时",
+            index:27,
+            unit:"S",
+            operation: function (value) {
+                return value 
+            },
+            counterOperation: function (value) {
+                return value
+            },
+            newValue: ''
+        },
+    mos_high_temp_delay: {
         name:"MOS管高温保护延时",
         index:28,
-        unit:"单位1s"
+        unit:"S",
+        operation: function (value) {
+            return value
+        },
+        counterOperation: function (value) {
+            return value 
+        }
     },
-mos_high_temp_threshold: {
+    mos_high_temp_threshold: {
         name:"MOS管高温阈值",
         index:29,
-        unit: "单位1℃",
+        unit: "℃",
+        operation: function (value) {
+            return value - 40
+        },
+        counterOperation: function (value) {
+            return value + 40
+        }
     },
-mos_high_temp_recovery:{ 
+    mos_high_temp_recovery:{ 
         name: "MOS管高温恢复阈值",
         index:30,
-        unit: "单位1℃"
+        unit: "℃",
+        operation: function (value) {
+            return value + 40
+        },
+        counterOperation: function (value) {
+            return value - 40
+        }
     }
 }
 
 const alarms =[
     {
-        name: "电压采集",
-        value: 1 << 0
-    },{
-        name: "温度异常",
-        value: 1 << 1
-    },{
-        name: "通讯故障",
-        value: 1 << 2
-    },{
         name: "总压过压",
         value: 1 << 8
     },{
@@ -205,6 +406,10 @@ const alarms =[
     },
     
 ]
+let day = new Date().getDate();
+let year = new Date().getFullYear();
+let month = new Date().getMonth() + 1;
+let today = year + '/' + month + '/' + day;
 const option = {
     title: {
         text: '实时电压曲线 V',
@@ -267,44 +472,44 @@ const option = {
             type: 'line',
             data: [
                 {
-                    name: "2020/2/13 02:00:00",
-                    value: ["2020/2/13 00:00:00", 87]
+                    name: today + " 02:00:00",
+                    value: [today + " 00:00:00", 87]
                 },{
                     name: "0:00",
-                    value: ["2020/2/13 02:04:00", 34]
+                    value: [today + " 02:04:00", 34]
                 },{
-                    name: "2020/2/13 08:07:00",
-                    value: ["2020/2/13 04:07:00", 54]
+                    name: today + " 08:07:00",
+                    value: [today + " 04:07:00", 54]
                 },{
-                    name: "2020/2/13 08:07:00",
-                    value: ["2020/2/13 6:07:00", 65]
+                    name: today + " 08:07:00",
+                    value: [today + " 6:07:00", 65]
                 },{
-                    name: "2020/2/13 08:07:00",
-                    value: ["2020/2/13 08:07:00", 23]
+                    name: today + " 08:07:00",
+                    value: [today + " 08:07:00", 23]
                 },{
-                    name: "2020/2/13 08:07:00",
-                    value: ["2020/2/13 10:07:00", 14]
+                    name: today + " 08:07:00",
+                    value: [today + " 10:07:00", 14]
                 },{
-                    name: "2020/2/13 08:07:00",
-                    value: ["2020/2/13 12:07:00", 76]
+                    name: today + " 08:07:00",
+                    value: [today + " 12:07:00", 76]
                 },{
-                    name: "2020/2/13 08:07:00",
-                    value: ["2020/2/13 14:07:00", 87]
+                    name: today + " 08:07:00",
+                    value: [today + " 14:07:00", 87]
                 },{
-                    name: "2020/2/13 08:07:00",
-                    value: ["2020/2/13 16:07:00", 54]
+                    name: today + " 08:07:00",
+                    value: [today + " 16:07:00", 54]
                 },{
-                    name: "2020/2/13 08:07:00",
-                    value: ["2020/2/13 18:07:00", 34]
+                    name: today + " 08:07:00",
+                    value: [today + " 18:07:00", 34]
                 },{
-                    name: "2020/2/13 08:07:00",
-                    value: ["2020/2/13 20:07:00", 23]
+                    name: today + " 08:07:00",
+                    value: [today + " 20:07:00", 23]
                 },{
-                    name: "2020/2/13 08:07:00",
-                    value: ["2020/2/13 22:07:00", 23]
+                    name: today + " 08:07:00",
+                    value: [today + " 22:07:00", 23]
                 },{
-                    name: "2020/2/13 08:07:00",
-                    value: ["2020/2/13 24:00:00", 65]
+                    name: today + " 08:07:00",
+                    value: [today + " 24:00:00", 65]
                 }
             ]
         }
@@ -372,44 +577,44 @@ const optionForCurrent = {
             type: 'line',
             data: [
                 {
-                    name: "2020/2/13 02:00:00",
-                    value: ["2020/2/13 00:00:00", 87]
+                    name: today + " 02:00:00",
+                    value: [today + " 00:00:00", 87]
                 },{
                     name: "0:00",
-                    value: ["2020/2/13 02:04:00", 34]
+                    value: [today + " 02:04:00", 34]
                 },{
-                    name: "2020/2/13 08:07:00",
-                    value: ["2020/2/13 04:07:00", 54]
+                    name: today + " 08:07:00",
+                    value: [today + " 04:07:00", 54]
                 },{
-                    name: "2020/2/13 08:07:00",
-                    value: ["2020/2/13 6:07:00", 65]
+                    name: today + " 08:07:00",
+                    value: [today + " 6:07:00", 65]
                 },{
-                    name: "2020/2/13 08:07:00",
-                    value: ["2020/2/13 08:07:00", 23]
+                    name: today + " 08:07:00",
+                    value: [today + " 08:07:00", 23]
                 },{
-                    name: "2020/2/13 08:07:00",
-                    value: ["2020/2/13 10:07:00", 14]
+                    name: today + " 08:07:00",
+                    value: [today + " 10:07:00", 14]
                 },{
-                    name: "2020/2/13 08:07:00",
-                    value: ["2020/2/13 12:07:00", 76]
+                    name: today + " 08:07:00",
+                    value: [today + " 12:07:00", 76]
                 },{
-                    name: "2020/2/13 08:07:00",
-                    value: ["2020/2/13 14:07:00", 87]
+                    name: today + " 08:07:00",
+                    value: [today + " 14:07:00", 87]
                 },{
-                    name: "2020/2/13 08:07:00",
-                    value: ["2020/2/13 16:07:00", 54]
+                    name: today + " 08:07:00",
+                    value: [today + " 16:07:00", 54]
                 },{
-                    name: "2020/2/13 08:07:00",
-                    value: ["2020/2/13 18:07:00", 34]
+                    name: today + " 08:07:00",
+                    value: [today + " 18:07:00", 34]
                 },{
-                    name: "2020/2/13 08:07:00",
-                    value: ["2020/2/13 20:07:00", 23]
+                    name: today + " 08:07:00",
+                    value: [today + " 20:07:00", 23]
                 },{
-                    name: "2020/2/13 08:07:00",
-                    value: ["2020/2/13 22:07:00", 23]
+                    name: today + " 08:07:00",
+                    value: [today + " 22:07:00", 23]
                 },{
-                    name: "2020/2/13 08:07:00",
-                    value: ["2020/2/13 24:00:00", 65]
+                    name: today + " 08:07:00",
+                    value: [today + " 24:00:00", 65]
                 }
             ]
         }
@@ -424,7 +629,9 @@ export default class Bms extends Component {
             deviceList: [],
             selectedDevice: {key: ''},
             defaultSelectedDevice: '',
-            visible: false
+            visible: false,
+            loading: false,
+            newProtectedData: {}
         }
     }
     componentDidMount () {
@@ -448,7 +655,7 @@ export default class Bms extends Component {
     renderProtectedData = (data) => {
         let arr = [];
         for (const key in protectedData) {
-            let str = <li key={key} className="item"><span className="title">{protectedData[key].name + '：'}</span><span className="data">{data[key]}</span><span className="unit">{"(" + protectedData[key].unit + ')'}</span></li>
+            let str = <li key={key} className="item"><span className="title">{protectedData[key].name + '：'}</span><span className="data">{protectedData[key].operation(data[key]) || 0}</span><span className="unit">{protectedData[key].unit}</span></li>
             arr.push(str);
         }
         return arr
@@ -456,23 +663,69 @@ export default class Bms extends Component {
     renderProtectedDataEdit = () => {
         let arr = [];
         for (const key in protectedData) {
-            let str = <li key={key} className="item"><span className="title">{protectedData[key].name + '：'}</span><Input className="data" /><span className="unit">{"(" + protectedData[key].unit + ')'}</span></li>
+            let str = <li key={key} className="item"><span className="title">{protectedData[key].name + '：'}</span><Input value={this.state.newProtectedData[key] || ''} data-item={key} onChange={this.getProtectedData} className="data" addonAfter={protectedData[key].unit} /></li>
             arr.push(str);
         }
-        return arr
+        return <ul className="clearfix">{arr}</ul>
 
+    }
+    getProtectedData = (e) => {
+        let name = e.target.getAttribute("data-item");
+        let { newProtectedData } = this.state;
+        newProtectedData[name] = e.target.value;
+        this.setState({
+            newProtectedData
+        })
+
+    }
+    sendBmsCmd = (arr, count) => {
+        
+        let str = "";
+        let slicedArr = [];
+        if (count === Math.ceil(arr.length / 8)) {
+            slicedArr = arr.slice((count-1)* 8);
+        } else {
+            slicedArr = arr.slice((count - 1)*8, (count - 1)*8 + 8);
+        }
+        str = slicedArr.join(",");
+        let data = {
+            cmd_content: "BMSPARAM," + str+ '#'
+        }
+        const url = "http://webbo.yunjiwulian.com" + "device/sendCmd?dev_id=" + this.state.activeKey +  "&cmd_id=100&cmd_name=bms";
+        http.get(url, data).then(res => {
+            if (res.data.errcode === 0) {
+                console.log(Math.ceil(arr.length / 8));
+                console.log(count);
+                if (Math.ceil(arr.length / 8) === count) {
+                    message.success("修改数据成功");
+                    this.setState({
+                        visible: false,
+                        newProtectedData: {}
+                    })
+                } else {
+                    this.sendBmsCmd(arr, count+=1);
+                }
+            } else {
+                message.error("修改数据失败");
+            }
+        })
     }
     handleCancel = () => {
         this.setState({
-            visible: false
+            visible: false,
+            newProtectedData: {}
         })
     }
     handleOk = () => {
-        this.setState({
-            visible: false
-        })
+        let {newProtectedData} = this.state;
+        let arr = [];
+        for (const key in newProtectedData) {
+            arr.push(protectedData[key].index + ',' + newProtectedData[key])
+        }
+        this.sendBmsCmd(arr,1);
     }
     renderTabData = data => {
+        let dev_id = this.state.selectedDevice.key
         return (<div style={{overflow: 'auto'}}> 
                 <Row className="bmsContent">
                     <Col className="version" span={10}>
@@ -541,6 +794,16 @@ export default class Bms extends Component {
                                         color: red,
                                         offsetCenter: [0, '40%']
                                     },
+                                    axisLine: {            // 坐标轴线
+                                        lineStyle: {       // 属性lineStyle控制线条样式
+                                            width: 10
+                                        }
+                                    },splitLine: {           // 分隔线
+                                        length: 20,         // 属性length控制线长
+                                        lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                                            color: 'auto'
+                                        }
+                                    },
                                     axisLabel: {
                                         show: false
                                     }
@@ -563,6 +826,16 @@ export default class Bms extends Component {
                                     title: {
                                         color: red,
                                         offsetCenter: [0, '40%']
+                                    },
+                                    axisLine: {            // 坐标轴线
+                                        lineStyle: {       // 属性lineStyle控制线条样式
+                                            width: 10
+                                        }
+                                    },splitLine: {           // 分隔线
+                                        length: 20,         // 属性length控制线长
+                                        lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                                            color: 'auto'
+                                        }
                                     },
                                     axisLabel: {
                                         show: false
@@ -589,6 +862,16 @@ export default class Bms extends Component {
                                         color: red,
                                         offsetCenter: [0, '40%']
                                     },
+                                    axisLine: {            // 坐标轴线
+                                        lineStyle: {       // 属性lineStyle控制线条样式
+                                            width: 10
+                                        }
+                                    },splitLine: {           // 分隔线
+                                        length: 20,         // 属性length控制线长
+                                        lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                                            color: 'auto'
+                                        }
+                                    },
                                     axisLabel: {
                                         show: false
                                     }
@@ -612,6 +895,16 @@ export default class Bms extends Component {
                                         color: red,
                                         offsetCenter: [0, '40%']
                                     },
+                                    axisLine: {            // 坐标轴线
+                                        lineStyle: {       // 属性lineStyle控制线条样式
+                                            width: 10
+                                        }
+                                    },splitLine: {           // 分隔线
+                                        length: 20,         // 属性length控制线长
+                                        lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+                                            color: 'auto'
+                                        }
+                                    },
                                     axisLabel: {
                                         show: false
                                     }
@@ -629,6 +922,8 @@ export default class Bms extends Component {
                                 <i className="sp"></i>
                                 <span className="title">参数配置信息</span>
                                 <span className="setParams" style={this.props.permission === 2 ? {display: 'inline-block'} : {display:'none'}} onClick={this.setProtectedData}>设置<Icon type="right-circle" style={{marginLeft: "3px"}}/></span>
+                                <span className="powerOff" data-devid={dev_id} onClick={this.switchOff.bind(this)}>断油电</span>
+                                <span className="powerOn" data-devid={dev_id} onClick={this.switchOn.bind(this)}>开油电</span>
                             </header>
                             <ul className="clearfix">
                                 {this.renderProtectedData(data)}
@@ -659,6 +954,58 @@ export default class Bms extends Component {
             </Row>
              </div>
         )
+    }
+
+    switchOn = (e) => {
+        let dev_id = e.target.getAttribute('data-devid');
+        this.setState({
+            loading: true
+        }, () => {
+            const url = "http://webbo.yunjiwulian.com" + "/device/sendBmsRelayCmd";
+            let data = {
+                dev_id: dev_id,
+                cmd_content: "RELAY,0#"
+            }
+            http.get(url, data).then(res => {
+                setTimeout(() => {
+                    this.setState({loading: false}, () => {
+                        if (res.data.errcode === 0) {
+                            message.success("指令发送成功");
+                            
+                        } else {
+                            message.error(res.data.msg)
+                        }
+                    }) 
+                }, 1000);
+                
+            })
+        })
+        
+    }
+    switchOff = (e) => {
+        let dev_id = e.target.getAttribute('data-devid');
+
+        this.setState({
+            loading: true,
+        }, () => {
+            const url = "http://webbo.yunjiwulian.com" + "/device/sendBmsRelayCmd";
+            let data = {
+                dev_id: dev_id,
+                cmd_content: "RELAY,0#"
+            }
+            http.get(url, data).then(res => {
+                setTimeout(() => {
+                    this.setState({loading: false}, () => {
+                        if (res.data.errcode === 0) {
+                            message.success("指令发送成功");
+                            
+                        } else {
+                            message.error(res.data.msg)
+                        }
+                    }) 
+                }, 1000);
+            })
+        })
     }
     renderSingleBattery = (data) => {
         let arr = [];
@@ -715,7 +1062,7 @@ export default class Bms extends Component {
         </>
     }
     getBms = (dev_id, dev_name) => {
-        const url = "/api/device/getBmsInfoByDevid";
+        const url = "http://webbo.yunjiwulian.com/device/getBmsInfoByDevid";
         let data = {
             dev_id: 44
         }
@@ -769,7 +1116,7 @@ export default class Bms extends Component {
         })
     }
     getDeviceList = () => {
-        const url = "/api" + "/ent/getSubDeviceInfo";
+        const url = "http://webbo.yunjiwulian.com" + "/ent/getSubDeviceInfo";
         let data = {
             eid: this.props.eid
         }
@@ -789,38 +1136,41 @@ export default class Bms extends Component {
         })
     }
     changeTab = activeKey => {
+        console.log(activeKey)
         this.setState({ activeKey });
     }
  
     render () {
         return (
-            <div className="bms">
-                <div className="selectDevice">
-                    <span className="title">查看的设备：</span>
-                    <Select style={{ width: 120 }} onChange={this.selectDevice} value={this.state.selectedDevice} labelInValue>
-                        {this.state.deviceList.map(device => (
-                            <Option value={device.dev_id} key={device.dev_id}>{device.dev_name}</Option>
+            <Spin size="large" spinning={this.state.loading} className={"loadingData " + (this.state.loading ? "enabled" : 'disabled')}>
+                <div className="bms">                
+                    <div className="selectDevice">
+                        <span className="title">查看的设备：</span>
+                        <Select style={{ width: 120 }} onChange={this.selectDevice} value={this.state.selectedDevice} labelInValue>
+                            {this.state.deviceList.map(device => (
+                                <Option value={device.dev_id} key={device.dev_id}>{device.dev_name}</Option>
+                            ))}
+                        </Select>
+                    </div>
+                    <div className="tab" style={{width: "100%", height: "100%"}}>
+                        <Tabs onChange={this.changeTab} type="editable-card" onEdit={this.onEditTab} activeKey={this.state.activeKey} hideAdd> 
+                        {this.state.panes.map(pane => (
+                            <TabPane tab={pane.title} key={pane.key} closable={pane.closable}>
+                            {pane.content}
+                            </TabPane>
                         ))}
-                    </Select>
+                        </Tabs>
+                    </div>
+                    <Modal className="setProtectedData" bodyStyle={{height: "400px", overflow:"auto"}}
+                        title="设置参数"
+                        visible={this.state.visible}
+                        onOk={this.handleOk.bind(this)}
+                        onCancel={this.handleCancel}
+                        >
+                        {this.renderProtectedDataEdit()}
+                    </Modal>        
                 </div>
-                <div className="tab" style={{width: "100%", height: "100%"}}>
-                    <Tabs onChange={this.changeTab} type="editable-card" onEdit={this.onEditTab} activeKey={this.state.activeKey} hideAdd> 
-                    {this.state.panes.map(pane => (
-                        <TabPane tab={pane.title} key={pane.key} closable={pane.closable}>
-                        {pane.content}
-                        </TabPane>
-                    ))}
-                    </Tabs>
-                </div>
-                <Modal
-                    title="设置参数"
-                    visible={this.state.visible}
-                    onOk={this.handleOk}
-                    onCancel={this.handleCancel}
-                    >
-                    {this.renderProtectedDataEdit()}
-                </Modal>
-            </div>
+            </Spin>
         )
     }
 }

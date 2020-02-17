@@ -100,7 +100,7 @@ export default class Monitor extends Component {
   }
   getLocationByAccount = (newAccount) => {
     let {deviceList} = this.state;
-    const url = "/api" + "/ent/getRunInfoByEid";
+    const url = "http://webbo.yunjiwulian.com" + "/ent/getRunInfoByEid";
     let data = {
       eid: this.props.eid
     }
@@ -171,7 +171,7 @@ export default class Monitor extends Component {
     })
   }
   getDeviceList = () => {
-    const url = "/api" + "/ent/getSubDeviceInfo"
+    const url = "http://webbo.yunjiwulian.com" + "/ent/getSubDeviceInfo"
     let data = {
         eid: this.props.eid
     }
@@ -255,7 +255,7 @@ export default class Monitor extends Component {
     })
   }
   getLocation = () => {
-    const url = "/api" + "/device/getRunInfoByDevid";
+    const url = "http://webbo.yunjiwulian.com" + "/device/getRunInfoByDevid";
     let data = {
       dev_id: this.state.deviceId
     }
@@ -271,7 +271,7 @@ export default class Monitor extends Component {
   }
   getCmdList = (e) => {
     let product_type = e.target.getAttribute("data-type");
-    const url = "/api" + "/device/getCmdListByType";
+    const url = "http://webbo.yunjiwulian.com" + "/device/getCmdListByType";
     let data = {
       product_type: product_type
     }
@@ -367,7 +367,7 @@ export default class Monitor extends Component {
     })
   }
   sendCmd = () => {
-    const url = "/api" + "device/sendCmd";
+    const url = "http://webbo.yunjiwulian.com" + "device/sendCmd";
     const {cmdInput, selectedCmd, deviceId} = this.state; 
     let cmd_content = selectedCmd.head + (selectedCmd.sp ? selectedCmd.sp:'') + cmdInput + selectedCmd.tail;
     let data = {
@@ -388,7 +388,7 @@ export default class Monitor extends Component {
     })
   }
   getCmdResult = (id) => {
-    const url = "/api" + "/device/getCmdRsp";
+    const url = "http://webbo.yunjiwulian.com" + "/device/getCmdRsp";
     let data = {
       id: 66 // id
     }

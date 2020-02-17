@@ -57,6 +57,6 @@ const RenderMap = (props) => {
           })}
           {props.markers.length && renderLabel()}
         </Map>
-      </apiLoader>)
+      <http://webbo.yunjiwulian.comLoader>)
   }
 export default RenderMap
