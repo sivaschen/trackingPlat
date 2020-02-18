@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Icon, message, Popconfirm, Modal, Input, AutoComplete, Select, Table,Divider } from 'antd'
+import { Button, Icon, message, Popconfirm, Modal, Input, AutoComplete, Select, Table,Divider, Upload } from 'antd'
 import http from './../server'
 import MyForm from './form'
 import "./user.scss"
@@ -83,12 +83,12 @@ export default class User extends React.Component {
     onSearchSelect = (value) => {
         let url, data;
         if (this.state.searchType === "device") {
-            url = "/api" + "/device/searchByImei";
+            url = "/device/searchByImei";
             data = {
                 imei: value
             }
         } else {
-            url = "/api" + "/ent/searchEntByLName";   
+            url = "/ent/searchEntByLName";   
             data = {
                 login_name: value
             }        
@@ -102,12 +102,12 @@ export default class User extends React.Component {
     onSearch = searchText => {
         let url, data;
         if (this.state.searchType === "device") {
-            url = "/api" + "/device/searchByImei";
+            url = "/device/searchByImei";
             data = {
                 imei: searchText.trim()
             }
         } else {
-            url = "/api" + "/ent/searchEntByLName";   
+            url = "/ent/searchEntByLName";   
             data = {
                 login_name: searchText
             }        
@@ -141,7 +141,7 @@ export default class User extends React.Component {
     }
     deleteSubAccount = () => {
         let eid = this.props.eid;
-        const url = "/api" + "/ent/deleteEnt"
+        const url = "/ent/deleteEnt"
         let data = {
             eid
         }
@@ -155,7 +155,7 @@ export default class User extends React.Component {
         })
     }
     addUser = () => {
-        const url = "/api" + "/ent/addEnt";
+        const url = "/ent/addEnt";
         let data = {
             pid: this.state.account.eid,
             login_name: this.state.newUserName,
@@ -220,7 +220,7 @@ export default class User extends React.Component {
         })
     }
     getDeviceList () {
-        const url = "/api" + "/ent/getSubDeviceInfo"
+        const url = "/ent/getSubDeviceInfo"
         let data = {
             eid: this.state.eid
         }
@@ -236,9 +236,12 @@ export default class User extends React.Component {
             }
         })
     }
+    uploadExcel = (info) => {
+        console.log(info.file)
+    }
     init = () => {
         let eid = this.props.eid;
-        let url = "/api" + "/ent/getEntInfoByEid";
+        let url = "/ent/getEntInfoByEid";
         http.get(url, {eid: eid}).then((res) => {
         if (res.data.errcode === 0) {
             let data = res.data.data;
@@ -269,13 +272,19 @@ export default class User extends React.Component {
                    <MyForm account={this.state.account}/>
                 </div>
                 <div className="userManage">
+                    <h3>下级用户管理：</h3>
                     <Button onClick={this.showAddUser} type="primary"><Icon type="user-add" />添加下级客户</Button>
                     <Popconfirm placement="top" title="删除当前账户" onConfirm={this.deleteSubAccount} okText="确定" cancelText="取消">
                         <Button type="danger"><Icon type="user-delete" onClick={this.deleteSubAccount} />删除当前用户</Button>
                     </Popconfirm>
                 </div>
-                <div className="batchModify">
-
+                <div className="rootManage">
+                    <h3>管理员操作：</h3>
+                    <Upload  name='cardinfo' onChange={this.uploadExcel} action="/api/ent/updateCardByFile">
+                        <Button>
+                        <Icon type="upload" />上传Excel
+                        </Button>
+                    </Upload>
                 </div>
                 <div className="deviceList">
                     <h3>设备列表</h3>

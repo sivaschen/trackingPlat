@@ -691,7 +691,7 @@ export default class Bms extends Component {
         let data = {
             cmd_content: "BMSPARAM," + str+ '#'
         }
-        const url = "/api" + "/device/sendCmd?dev_id=" + this.state.activeKey +  "&cmd_id=100&cmd_name=bms";
+        const url =  "/device/sendCmd?dev_id=" + this.state.activeKey +  "&cmd_id=100&cmd_name=bms";
         http.get(url, data).then(res => {
             if (res.data.errcode === 0) {
                 console.log(Math.ceil(arr.length / 8));
@@ -961,7 +961,7 @@ export default class Bms extends Component {
         this.setState({
             loading: true
         }, () => {
-            const url = "/api" + "/device/sendBmsRelayCmd";
+            const url =  "/device/sendBmsRelayCmd";
             let data = {
                 dev_id: dev_id,
                 cmd_content: "RELAY,0#"
@@ -988,7 +988,7 @@ export default class Bms extends Component {
         this.setState({
             loading: true,
         }, () => {
-            const url = "/api" + "/device/sendBmsRelayCmd";
+            const url =  "/device/sendBmsRelayCmd";
             let data = {
                 dev_id: dev_id,
                 cmd_content: "RELAY,0#"
@@ -1062,7 +1062,7 @@ export default class Bms extends Component {
         </>
     }
     getBms = (dev_id, dev_name) => {
-        const url = "/api/device/getBmsInfoByDevid";
+        const url = "/device/getBmsInfoByDevid";
         let data = {
             dev_id: 44
         }
@@ -1116,7 +1116,7 @@ export default class Bms extends Component {
         })
     }
     getDeviceList = () => {
-        const url = "/api" + "/ent/getSubDeviceInfo";
+        const url =  "/ent/getSubDeviceInfo";
         let data = {
             eid: this.props.eid
         }

@@ -1,5 +1,6 @@
 import axios from 'axios'
-
+import {baseDomain} from './domain.js'
+axios.defaults.baseURL = baseDomain.httpUrl;
 let http = {
     post: "",
     get: ""
