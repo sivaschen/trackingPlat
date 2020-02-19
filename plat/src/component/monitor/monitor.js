@@ -369,7 +369,7 @@ export default class Monitor extends Component {
   sendCmd = () => {
     const url =  "/device/sendCmd";
     const {cmdInput, selectedCmd, deviceId} = this.state; 
-    let cmd_content = selectedCmd.head + (selectedCmd.sp ? selectedCmd.sp:'') + cmdInput + selectedCmd.tail;
+    let cmd_content =  selectedCmd.head + ((cmdInput && selectedCmd.sp) ? selectedCmd.sp:'') + cmdInput + selectedCmd.tail;
     let data = {
       dev_id: deviceId,
       cmd_id: selectedCmd.cmd_id,
@@ -382,32 +382,37 @@ export default class Monitor extends Component {
         this.setState({
           loading:true
         }, () => {
-          this.getCmdResult(res.data.data.id)
+          this.getCmdResult(res.data.data.id, 0)
         })
       }
     })
   }
-  getCmdResult = (id) => {
+  getCmdResult = (id, count) => {
     const url =  "/device/getCmdRsp";
     let data = {
       id: id
     }
       http.get(url, data).then(res => {
-        this.setState({
-          loading:false
-        },() => {
           if (res.data.errcode === 0) {
             message.success("指令已执行。")
             this.setState({
-              cmdResponse: res.data.data.response
+              cmdResponse: res.data.data.response,
+              loading: false
             })
           } else {
-            message.error(res.data.message)
+            count = count + 1;
+            if (count === 10) {
+              this.setState({
+                loading:false
+              })
+              message.error(res.data.msg);
+            } else {
+              setTimeout(() => {
+                this.getCmdResult(id, count)
+              }, 1200);
+            }
           }
-        })
-        
-     })
-    
+        })    
   }
   renderMap = () => {
     this.map = new window.BMap.Map("map");

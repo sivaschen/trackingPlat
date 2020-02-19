@@ -24,7 +24,9 @@ export default class User extends React.Component {
             searchType: 'device',
             deviceList: [],
             deviceColumns: [],
-            ancestors: []
+            ancestors: [],
+            file: '',
+            fileLogo: ''
         }
     }
     componentDidMount () {
@@ -236,8 +238,50 @@ export default class User extends React.Component {
             }
         })
     }
-    uploadExcel = (info) => {
-        console.log(info.file)
+    // uploadExcel = (info) => {
+    //     if (info.file.status === 'done') {
+    //         message.success(`${info.file.name} file uploaded successfully`);
+    //       } else if (info.file.status === 'error') {
+    //         message.error(`${info.file.name} file upload failed.`);
+    //       }
+    // }
+    customUploadExcel = () => {
+        const url = "/ent/updateCardByFile";
+        let data = new FormData();
+        data.append("cardinfo", this.state.file);
+        http.post(url, data).then(res => {
+            console.log(res.data)
+            if (res.data.errcode === 0) {
+                message.success("上传成功");
+            } else {
+                message.error("上传失败");
+            }
+        })
+    }
+    
+    getFile = (file, filelist) => {
+        this.setState({
+            file
+        });
+        return true
+    }
+    customUploadLogo = () => {
+        console.log(this.state.fileLogo.name);
+        const url = "/ent/uploadLogo";
+        let {eid} = this.props;
+        let data = new FormData();
+        data.append("file_name", this.state.fileLogo.name);
+        data.append("eid", eid);
+        data.append("file_logo", this.state.fileLogo);
+        http.post(url, data).then(res => {
+            console.log(res)
+        })
+    }
+    getLogoFile = (file, filelist) => {
+        this.setState({
+            fileLogo: file
+        })
+        return true
     }
     init = () => {
         let eid = this.props.eid;
@@ -280,9 +324,15 @@ export default class User extends React.Component {
                 </div>
                 <div className="rootManage">
                     <h3>管理员操作：</h3>
-                    <Upload  name='cardinfo' onChange={this.uploadExcel} action="/api/ent/updateCardByFile">
+                    <Upload beforeUpload={this.getFile} name='cardinfo' onChange={this.uploadExcel} action="/api/ent/updateCardByFile" showUploadList={false} customRequest={this.customUploadExcel}>
                         <Button>
                         <Icon type="upload" />上传Excel
+                        </Button>
+                        <a href="http://webbo.yunjiwulian.com/template/card.xls">下载Excel模板</a>
+                    </Upload>
+                    <Upload  name='cardinfo' beforeUpload={this.getLogoFile} customRequest={this.customUploadLogo} showUploadList={false}>
+                        <Button>
+                        <Icon type="upload" />上传经销商Logo
                         </Button>
                     </Upload>
                 </div>
