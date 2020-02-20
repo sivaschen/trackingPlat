@@ -43,6 +43,10 @@ const cmd = {
     },
     11: {
         type: 'query'
+    },
+    999: {
+        type: 1,
+        inputType: 1
     }
 }
 
