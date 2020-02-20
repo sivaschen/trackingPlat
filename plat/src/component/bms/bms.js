@@ -759,17 +759,17 @@ export default class Bms extends Component {
                                     </Row>
                                     <Row className="batteryParamMiddle batteryRow">
                                             <Col span={12}><span><i className="title">充放电次数</i><br/><i className="sp"></i><span className="data">{(Number(data.discharge_count) + Number(data.charge_count))+" 次"}</span></span></Col>
-                                            <Col span={12}><span><i className="title">电池串数</i><br/><i className="sp"></i><span className="data">{(Number(data.high_pack_cnt) + Number(data.low_pack_cnt))+" 串"}</span></span></Col>
+                                            <Col span={12}><span><i className="title">电池串数</i><br/><i className="sp"></i><span className="data">{Number(data.real_pack_cnt)+" 串"}</span></span></Col>
                                     </Row>
                                     <Row className="batteryParamBottom batteryRow">
                                             <Col span={6}><span><i className="title">最高单体电压</i><br/><i className="sp"></i><span className="data">{data.max_vol+" mV"}</span></span></Col>
                                             <Col span={6}><span><i className="title">最低单体电压</i><br/><i className="sp"></i><span className="data">{data.min_vol+" mV"}</span></span></Col>
-                                            <Col span={6}><span><i className="title">最高单体温度</i><br/><i className="sp"></i><span className="data">{data.max_temp +" ℃"}</span></span></Col>
-                                            <Col span={6}><span><i className="title">最低单体温度</i><br/><i className="sp"></i><span className="data">{data.min_temp+" ℃"}</span></span></Col>
+                                            <Col span={6}><span><i className="title">最高单体温度</i><br/><i className="sp"></i><span className="data">{(data.max_temp - 40) +" ℃"}</span></span></Col>
+                                            <Col span={6}><span><i className="title">最低单体温度</i><br/><i className="sp"></i><span className="data">{(data.min_temp - 40)+" ℃"}</span></span></Col>
                                     </Row>
                                 </Col>
                                 <Col span={8} className="temperature">
-                                        <span><i className={data.averge_temp > 25 ? "red" : "green"}></i>{"MOS温度 "+data.averge_temp+"℃"}</span><br/>
+                                        <span><i className={(data.averge_temp - 40) > 80 ? "red" : "green"}></i>{"MOS温度 "+(data.averge_temp - 40)+"℃"}</span><br/>
                                 </Col>
                             </Row>
                         </div>
@@ -786,8 +786,8 @@ export default class Bms extends Component {
                                 {
                                     name: '电压',
                                     type: 'gauge',
-                                    detail: {formatter: '{value}V', fontSize: 12, offsetCenter: [0, "60%"]},
-                                    data: [{value: data.total_vol, name: '电压'}],
+                                    detail: {formatter: '{value} V', fontSize: 12, offsetCenter: [0, "60%"]},
+                                    data: [{value: (data.total_vol / 10), name: '电压'}],
                                     min: 0,
                                     max: 1000,
                                     title: {
@@ -819,8 +819,8 @@ export default class Bms extends Component {
                                 {
                                     name: '电流',
                                     type: 'gauge',
-                                    detail: {formatter: '{value}A',fontSize: 12, offsetCenter: [0, "60%"]},
-                                    data: [{value: data.current, name: '电流'}],
+                                    detail: {formatter: '{value} A',fontSize: 12, offsetCenter: [0, "60%"]},
+                                    data: [{value: (data.current  / 100), name: '电流'}],
                                     min: 0,
                                     max: 1000,
                                     title: {
@@ -890,7 +890,7 @@ export default class Bms extends Component {
                                     detail: {formatter: '{value}',fontSize: 12, offsetCenter: [0, "60%"]},
                                     data: [{value: data.SOH, name: 'SOH'}],
                                     min: 0,
-                                    max: 1000,
+                                    max: 100,
                                     title: {
                                         color: red,
                                         offsetCenter: [0, '40%']
@@ -1064,7 +1064,7 @@ export default class Bms extends Component {
     getBms = (dev_id, dev_name) => {
         const url = "/device/getBmsInfoByDevid";
         let data = {
-            dev_id: 44
+            dev_id: dev_id
         }
         http.get(url, data).then(res => {
             if (res.data.errcode === 0) {

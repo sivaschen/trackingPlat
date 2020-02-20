@@ -277,9 +277,22 @@ export default class Monitor extends Component {
     }
     http.get(url,data).then(res => {
       if(res.data.errcode === 0) {
+        let customCmd = {
+          cmd_id: 999,
+          name: "透传",
+          tw_name: "",
+          en_name: "",
+          pri: 9999,
+          head: "",
+          tail: "",
+          check: "0",
+          group: "1",
+          remark: "VERSION#",
+          param: "no param",
+        }
         this.setState({
           cmdVisible: true,
-          cmdList: res.data.data
+          cmdList: res.data.data.concat([customCmd])
         })
       }
     })
@@ -438,15 +451,15 @@ export default class Monitor extends Component {
           <div id="map"></div>
         </div>
           <Modal title="发送指令" visible={this.state.cmdVisible} onOk={this.handleCmdOK} onCancel={this.handleCmdCancel}>
-        <Spin spinning={this.state.loading} tip="获取指令结果">
-            <Select onChange={this.cmdChange} style={{minWidth: "130px"}} placeholder="请选择指令">
-              {this.state.cmdList.map((cmd, index) => {
-                return <Option value={cmd.cmd_id} key={cmd.cmd_id}>{cmd.name}</Option>
-              })}
-            </Select>
-              {this.state.selectedCmd.cmd_id && this.renderInputCmd()} 
+          <Spin spinning={this.state.loading} tip="获取指令结果">
+              <Select onChange={this.cmdChange} style={{minWidth: "130px"}} placeholder="请选择指令">
+                {this.state.cmdList.map((cmd, index) => {
+                  return <Option value={cmd.cmd_id} key={cmd.cmd_id}>{cmd.name}</Option>
+                })}
+              </Select>
+                {this.state.selectedCmd.cmd_id && this.renderInputCmd()} 
 
-        </Spin>
+          </Spin>
           </Modal>
 
       </div>
