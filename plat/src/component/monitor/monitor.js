@@ -102,7 +102,8 @@ export default class Monitor extends Component {
     let {deviceList} = this.state;
     const url =  "/ent/getRunInfoByEid";
     let data = {
-      eid: this.props.eid
+      eid: this.props.eid,
+      map_type: "baidu"
     }
     http.get(url, data).then(res => {
       if (res.data.errcode === 0) {
