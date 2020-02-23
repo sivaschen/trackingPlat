@@ -8,6 +8,7 @@ import User from './users/user'
 import { Tree, Menu, Icon, Button, message } from 'antd';
 import http from "./server"
 import "./home.scss"
+import Sensor from './sensor/sensor.js'
 import Logo from './../asset/images/logo.jpg'
 
 const { TreeNode } = Tree;
@@ -272,6 +273,9 @@ export default class Home extends Component {
             <Menu.Item key="/home/bms" style={this.state.account.permission > 0 ? {display: 'inline-block'}: {display: 'none'}}>              
               <NavLink to="/home/bms"><Icon type="api" />电池管理</NavLink>              
             </Menu.Item>
+            <Menu.Item key="/home/sensor" >              
+              <NavLink to="/home/sensor"><Icon type="dashboard" />传感器</NavLink>              
+            </Menu.Item>
           </Menu>
         </div>     
         <div className="tree">
@@ -305,6 +309,9 @@ export default class Home extends Component {
             </Route>
             <Route path="/home/user">
                 <User addNode={this.addNodeCallback} eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} loadTree={this.updateTreeNode} monitorDevice={this.monitorDevice} expandAncestors={this.expandAncestors} />
+            </Route>
+            <Route path="/home/sensor">
+                <Sensor eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} />
             </Route>
         </Switch>
         </div>

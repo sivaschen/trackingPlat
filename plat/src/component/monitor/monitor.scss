@@ -1,6 +1,9 @@
 .monitor {
     height: 100%;
     width: 100%;
+    .labelCmd {
+        color: blue;
+    }
     .deviceList {
         width: 200px;
         height: 100%;

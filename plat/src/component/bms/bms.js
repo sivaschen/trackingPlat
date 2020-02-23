@@ -620,6 +620,92 @@ const optionForCurrent = {
         }
     ]
 }
+const volPercentage = [
+    {
+        percentage: 0,
+        voltage:  2550
+    }, 
+    {
+        percentage: 5,
+        voltage:  3009
+    }, 
+    {
+        percentage: 10,
+        voltage: 3101
+    }, 
+    {
+        percentage: 15,
+        voltage: 3122
+    }, 
+    {
+        percentage: 20,
+        voltage: 3146
+    },					
+    {
+        percentage: 25,
+        voltage: 3167
+    },
+    {
+        percentage: 30,
+        voltage: 3182
+    },
+    {
+        percentage: 35,
+        voltage: 3193
+    },
+    {
+        percentage: 40,
+        voltage: 3201
+    },
+    {
+        percentage: 45,
+        voltage: 3207
+    }, 
+    {
+        percentage: 50,
+        voltage: 3212
+    }, 
+    {
+        percentage: 55,
+        voltage: 3216
+    }, 
+    {
+        percentage: 60,
+        voltage: 3221
+    }, 
+    {
+        percentage: 65,
+        voltage: 3227
+    },
+    {
+        percentage: 70,
+        voltage: 3235
+    }, 
+    {
+        percentage: 75,
+        voltage: 3244
+    }, 
+    {
+        percentage: 80,
+        voltage: 3251
+    }, 
+    {
+        percentage: 85,
+        voltage: 3256
+    }, 
+    {
+        percentage: 90,
+        voltage: 3260
+    }, 
+    {
+        percentage: 95,
+        voltage: 3263
+    }, 
+    {
+        percentage: 100,
+        voltage: 3450
+    }
+  ]
 export default class Bms extends Component {
     constructor (props){
         super(props);
@@ -1023,9 +1109,27 @@ export default class Bms extends Component {
         for (let i = 0; i < arr.length; i++) {
             let groupData = arr[i];
             for (let j = 0; j < groupData.length; j++) {
+                if (groupData[j] === "0") continue;
+                let batteryStyle;
+                for (let k = volPercentage.length -1; k > 0; k--) {
+                    let vol = volPercentage[k].voltage;
+                    if (vol< groupData[j]) {
+                        let percentage = volPercentage[k+1].percentage;
+                        let bgc = percentage > 20 ? "rgb(50, 141, 226)" : "rgb(253,132,151)";
+                        batteryStyle = {width: (percentage / 100 * 48) + 'px', backgroundColor: bgc};
+                        break;
+                    }
+                }
                 let str = 
                     <li className="singleBattery" key={ i + "-" + j}>
-                        <div className="percentage">{groupData[j]}</div>
+                        <div className="img">
+                            <div className="battery">
+                                <div className="imgBox"></div>
+                                <div className="percentage" style={batteryStyle}></div>
+                            </div>
+                            <div className="sequence">{'#' + (i + 1) + '-' + j}</div>
+                        </div>
+                        <span className="data">{groupData[j] + " mv"}</span>                        
                     </li>
                         htmlArr.push(str);
             }
@@ -1079,14 +1183,17 @@ export default class Bms extends Component {
                     }
                 }
                 let bmsData = res.data.data;
-                let tabContent = this.renderTabData(bmsData);
-                panes.push(
-                    {title: dev_name, content: tabContent, key: dev_id, closable: true}
-                )
-                this.setState({
-                    panes,
-                    activeKey:dev_id
-                })
+                if (bmsData.relay_status != "0") {
+                    let tabContent = this.renderTabData(bmsData);
+                    panes.push(
+                        {title: dev_name, content: tabContent, key: dev_id, closable: true}
+                    )
+                    this.setState({
+                        panes,
+                        activeKey:dev_id
+                    })
+                }
+                
             }
         })
     }

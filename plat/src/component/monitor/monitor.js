@@ -5,8 +5,10 @@ import { List, message, Modal, Select, Input, Button, Spin } from 'antd'
 import car from './../../asset/images/car.png'
 import tool from './../../asset/js/util.js'
 import cmd from './cmd.js'
+import {ComplexCustomOverlay} from './cutomOverlay.js'
 
 const { Option } = Select;
+
 const gps_status = {
   0: "未定位",
   1: "已定位"
@@ -19,6 +21,7 @@ const dev_status = {
   offline: '离线',
   online: '在线'
 }
+
 export default class Monitor extends Component {
   constructor(props) {
     super(props)
@@ -75,7 +78,7 @@ export default class Monitor extends Component {
       let offlineTime = this.formatTimeSpan(content.offline_time);
       str += '<span>离线时长：'+ offlineTime +'</span><br/>'
     }
-    str +=  '<a class="labelCmd" data-type='+ content.product_type +'>指令</a>';
+    str +=  '<span class="labelCmd" data-type='+ content.product_type +'>指令</span>';
     let label = new window.BMap.Label(str, {
       offset: new window.BMap.Size(40, -65)
     })
@@ -214,7 +217,7 @@ export default class Monitor extends Component {
       let offlineTime = this.formatTimeSpan(content.offline_time);
       str += '<span>离线时长：'+ offlineTime +'</span><br/>'
     }
-    str +=  '<a class="labelCmd" data-type='+ content.product_type +'>指令</a>';
+    str +=  '<span class="labelCmd" data-type='+ content.product_type +'>指令</span>';
     let label = marker.getLabel();
     if (label) {
       label.setContent(str);
@@ -400,6 +403,9 @@ export default class Monitor extends Component {
         })
       }
     })
+  }
+  customCover = () => {
+
   }
   getCmdResult = (id, count) => {
     const url =  "/device/getCmdRsp";

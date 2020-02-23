@@ -398,16 +398,48 @@ ul, li {
                         }
                     li {
                         float: left;
-                        width: 25%;
-                        background: url("./../../asset/images/battery.png") no-repeat center center;
-                        background-size: 70px 70px;
-                        height: 40px;
+                        width: 25%;                        
                         text-align: center;
-
-                        .percentage {
+                        
+                        .img {
+                            width: 70px;
                             display: inline-block;
-                            line-height: 40px;
+                            vertical-align: middle;
+                            .battery {                            
+                                position: relative;
+                                height: 40px;
+                                width: 70px;
+                                
+                                .imgBox {
+                                    background: url("./../../asset/images/battery.png") no-repeat center center;
+                                    background-size: 70px 70px;
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    width: 70px;
+                                    height: 100%;
+                                    z-index: 2;
+                                }
+                                
+                                .percentage {
+                                    line-height: 30px;
+                                    position: absolute;
+                                    height: 100%;   
+                                    top: 7px;  
+                                    left: 10px;
+                                    height: 25px;
+                                    z-index: 1;
+                                }
+                            }
+                            .data {
+                                display: inline-block;
+                                line-height: 40px;
+                                font-size: 12px;
+                                vertical-align: middle;
+                                margin-left: 10px;
+                            }
                         }
+                       
                     }
                 }
             }
