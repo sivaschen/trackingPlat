@@ -357,7 +357,7 @@ export default class Monitor extends Component {
       case 2:
         str = (<Select className="cmdInput" onChange={this.getCmdSelectInput} >
         {cmd[selectedCmd.cmd_id].option.map(option => {
-          return <Option key={option.value}>{option.name}</Option>
+          return <Option value={option.value} key={option.value}>{option.name}</Option>
         })}
       </Select>)
             break;
@@ -365,7 +365,7 @@ export default class Monitor extends Component {
         break;
     }
     return (
-      <div className="cmdCotent">
+      <div className="cmdContent">
         <span className="cmdName">{selectedCmd.name}</span>
           {str}
           <Button type="primary" onClick={this.sendCmd}>发送</Button>

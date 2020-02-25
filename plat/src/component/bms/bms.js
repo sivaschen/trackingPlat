@@ -1158,7 +1158,7 @@ export default class Bms extends Component {
             <ul className="clearfix">
                 {alarms.map(alarm => {
                     let alarmClass = (data.bms_status & alarm.value) ? "notice" : '';
-                    return <li>
+                    return <li key={alarm.name}>
                         <span className={alarmClass}>{alarm.name}</span>
                     </li>
                 })}
