@@ -1,9 +1,16 @@
 .sensor {
+    background-color: rgb(27,53,78);
+    min-width: 1000px;
+    height: 100%;
     .deviceList {
+        background-color: rgb(27,53,78);
         padding: 4px 0px 4px 20px;
         width: 100%;
         float: left;
-        background-color: #eee;
+        border-bottom: 1px solid #888;
+        .title {
+            color: #ddd;
+        }
         .ant_select {
             width: 100px;
         }

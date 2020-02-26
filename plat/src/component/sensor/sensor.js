@@ -10,7 +10,8 @@ export default class Monitor extends Component {
       super(props)
       this.state = {
         deviceList: [],
-        currentDevice: ''
+        currentDevice: '',
+        deviceData: {}
       }
     }
     componentDidMount () {        
@@ -52,18 +53,21 @@ export default class Monitor extends Component {
         http.get(url, data).then(res => {
             if (res.data.errcode === 0) {
                 let data = res.data.data;
-                console.log(data);
+                this.setState({
+                    deviceData: data
+                })
             } else {
                 message.error("获取数据失败");
             }
         })
     }
     render () {
-        let {deviceList} = this.state;
+        let {deviceList, deviceData} = this.state;
+        let water_level = parseInt(deviceData.water_level, 16);
         return (
             <div className="sensor">
                 <div className="deviceList">
-                    <span>选择设备：</span>
+                    <span className="title">选择设备：</span>
                     <Select style={{width: "100px"}} onChange={this.changeDevice} value={this.state.currentDevice}>
                         {deviceList.map(item => {
                             return <Option key={item.imei} value={item.dev_id} >{item.dev_name}</Option>
@@ -72,8 +76,8 @@ export default class Monitor extends Component {
                 </div>
                 <div className="gaugeData">
                         <div className="chartBox">
-                            <ReactEcharts style={{width:"100%",height: "175px", fontSize: "10px",display: "inline-block", float: "left"}}  option={{
-                            textStyle: {fontSize: 12},
+                            <ReactEcharts style={{width:"100%",height: "250px", fontSize: "20px",display: "inline-block", float: "left"}}  option={{
+                            textStyle: {fontSize:20},
                                 tooltip: {
                                     formatter: '{a} <br/>{b} : {c}%'
                                 },
@@ -81,8 +85,8 @@ export default class Monitor extends Component {
                                 {
                                     name: '水压',
                                     type: 'gauge',
-                                    detail: {formatter: '{value} %', fontSize: 12, offsetCenter: [0, "60%"]},
-                                    data: [{value: (15), name: '水压'}],
+                                    detail: {formatter: '{value} %', fontSize:15, offsetCenter: [0, "60%"]},
+                                    data: [{value: water_level, name: '水压'}],
                                     min: 0,
                                     max: 100,
                                     title: {
@@ -91,10 +95,10 @@ export default class Monitor extends Component {
                                     },
                                     axisLine: {            // 坐标轴线
                                         lineStyle: {       // 属性lineStyle控制线条样式
-                                            width: 10
+                                            width: 15
                                         }
                                     },splitLine: {           // 分隔线
-                                        length: 20,         // 属性length控制线长
+                                        length: 28,         // 属性length控制线长
                                         lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
                                             color: 'auto'
                                         }
@@ -106,29 +110,29 @@ export default class Monitor extends Component {
                             ]}} />
                         </div>
                         <div className="chartBox">
-                            <ReactEcharts style={{width:"100%",height: "175px", fontSize: "10px",display: "inline-block", float: "left"}}  option={{
-                            textStyle: {fontSize: 12},
+                            <ReactEcharts style={{width:"100%",height: "250px", fontSize: "18px",display: "inline-block", float: "left"}}  option={{
+                            textStyle: {fontSize:15},
                                 tooltip: {
                                     formatter: '{a} <br/>{b} : {c}%'
                                 },
                             series: [                            
                                 {
-                                    name: '电压',
+                                    name: '温度',
                                     type: 'gauge',
-                                    detail: {formatter: '{value} V', fontSize: 12, offsetCenter: [0, "60%"]},
-                                    data: [{value: (10), name: '电压'}],
-                                    min: 0,
-                                    max: 1000,
+                                    detail: {formatter: '{value} ℃', fontSize:15, offsetCenter: [0, "60%"]},
+                                    data: [{value: 30, name: '温度'}],
+                                    min: -100,
+                                    max: 100,
                                     title: {
                                         color: red,
                                         offsetCenter: [0, '40%']
                                     },
                                     axisLine: {            // 坐标轴线
                                         lineStyle: {       // 属性lineStyle控制线条样式
-                                            width: 10
+                                            width: 15
                                         }
                                     },splitLine: {           // 分隔线
-                                        length: 20,         // 属性length控制线长
+                                        length: 28,         // 属性length控制线长
                                         lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
                                             color: 'auto'
                                         }
@@ -139,29 +143,29 @@ export default class Monitor extends Component {
                                 }
                             ]}} />
                         </div><div className="chartBox">
-                            <ReactEcharts style={{width:"100%",height: "175px", fontSize: "10px",display: "inline-block", float: "left"}}  option={{
-                            textStyle: {fontSize: 12},
+                            <ReactEcharts style={{width:"100%",height: "250px", fontSize: "18px",display: "inline-block", float: "left"}}  option={{
+                            textStyle: {fontSize:15},
                                 tooltip: {
                                     formatter: '{a} <br/>{b} : {c}%'
                                 },
                             series: [                            
                                 {
-                                    name: '电压',
+                                    name: '湿度',
                                     type: 'gauge',
-                                    detail: {formatter: '{value} V', fontSize: 12, offsetCenter: [0, "60%"]},
-                                    data: [{value: (10), name: '电压'}],
+                                    detail: {formatter: '{value} %', fontSize:15, offsetCenter: [0, "60%"]},
+                                    data: [{value: (10), name: '湿度'}],
                                     min: 0,
-                                    max: 1000,
+                                    max: 40,
                                     title: {
                                         color: red,
                                         offsetCenter: [0, '40%']
                                     },
                                     axisLine: {            // 坐标轴线
                                         lineStyle: {       // 属性lineStyle控制线条样式
-                                            width: 10
+                                            width: 15
                                         }
                                     },splitLine: {           // 分隔线
-                                        length: 20,         // 属性length控制线长
+                                        length: 28,         // 属性length控制线长
                                         lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
                                             color: 'auto'
                                         }
@@ -172,29 +176,29 @@ export default class Monitor extends Component {
                                 }
                             ]}} />
                         </div><div className="chartBox">
-                            <ReactEcharts style={{width:"100%",height: "175px", fontSize: "10px",display: "inline-block", float: "left"}}  option={{
-                            textStyle: {fontSize: 12},
+                            <ReactEcharts style={{width:"100%",height: "250px", fontSize: "18px",display: "inline-block", float: "left"}}  option={{
+                            textStyle: {fontSize:15},
                                 tooltip: {
                                     formatter: '{a} <br/>{b} : {c}%'
                                 },
                             series: [                            
                                 {
-                                    name: '电压',
+                                    name: '有害气体',
                                     type: 'gauge',
-                                    detail: {formatter: '{value} V', fontSize: 12, offsetCenter: [0, "60%"]},
-                                    data: [{value: (10), name: '电压'}],
+                                    detail: {formatter: '{value} %', fontSize:15, offsetCenter: [0, "60%"]},
+                                    data: [{value: 30, name: '有害气体'}],
                                     min: 0,
-                                    max: 1000,
+                                    max: 100,
                                     title: {
                                         color: red,
                                         offsetCenter: [0, '40%']
                                     },
                                     axisLine: {            // 坐标轴线
                                         lineStyle: {       // 属性lineStyle控制线条样式
-                                            width: 10
+                                            width: 15
                                         }
                                     },splitLine: {           // 分隔线
-                                        length: 20,         // 属性length控制线长
+                                        length: 28,         // 属性length控制线长
                                         lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
                                             color: 'auto'
                                         }
