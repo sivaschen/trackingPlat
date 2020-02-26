@@ -71,7 +71,7 @@ export default class Monitor extends Component {
                     </Select>
                 </div>
                 <div className="gaugeData">
-                        <div className="voltageBox">
+                        <div className="chartBox">
                             <ReactEcharts style={{width:"100%",height: "175px", fontSize: "10px",display: "inline-block", float: "left"}}  option={{
                             textStyle: {fontSize: 12},
                                 tooltip: {
@@ -79,12 +79,12 @@ export default class Monitor extends Component {
                                 },
                             series: [                            
                                 {
-                                    name: '电压',
+                                    name: '水压',
                                     type: 'gauge',
-                                    detail: {formatter: '{value} V', fontSize: 12, offsetCenter: [0, "60%"]},
-                                    data: [{value: (10), name: '电压'}],
+                                    detail: {formatter: '{value} %', fontSize: 12, offsetCenter: [0, "60%"]},
+                                    data: [{value: (15), name: '水压'}],
                                     min: 0,
-                                    max: 1000,
+                                    max: 100,
                                     title: {
                                         color: red,
                                         offsetCenter: [0, '40%']
@@ -105,7 +105,7 @@ export default class Monitor extends Component {
                                 }
                             ]}} />
                         </div>
-                        <div className="voltageBox">
+                        <div className="chartBox">
                             <ReactEcharts style={{width:"100%",height: "175px", fontSize: "10px",display: "inline-block", float: "left"}}  option={{
                             textStyle: {fontSize: 12},
                                 tooltip: {
@@ -138,7 +138,7 @@ export default class Monitor extends Component {
                                     }
                                 }
                             ]}} />
-                        </div><div className="voltageBox">
+                        </div><div className="chartBox">
                             <ReactEcharts style={{width:"100%",height: "175px", fontSize: "10px",display: "inline-block", float: "left"}}  option={{
                             textStyle: {fontSize: 12},
                                 tooltip: {
@@ -171,7 +171,7 @@ export default class Monitor extends Component {
                                     }
                                 }
                             ]}} />
-                        </div><div className="voltageBox">
+                        </div><div className="chartBox">
                             <ReactEcharts style={{width:"100%",height: "175px", fontSize: "10px",display: "inline-block", float: "left"}}  option={{
                             textStyle: {fontSize: 12},
                                 tooltip: {

@@ -324,6 +324,8 @@ export default class Monitor extends Component {
         case error.UNKNOWN_ERROR:
           message.error("定位信息获取失败")
           break;
+        default:
+          break;
         }
         this.renderMap();
       }); 
@@ -443,7 +445,6 @@ export default class Monitor extends Component {
     this.init(); 
   }
   render() {
-    let {selectedMarker} = this.state;
     return (      
       <div className="monitor">
         <div className="deviceList">
