@@ -780,8 +780,6 @@ export default class Bms extends Component {
         const url =  "/device/sendCmd?dev_id=" + this.state.activeKey +  "&cmd_id=100&cmd_name=bms";
         http.get(url, data).then(res => {
             if (res.data.errcode === 0) {
-                console.log(Math.ceil(arr.length / 8));
-                console.log(count);
                 if (Math.ceil(arr.length / 8) === count) {
                     message.success("修改数据成功");
                     this.setState({
@@ -825,7 +823,16 @@ export default class Bms extends Component {
                                     <Wave socPercentage={data.SOC} />
                                 </Col>
                                 <Col className="hardware" span={8}>
-            <div className="isDischarge"><i className={data.current > 0 ? "circle green" : "circle red"}></i><span className="dischargeTxt">{data.current > 0 ? "放电中" : "设备未上电"}</span></div>
+                                    <div className="isDischarge">
+                                        <div className="currentCharge">
+                                            <i className={data.current > 0 ? "circle green" : "circle red"}></i>
+                                            <span className="dischargeTxt">{data.current > 0 ? "放电中" : "设备未上电"}</span>
+                                        </div>
+                                        <div className="fullCharge">
+                                            <i className={data.SOC > 95 ? "circle green" : data.SOC > 20 ? "circle blue": "circle red"}></i>
+                                            <span className="dischargeTxt">{data.SOC > 95 ? "满电" : data.SOC > 20 ? "正常" : "亏电"}</span>
+                                        </div>
+                                    </div>
                                     <span className="sn">{"产品编号："+ data.SN}</span><br/>
                                     <span className="sn">{"设备id："+ data.SN}</span><br/>
                                     <span className="sn">{"产品型号：易电"}</span><br/>
@@ -1115,7 +1122,7 @@ export default class Bms extends Component {
                     let vol = volPercentage[k].voltage;
                     if (vol< groupData[j]) {
                         let percentage = volPercentage[k+1].percentage;
-                        let bgc = percentage > 20 ? "rgb(50, 141, 226)" : "rgb(253,132,151)";
+                        let bgc = percentage > 20 ? "green" : "rgb(253,132,151)";
                         batteryStyle = {width: (percentage / 100 * 48) + 'px', backgroundColor: bgc};
                         break;
                     }
@@ -1126,10 +1133,10 @@ export default class Bms extends Component {
                             <div className="battery">
                                 <div className="imgBox"></div>
                                 <div className="percentage" style={batteryStyle}></div>
+                                <span className="data">{groupData[j] + " mv"}</span>                        
                             </div>
                             <div className="sequence">{'#' + (i + 1) + '-' + j}</div>
                         </div>
-                        <span className="data">{groupData[j] + " mv"}</span>                        
                     </li>
                         htmlArr.push(str);
             }

@@ -83,10 +83,10 @@ export default class Monitor extends Component {
                                 },
                             series: [                            
                                 {
-                                    name: '水压',
+                                    name: '水位',
                                     type: 'gauge',
                                     detail: {formatter: '{value} %', fontSize:15, offsetCenter: [0, "60%"]},
-                                    data: [{value: water_level, name: '水压'}],
+                                    data: [{value: water_level, name: '水位'}],
                                     min: 0,
                                     max: 100,
                                     title: {

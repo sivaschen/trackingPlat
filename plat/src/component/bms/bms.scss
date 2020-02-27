@@ -83,6 +83,12 @@ ul, li {
                             .isDischarge {
                                 margin-top: 10px;
                                 margin-bottom: 10px;
+                                >div {
+                                    display: inline-block;
+                                    &.fullCharge {
+                                        margin-left: 5px;
+                                    }
+                                }
                                 .circle {
                                     display: inline-block;
                                     height: 12px;
@@ -94,6 +100,9 @@ ul, li {
                                     }
                                     &.green {
                                         background-color: rgb(130, 205,88);
+                                    }
+                                    &.blue {
+                                        background-color: rgb(68, 188, 209);
                                     }
                                 }
                                 .dischargeTxt {
@@ -404,12 +413,10 @@ ul, li {
                         .img {
                             width: 70px;
                             display: inline-block;
-                            vertical-align: middle;
                             .battery {                            
                                 position: relative;
                                 height: 40px;
-                                width: 70px;
-                                
+                                width: 120px;
                                 .imgBox {
                                     background: url("./../../asset/images/battery.png") no-repeat center center;
                                     background-size: 70px 70px;
@@ -432,13 +439,13 @@ ul, li {
                                 }
                             }
                             .data {
-                                display: inline-block;
-                                line-height: 40px;
                                 font-size: 12px;
-                                vertical-align: middle;
-                                margin-left: 10px;
+                                float: right;
+                                line-height: 40px;
+
                             }
                         }
+                        
                        
                     }
                 }
