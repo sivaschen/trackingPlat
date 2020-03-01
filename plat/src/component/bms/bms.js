@@ -346,10 +346,10 @@ const protectedData = {
         index:30,
         unit: "℃",
         operation: function (value) {
-            return value + 40
+            return value - 40
         },
         counterOperation: function (value) {
-            return value - 40
+            return value + 40
         }
     }
 }
@@ -1165,9 +1165,14 @@ export default class Bms extends Component {
             <ul className="clearfix">
                 {alarms.map(alarm => {
                     let alarmClass = (data.bms_status & alarm.value) ? "notice" : '';
-                    return <li key={alarm.name}>
-                        <span className={alarmClass}>{alarm.name}</span>
-                    </li>
+                    if (data.bms_status & alarm.value) {
+                        return <li key={alarm.name}>
+                            <span className={alarmClass}>{alarm.name}</span>
+                        </li>
+                    } else {
+                        return ''
+                    }
+                    
                 })}
             </ul>
         </>

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import './monitor.scss'
 import http from './../server.js'
 import { List, message, Modal, Select, Input, Button, Spin } from 'antd'
+import {Link} from 'react-router-dom'
+
 import car from './../../asset/images/car.png'
 import tool from './../../asset/js/util.js'
 import cmd from './cmd.js'
@@ -49,8 +51,12 @@ export default class Monitor extends Component {
   }
   componentWillUnmount () {
     if (this.state.timer) {
-      window.clearTimeout(this.state.timer);
+      window.clearTimeout(this.state.timer);      
     }
+      let labelCmdDom = document.getElementsByClassName('labelCmd')[0];
+      if (labelCmdDom) {
+        labelCmdDom.removeEventListener("click", this.getCmdList);
+      }
   }
   componentDidMount () {
     // 调用父组件方法把当前实例传给父组件
@@ -65,6 +71,10 @@ export default class Monitor extends Component {
   }
   onRef = () => {
       this.props.onRef('monitor', this);
+  }
+  toPlayback = (e) => {
+    let devid = this.state.deviceId;
+    this.props.toPlayback(devid);
   }
 
   changeLabel = e => {
@@ -184,7 +194,9 @@ export default class Monitor extends Component {
           this.setState({
             deviceList: res.data.data.records
           }, () => {
-            this.map.clearOverlays(); 
+            if (this.map) {
+              this.map.clearOverlays(); 
+            }
             this.getLocationByAccount(true);
           })
         }
@@ -441,6 +453,15 @@ export default class Monitor extends Component {
     this.map.centerAndZoom(new window.BMap.Point(this.state.location.longitude || 116.404, this.state.location.latitude ||39.915), 11); // 初始化地图,设置中心点坐标和地图级别
     this.map.addControl(new window.BMap.MapTypeControl()); //添加地图类型控件
     this.map.enableScrollWheelZoom();
+    let navigationControl = new window.BMap.NavigationControl({
+      // 靠左上角位置
+      anchor: window.BMAP_ANCHOR_TOP_LEFT,
+      // LARGE类型
+      type: window.BMAP_NAVIGATION_CONTROL_LARGE,
+      // 启用显示定位
+      enableGeolocation: true
+    });
+    this.map.addControl(navigationControl);
     this.geoc = new window.BMap.Geocoder();  
     this.init(); 
   }
@@ -448,9 +469,11 @@ export default class Monitor extends Component {
     return (      
       <div className="monitor">
         <div className="deviceList">
-        <List size="small" header={<div className="deviceHeader">设备列表</div>}
-      dataSource={this.state.deviceList}
-      renderItem={item => <List.Item onClick={this.selectDevice.bind(this, item.dev_id)} className={ item.dev_id == this.state.deviceId ? "selected" :""}>{item.dev_name}</List.Item>}
+        <List size="small" header={<div className="deviceHeader">设备列表</div>} dataSource={this.state.deviceList}
+          renderItem={item => <List.Item onClick={this.selectDevice.bind(this, item.dev_id)} className={ item.dev_id == this.state.deviceId ? "selected" :""}>
+          {item.dev_name}
+          <Link to={{pathname: '/playback', search: ('devid=' + item.dev_id)}} target="_blank">回放</Link>
+        </List.Item>}
       style={{cursor:"pointer"}}
         />
         </div>

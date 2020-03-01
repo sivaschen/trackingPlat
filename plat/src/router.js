@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 //引入需要用到的页面组件 
 import Login from './component/login/login';
 import Home from './component/home'
+import Playback from './component/playback/playback.js'
 import {Switch, Route} from 'react-router-dom'
 
 const routes = [
@@ -13,6 +14,10 @@ const routes = [
     {
         path: "/home",
         component: Home
+    },
+    {
+      path: "/playback",
+      component: Playback
     },
     {
         path: "/*",

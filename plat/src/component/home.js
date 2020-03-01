@@ -25,7 +25,8 @@ export default class Home extends Component {
       autoExpandParent: true,
       selectedKeys: [],  
       account: {
-        login_name: ''
+        login_name: '',
+        permission: "00"
       }
     }
   }
@@ -212,6 +213,14 @@ export default class Home extends Component {
       current: e.key,
     });
   }
+  toPlayback = (devid) => {
+    this.props.history.push({
+      pathname: "/playback",
+      query: {
+        devid: devid
+      }
+    });
+  }
   // 90uuuou
   expandAncestors = async(data) => {
     let { treeData } = this.state;
@@ -255,6 +264,7 @@ export default class Home extends Component {
     this.props.history.push("/home/user")
   }
   render() {
+    console.log(this.state.account)
     return (
       <div className="home">
         <header>
@@ -263,17 +273,17 @@ export default class Home extends Component {
           <span className="name">{"登陆账户：" + this.state.account.login_name}</span>
         </header>
         <div className="menu">
-          <Menu onClick={this.handleMenuClick} selectedKeys={[this.state.current]} mode="horizontal" >
+          <Menu onClick={this.handleMenuClick} selectedKeys={[this.state.current]} mode="horizontal" theme="dark">
             <Menu.Item key="/home/user">              
               <NavLink to="/home/user"><Icon type="team"/>客户管理</NavLink>
             </Menu.Item>
             <Menu.Item key="/home/monitor">              
               <NavLink to="/home/monitor"><Icon type="environment" />监控</NavLink>              
             </Menu.Item>
-            <Menu.Item key="/home/bms" style={this.state.account.permission > 0 ? {display: 'inline-block'}: {display: 'none'}}>              
+            <Menu.Item key="/home/bms" style={this.state.account.permission.substr(0,1) > 0 ? {display: 'inline-block'}: {display: 'none'}}>              
               <NavLink to="/home/bms"><Icon type="api" />电池管理</NavLink>              
             </Menu.Item>
-            <Menu.Item key="/home/sensor" >              
+            <Menu.Item key="/home/sensor" style={this.state.account.permission.substr(1,1) > 0 ? {display: 'inline-block'}: {display: 'none'}}>              
               <NavLink to="/home/sensor"><Icon type="dashboard" />传感器</NavLink>              
             </Menu.Item>
           </Menu>
@@ -296,7 +306,7 @@ export default class Home extends Component {
                 <User addNode={this.addNodeCallback} eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} loadTree={this.updateTreeNode} monitorDevice={this.monitorDevice} expandAncestors={this.expandAncestors} />
             </Route>
             <Route path="/home/monitor">
-                <Monitor onRef={this.onRef.bind(this)} eid={this.state.selectedKeys[0]} devid={this.state.devid} />
+                <Monitor onRef={this.onRef.bind(this)} eid={this.state.selectedKeys[0]} devid={this.state.devid} toPlayback={this.toPlayback} />
             </Route>
             <Route path="/home/trace">
                 <Trace/>

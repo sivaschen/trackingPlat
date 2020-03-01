@@ -26,7 +26,9 @@ export default class User extends React.Component {
             deviceColumns: [],
             ancestors: [],
             file: '',
-            fileLogo: ''
+            fileLogo: '',
+            excelLoading: false,
+            logoLoading: false
         }
     }
     componentDidMount () {
@@ -256,17 +258,20 @@ export default class User extends React.Component {
             } else {
                 message.error("上传失败");
             }
+            this.setState({
+                excelLoading: false
+            })
         })
     }
     
     getFile = (file, filelist) => {
         this.setState({
-            file
+            file,
+            excelLoading: true
         });
         return true
     }
     customUploadLogo = () => {
-        console.log(this.state.fileLogo.name);
         const url = "/ent/uploadLogo";
         let {eid} = this.props;
         let data = new FormData();
@@ -275,11 +280,20 @@ export default class User extends React.Component {
         data.append("file_logo", this.state.fileLogo);
         http.post(url, data).then(res => {
             console.log(res)
+            if (res.data.errcode === 0) {
+                message.success("上传Logo成功");
+            } else {
+                message.error("上传Logo失败");
+            }
+            this.setState({
+                logoLoading: false
+            })
         })
     }
     getLogoFile = (file, filelist) => {
         this.setState({
-            fileLogo: file
+            fileLogo: file,
+            logoLoading: true
         })
         return true
     }
@@ -325,17 +339,18 @@ export default class User extends React.Component {
                 <div className="rootManage">
                     <h3>管理员操作：</h3>
                     <Upload beforeUpload={this.getFile} name='cardinfo' onChange={this.uploadExcel} action="/api/ent/updateCardByFile" showUploadList={false} customRequest={this.customUploadExcel}>
-                        <Button>
-                        <Icon type="upload" />上传Excel
+                        <Button loading={this.state.logoLoading} icon="upload" loading={this.state.excelLoading}>
+                        上传Excel
                         </Button>
                         <a href="http://webbo.yunjiwulian.com/template/card.xls">下载Excel模板</a>
                     </Upload>
                     <Upload  name='cardinfo' beforeUpload={this.getLogoFile} customRequest={this.customUploadLogo} showUploadList={false}>
-                        <Button>
-                        <Icon type="upload" />上传经销商Logo
+                        <Button icon="upload" loading={this.state.logoLoading}>
+                        上传经销商Logo
                         </Button>
                     </Upload>
                 </div>
+           
                 <div className="deviceList">
                     <h3>设备列表</h3>
                     <Table columns={this.state.deviceColumns} dataSource={this.state.deviceList} rowKey="dev_id" />
