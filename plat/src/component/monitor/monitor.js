@@ -129,7 +129,7 @@ export default class Monitor extends Component {
               item.product_type = deviceList[i].product_type;
             }           
           }
-          let point = new window.BMap.Point(item.longitude / 1000000, item.latitude / 1000000);
+          let point = new window.BMap.Point(item.longitude, item.latitude);
           let icon = new window.BMap.Icon(car, new window.BMap.Size(30,30));
           let marker = new window.BMap.Marker(point, {icon: icon});  // 创建标注
           marker.content = item;
@@ -278,7 +278,7 @@ export default class Monitor extends Component {
     http.get(url, data).then(res => {
       if (res.data.errcode === 0) {
         let data = res.data.data;
-        let point = new window.BMap.Point(data.longitude / 1000000, data.latitude / 1000000);
+        let point = new window.BMap.Point(data.longitude, data.latitude);
         this.map.panTo(point);
         let marker2 = new window.BMap.Marker(point);  // 创建标注
 	      this.map.addOverlay(marker2); 

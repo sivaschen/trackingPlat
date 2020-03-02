@@ -264,11 +264,10 @@ export default class Home extends Component {
     this.props.history.push("/home/user")
   }
   render() {
-    console.log(this.state.account)
     return (
       <div className="home">
         <header>
-          {/* <img src={Logo}/> */}
+          <img src={"http://" + this.state.account.logo_url}/>
           <Button onClick={this.logout} type="danger">退 出</Button>
           <span className="name">{"登陆账户：" + this.state.account.login_name}</span>
         </header>

@@ -1,7 +1,4 @@
-import {
-    Form,
-    Input,
-    Button,
+import {Form, Input, Button,
     message,
     Select
   } from 'antd';
@@ -156,7 +153,7 @@ import './form.scss'
         value: props.account.email,
       }),
       permission: Form.createFormField({
-        value: props.account.permission
+        value: props.account.permission.substr(0,1)
       }),
     };
   } })(accountForm);

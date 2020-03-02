@@ -42,3 +42,18 @@
         margin: 0;
     }
 }
+.rootManage {
+    .logo {
+        display: inline-block;
+        text-align: center;
+        margin-right: 10px;
+        img {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+        .logoUpload {
+            display: block;
+        }
+    }
+}
