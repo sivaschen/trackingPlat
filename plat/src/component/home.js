@@ -305,7 +305,7 @@ export default class Home extends Component {
                 <User addNode={this.addNodeCallback} eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} loadTree={this.updateTreeNode} monitorDevice={this.monitorDevice} expandAncestors={this.expandAncestors} />
             </Route>
             <Route path="/home/monitor">
-                <Monitor onRef={this.onRef.bind(this)} eid={this.state.selectedKeys[0]} devid={this.state.devid} toPlayback={this.toPlayback} />
+                <Monitor onRef={this.onRef.bind(this)} eid={this.state.selectedKeys[0]} devid={this.state.devid} toPlayback={this.toPlayback} expandAncestors={this.expandAncestors}/>
             </Route>
             <Route path="/home/trace">
                 <Trace/>

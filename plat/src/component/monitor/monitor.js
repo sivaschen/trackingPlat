@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './monitor.scss'
 import http from './../server.js'
-import { List, message, Modal, Select, Input, Button, Spin } from 'antd'
+import { Autocomplete, List, Dropdown, message,Icon, Modal, Select, Input, Button, Spin } from 'antd'
 import {Link} from 'react-router-dom'
 
 import car from './../../asset/images/car.png'
@@ -40,7 +40,9 @@ export default class Monitor extends Component {
       selectedCmd: {},
       cmdInput: '',
       loading: false,
-      cmdResponse: ''
+      cmdResponse: '',
+      searchValue: '',
+      searchDataSource: []
     }
   }
   init = () => {
@@ -350,6 +352,60 @@ export default class Monitor extends Component {
       target: marker
     })
   }
+  onSearchSelect = (value) => {
+    let url, data;
+    if (this.state.searchType === "device") {
+        url = "/device/searchByImei";
+        data = {
+            imei: value
+        }
+    } else {
+        url = "/ent/searchEntByLName";   
+        data = {
+            login_name: value
+        }        
+    }
+    http.get(url, data).then(res => {
+        if (res.data.errcode === 0) {
+            this.props.expandAncestors(res.data.data);
+        }
+    });
+  }
+  onSearch = searchText => {
+      let url, data;
+      if (this.state.searchType === "device") {
+          url = "/device/searchByImei";
+          data = {
+              imei: searchText.trim()
+          }
+      } else {
+          url = "/ent/searchEntByLName";   
+          data = {
+              login_name: searchText
+          }        
+      }
+      http.get(url, data).then(res => {
+          if (res.data.errcode === 0) {
+              console.log(res.data.data.imei)
+              if (this.state.searchType === 'account') {
+                  this.setState({
+                      searchDataSource: [res.data.data.login_name]
+                  })
+              } else {
+                  this.setState({
+                      searchDataSource: [res.data.data.imei]
+                  })
+              }
+              
+              
+          }
+      });
+  }
+  onSearchChange = value => {
+      this.setState({
+          searchValue: value
+      })
+  }
   cmdChange = (value) => {
     this.state.cmdList.forEach(cmd => {
       if (cmd.cmd_id === value) {
@@ -466,20 +522,41 @@ export default class Monitor extends Component {
     this.init(); 
   }
   render() {
+  //   const deviceList = (
+  //     <List size="small" header={<div className="deviceHeader">设备列表</div>} dataSource={this.state.deviceList}
+  //     renderItem={item => <List.Item onClick={this.selectDevice.bind(this, item.dev_id)} className={ item.dev_id == this.state.deviceId ? "selected" :""}>
+  //     {item.dev_name}
+  //     
+  //   </List.Item>}
+  // style={{cursor:"pointer"}}
+  //   />
+  //     )
+    const deviceList = (
+      <ul>
+        {this.state.deviceList.map(device => {
+          return (<li onClick={this.selectDevice.bind(this, device.dev_id)} className={device.dev_id == this.state.deviceId ? " selected" :""}>
+            <span className="name" >{device.dev_name}</span>
+            <Link className="playback" to={{pathname: '/playback', search: ('devid=' + device.dev_id)}} target="_blank">回放</Link>
+          </li>)
+        })}
+      </ul>
+    );
     return (      
-      <div className="monitor">
-        <div className="deviceList">
-        <List size="small" header={<div className="deviceHeader">设备列表</div>} dataSource={this.state.deviceList}
-          renderItem={item => <List.Item onClick={this.selectDevice.bind(this, item.dev_id)} className={ item.dev_id == this.state.deviceId ? "selected" :""}>
-          {item.dev_name}
-          <Link to={{pathname: '/playback', search: ('devid=' + item.dev_id)}} target="_blank">回放</Link>
-        </List.Item>}
-      style={{cursor:"pointer"}}
-        />
-        </div>
+      <div className="monitor">          
         <div className="mapBox">
           <div className="parseAddress">{this.state.parsedAddress}</div>
-          <div id="map"></div>
+          <div className="deviceList">
+            <Dropdown overlay={deviceList}>
+              <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
+                设备列表<Icon type="down" />
+              </a>
+            </Dropdown>
+          </div>
+          <div className="deviceSearch">
+            <AutoComplete value={this.state.searchValue} dataSource={this.state.searchDataSource} style={{ width: 200 }} onSelect={this.onSearchSelect} onSearch={this.onSearch} onChange={this.onSearchChange} placeholder="请输入搜索的关键字"/>
+          </div>
+          <div id="map">
+          </div>
         </div>
           <Modal title="发送指令" visible={this.state.cmdVisible} onOk={this.handleCmdOK} onCancel={this.handleCmdCancel}>
           <Spin spinning={this.state.loading} tip="获取指令结果">
