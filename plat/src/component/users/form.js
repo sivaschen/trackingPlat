@@ -46,15 +46,41 @@ import './form.scss'
     handleSelectChange = e => {
       console.log(e)
     }
-    saveAccountInfo = (values) => {
+    saveAccountInfo = (value) => {
       const url =  "/ent/updateEnt";
+      console.log(value)
+      let formValue = value;
+      if (formValue.controlPermission.indexOf("bms") > -1) {
+        formValue.bms_permission = '2';
+      } else if (formValue.displayPermission.indexOf('bms') > -1) {
+        formValue.bms_permission = '1';
+      } else {
+        formValue.bms_permission = '0';
+      }
+      if (formValue.controlPermission.indexOf("sensor") > -1) {
+        formValue.sensor_permission = '2';
+      } else if (formValue.displayPermission.indexOf('sensor') > -1) {
+        formValue.sensor_permission = '1';
+      } else {
+        formValue.sensor_permission = '0';
+      }
+      if (formValue.controlPermission.indexOf("gps") > -1) {
+        formValue.gps_permission = '2';
+      } else if (formValue.displayPermission.indexOf('gps') > -1) {
+        formValue.gps_permission = '1';
+      } else {
+        formValue.gps_permission = '0';
+      }
       let data = {
         pid: this.props.account.pid,
         eid: this.props.account.eid,
-        phone: values.phone,
-        addr: values.addr,
-        email: values.email,
-        permission: values.permission
+        phone: formValue.phone,
+        addr: formValue.addr,
+        email: formValue.email,
+        bms_permission: formValue.bms_permission,
+        sensor_permission: formValue.sensor_permission,
+        gps_permission: formValue.gps_permission
+
       }
       http.get(url, data).then(res => {
         if (res.data.errcode === 0) {
@@ -118,13 +144,22 @@ import './form.scss'
               ],
             })(<Input />)}
           </Form.Item>
-          <Form.Item label="BMS权限" style={{width: "230px"}} className={this.state.showBmsControl ? 'show' : "hide"} labelCol={{  
-          xs: { span: 8 },
-          sm: { span:8 }}}  wrapperCol={{ xs: { span: 16 }, sm: { span: 16 }}} >
-            {getFieldDecorator('permission')(<Select placeholder="BMS权限" onChange={this.handleSelectChange}>
-              <Option value="0">关闭</Option>
-              <Option value="1">监控</Option>
-              <Option value="2">控制</Option>
+          <Form.Item label="显示权限" style={{width: "310px"}} className={this.state.showBmsControl ? 'show' : "hide"} labelCol={{  
+          xs: { span: 5 },
+          sm: { span:5 }}}  wrapperCol={{ xs: { span: 19 }, sm: { span: 19 }}} >
+            {getFieldDecorator('displayPermission')(<Select mode="multiple" placeholder="显示权限" onChange={this.handleSelectChange}>
+              <Option key="0" value="bms">BMS</Option>
+              <Option  key="1" value="sensor">SENSOR</Option>
+              <Option key="2"  value="gps">GPS</Option>
+            </Select>)}
+          </Form.Item>
+          <Form.Item label="控制权限" style={{width: "310px"}} className={this.state.showBmsControl ? 'show' : "hide"} labelCol={{  
+          xs: { span: 5 },
+          sm: { span:5 }}}  wrapperCol={{ xs: { span: 19 }, sm: { span: 19 }}} >
+            {getFieldDecorator('controlPermission')(<Select mode="multiple" placeholder="显示权限" onChange={this.handleSelectChange}>
+              <Option key="0" value="bms">BMS</Option>
+              <Option key="1" value="sensor">SENSOR</Option>
+              <Option key="2" value="gps">GPS</Option>
             </Select>)}
           </Form.Item>
           <Form.Item {...tailFormItemLayout}>
@@ -152,9 +187,12 @@ import './form.scss'
       email: Form.createFormField({
         value: props.account.email,
       }),
-      permission: Form.createFormField({
-        value: props.account.permission.substr(0,1)
+      displayPermission: Form.createFormField({
+        value: props.account.displayPermission
       }),
+      controlPermission: Form.createFormField({
+        value: props.account.controlPermission
+      })
     };
   } })(accountForm);
   

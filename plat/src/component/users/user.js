@@ -328,6 +328,33 @@ export default class User extends React.Component {
         })
     }
     render () {       
+        let { account } = this.state;
+        let permissionAcc = account;
+        // bms_permission: "2"
+        // sensor_permission: "1"
+        // gps_permission: "1"
+        let displayPermission = [];
+        let controlPermission = [];
+        if (permissionAcc.bms_permission === "2") {
+            controlPermission.push('bms');
+            displayPermission.push('bms');
+        } else if (permissionAcc.bms_permission === "1") {
+            displayPermission.push('bms');
+        }
+        if (permissionAcc.sensor_permission === "2") {
+            controlPermission.push('sensor');
+            displayPermission.push('sensor');
+        } else if (permissionAcc.sensor_permission === "1") {
+            displayPermission.push('sensor');
+        }
+        if (permissionAcc.gps_permission === "2") {
+            controlPermission.push('gps');
+            displayPermission.push('gps');
+        } else if (permissionAcc.gps_permission === "1") {
+            displayPermission.push('gps');
+        }
+        permissionAcc.displayPermission = displayPermission;
+        permissionAcc.controlPermission = controlPermission;
         return (
             <div className="user">
                 <div className="deviceSearch">
@@ -340,7 +367,7 @@ export default class User extends React.Component {
                 </div>
                 <div className="accInfo">
                     <h3 className="accountTitle">账户信息:</h3>
-                   <MyForm account={this.state.account}/>
+                   <MyForm account={permissionAcc}/>
                 </div>
                 <div className="userManage">
                     <h3>下级用户管理：</h3>

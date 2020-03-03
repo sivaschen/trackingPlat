@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './monitor.scss'
 import http from './../server.js'
-import { Autocomplete, List, Dropdown, message,Icon, Modal, Select, Input, Button, Spin } from 'antd'
+import { AutoComplete, List, Dropdown, message,Icon, Modal, Select, Input, Button, Spin } from 'antd'
 import {Link} from 'react-router-dom'
 
 import car from './../../asset/images/car.png'
@@ -42,7 +42,8 @@ export default class Monitor extends Component {
       loading: false,
       cmdResponse: '',
       searchValue: '',
-      searchDataSource: []
+      searchDataSource: [],
+      searchType: 'account'
     }
   }
   init = () => {
