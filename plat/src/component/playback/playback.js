@@ -4,7 +4,7 @@ import { DatePicker, Button, message } from 'antd';
 import http from './../server.js'
 import car from '../../asset/images/car-1.png'
 const { RangePicker } = DatePicker;
-export default class Placyback extends React.Component {
+export default class Playback extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -12,7 +12,8 @@ export default class Placyback extends React.Component {
             beginTime: '',
             endTime: '',
             polylineArr: [],
-            marker: ''
+            marker: '',
+            polyline: null
         }
     }
     onChange = (value, dateString) => {
@@ -43,9 +44,17 @@ export default class Placyback extends React.Component {
         let marker = new window.BMap.Marker(point, {
             icon: icon
         });
-        this.playbackMap.addOverlay(marker);
+        let polyline = new window.BMap.Polyline([new window.BMap.Point(116.399, 39.910),
+            
+            ],{strokeColor:"black", strokeWeight:2, strokeOpacity:0.5})
+            this.playbackMap.addOverlay(marker);
+            polyline.setPath({
+                path: [new window.BMap.Point(116.399, 39.910),new window.BMap.Point(116.405, 39.920),new window.BMap.Point(116.425, 39.900)]
+            })
+            this.playbackMap.addOverlay(polyline);
         this.setState({
-            marker
+            marker,
+            polyline
         })
     }
     onOk = (value) => {
@@ -77,10 +86,18 @@ export default class Placyback extends React.Component {
         })
     }
     moveMarker = (i) => {
-        let { polylineArr, marker} = this.state;
-        let point = new window.BMap.Point(polylineArr[i].lon / 1000000, polylineArr[i].lat / 1000000);
+        let { polylineArr, marker,polyline} = this.state;
+        let point = new window.BMap.Point(polylineArr[i].lng, polylineArr[i].lat);
         marker.setPosition(point);
+        let arr = polyline.getPath();
+        console.log(arr);
+        arr.push(point);
+        polyline.setPath({path: arr});
         let count = i + 1;
+        this.setState({
+            marker,
+            polyline
+        })
         setTimeout(() => {
             this.moveMarker(count);
         }, 500);

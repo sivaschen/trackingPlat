@@ -24,6 +24,10 @@ import './form.scss'
       let access_token = cookieParms.access_token;
       let eidLen = parseInt(access_token.substr(3, 2));
       let eid = access_token.substr(5, eidLen);
+      
+      
+
+
 
       if (this.props.account.eid === Number(eid)){
         this.setState({
@@ -48,7 +52,6 @@ import './form.scss'
     }
     saveAccountInfo = (value) => {
       const url =  "/ent/updateEnt";
-      console.log(value)
       let formValue = value;
       if (formValue.controlPermission.indexOf("bms") > -1) {
         formValue.bms_permission = '2';
@@ -148,18 +151,14 @@ import './form.scss'
           xs: { span: 5 },
           sm: { span:5 }}}  wrapperCol={{ xs: { span: 19 }, sm: { span: 19 }}} >
             {getFieldDecorator('displayPermission')(<Select mode="multiple" placeholder="显示权限" onChange={this.handleSelectChange}>
-              <Option key="0" value="bms">BMS</Option>
-              <Option  key="1" value="sensor">SENSOR</Option>
-              <Option key="2"  value="gps">GPS</Option>
+              {this.renderDisplayOptions}
             </Select>)}
           </Form.Item>
           <Form.Item label="控制权限" style={{width: "310px"}} className={this.state.showBmsControl ? 'show' : "hide"} labelCol={{  
           xs: { span: 5 },
           sm: { span:5 }}}  wrapperCol={{ xs: { span: 19 }, sm: { span: 19 }}} >
             {getFieldDecorator('controlPermission')(<Select mode="multiple" placeholder="显示权限" onChange={this.handleSelectChange}>
-              <Option key="0" value="bms">BMS</Option>
-              <Option key="1" value="sensor">SENSOR</Option>
-              <Option key="2" value="gps">GPS</Option>
+              {this.renderControlOptions}
             </Select>)}
           </Form.Item>
           <Form.Item {...tailFormItemLayout}>

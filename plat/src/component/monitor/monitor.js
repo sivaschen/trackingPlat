@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import './monitor.scss'
 import http from './../server.js'
-import { AutoComplete, List, Dropdown, message,Icon, Modal, Select, Input, Button, Spin } from 'antd'
-import {Link} from 'react-router-dom'
+import {message,Icon, Modal, Select, Input, Button, Spin } from 'antd'
 
 import car from './../../asset/images/car.png'
 import tool from './../../asset/js/util.js'
@@ -91,7 +90,7 @@ export default class Monitor extends Component {
       let offlineTime = this.formatTimeSpan(content.offline_time);
       str += '<span>离线时长：'+ offlineTime +'</span><br/>'
     }
-    str +=  '<span class="labelCmd" data-type='+ content.product_type +'>指令</span>';
+    str +=  '<span class="labelCmd" data-type='+ content.product_type +'>指令</span><a class="playback" target="_blank" href="/playback?devid=' + content.devid + '">回放</a>';
     let label = new window.BMap.Label(str, {
       offset: new window.BMap.Size(40, -65)
     })
@@ -122,6 +121,7 @@ export default class Monitor extends Component {
       map_type: "baidu"
     }
     http.get(url, data).then(res => {
+      console.log(newAccount);
       if (res.data.errcode === 0) {
         let data = res.data.data;
         let { markers, selectedMarker } = this.state;
@@ -130,7 +130,7 @@ export default class Monitor extends Component {
           for (let j = 0; j < deviceList.length; j++) {
             if (item.dev_id === deviceList[j].devid) {
               item.product_type = deviceList[i].product_type;
-            }           
+            }
           }
           let point = new window.BMap.Point(item.longitude, item.latitude);
           let icon = new window.BMap.Icon(car, new window.BMap.Size(30,30));
@@ -195,7 +195,9 @@ export default class Monitor extends Component {
     http.get(url, data).then(res => {
       if (res.data.errcode === 0) {
           this.setState({
-            deviceList: res.data.data.records
+            deviceList: res.data.data.records,
+            deviceId: '',
+            selectedMarker: null
           }, () => {
             if (this.map) {
               this.map.clearOverlays(); 
@@ -232,7 +234,7 @@ export default class Monitor extends Component {
       let offlineTime = this.formatTimeSpan(content.offline_time);
       str += '<span>离线时长：'+ offlineTime +'</span><br/>'
     }
-    str +=  '<span class="labelCmd" data-type='+ content.product_type +'>指令</span>';
+    str +=  '<span class="labelCmd" data-type='+ content.product_type +'>指令</span><a class="playback" target="_blank" href="/playback?devid=' + content.devid + '">回放</a>';
     let label = marker.getLabel();
     if (label) {
       label.setContent(str);
@@ -353,60 +355,7 @@ export default class Monitor extends Component {
       target: marker
     })
   }
-  onSearchSelect = (value) => {
-    let url, data;
-    if (this.state.searchType === "device") {
-        url = "/device/searchByImei";
-        data = {
-            imei: value
-        }
-    } else {
-        url = "/ent/searchEntByLName";   
-        data = {
-            login_name: value
-        }        
-    }
-    http.get(url, data).then(res => {
-        if (res.data.errcode === 0) {
-            this.props.expandAncestors(res.data.data);
-        }
-    });
-  }
-  onSearch = searchText => {
-      let url, data;
-      if (this.state.searchType === "device") {
-          url = "/device/searchByImei";
-          data = {
-              imei: searchText.trim()
-          }
-      } else {
-          url = "/ent/searchEntByLName";   
-          data = {
-              login_name: searchText
-          }        
-      }
-      http.get(url, data).then(res => {
-          if (res.data.errcode === 0) {
-              console.log(res.data.data.imei)
-              if (this.state.searchType === 'account') {
-                  this.setState({
-                      searchDataSource: [res.data.data.login_name]
-                  })
-              } else {
-                  this.setState({
-                      searchDataSource: [res.data.data.imei]
-                  })
-              }
-              
-              
-          }
-      });
-  }
-  onSearchChange = value => {
-      this.setState({
-          searchValue: value
-      })
-  }
+
   cmdChange = (value) => {
     this.state.cmdList.forEach(cmd => {
       if (cmd.cmd_id === value) {
@@ -505,6 +454,18 @@ export default class Monitor extends Component {
           }
         })    
   }
+
+  onBlur = () => {
+    console.log('blur');
+  }
+  
+  onFocus = () => {
+    console.log('focus');
+  }
+  
+  onSearch = (val) => {
+    console.log('search:', val);
+  }
   renderMap = () => {
     this.map = new window.BMap.Map("map");
     this.map.centerAndZoom(new window.BMap.Point(this.state.location.longitude || 116.404, this.state.location.latitude ||39.915), 11); // 初始化地图,设置中心点坐标和地图级别
@@ -522,6 +483,7 @@ export default class Monitor extends Component {
     this.geoc = new window.BMap.Geocoder();  
     this.init(); 
   }
+
   render() {
   //   const deviceList = (
   //     <List size="small" header={<div className="deviceHeader">设备列表</div>} dataSource={this.state.deviceList}
@@ -532,29 +494,32 @@ export default class Monitor extends Component {
   // style={{cursor:"pointer"}}
   //   />
   //     )
-    const deviceList = (
-      <ul>
-        {this.state.deviceList.map(device => {
-          return (<li onClick={this.selectDevice.bind(this, device.dev_id)} className={device.dev_id == this.state.deviceId ? " selected" :""}>
-            <span className="name" >{device.dev_name}</span>
-            <Link className="playback" to={{pathname: '/playback', search: ('devid=' + device.dev_id)}} target="_blank">回放</Link>
-          </li>)
-        })}
-      </ul>
-    );
+
     return (      
       <div className="monitor">          
         <div className="mapBox">
           <div className="parseAddress">{this.state.parsedAddress}</div>
           <div className="deviceList">
-            <Dropdown overlay={deviceList}>
-              <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-                设备列表<Icon type="down" />
-              </a>
-            </Dropdown>
-          </div>
-          <div className="deviceSearch">
-            <AutoComplete value={this.state.searchValue} dataSource={this.state.searchDataSource} style={{ width: 200 }} onSelect={this.onSearchSelect} onSearch={this.onSearch} onChange={this.onSearchChange} placeholder="请输入搜索的关键字"/>
+          <Select
+            value={this.state.deviceId}
+            showSearch
+            style={{ width: 150 }}
+            placeholder="选择设备"
+            optionFilterProp="children"
+            onChange={this.selectDevice}
+            onFocus={this.onFocus}
+            onBlur={this.onBlur}
+            onSearch={this.onSearch}
+            filterOption={(input, option) =>
+              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {this.state.deviceList.map(device => {
+              return (<Option key={device.imei} value={device.dev_id}>
+                <span className="name">{device.dev_name}</span>
+                </Option>)
+            })}
+          </Select>
           </div>
           <div id="map">
           </div>
@@ -563,7 +528,7 @@ export default class Monitor extends Component {
           <Spin spinning={this.state.loading} tip="获取指令结果">
               <Select onChange={this.cmdChange} style={{minWidth: "130px"}} placeholder="请选择指令">
                 {this.state.cmdList.map((cmd, index) => {
-                  return <Option value={cmd.cmd_id} key={cmd.cmd_id}>{cmd.name}</Option>
+                  return <Option value={cmd.cmd_id} key={cmd.cmd_id} >{cmd.name}</Option>
                 })}
               </Select>
                 {this.state.selectedCmd.cmd_id && this.renderInputCmd()} 
