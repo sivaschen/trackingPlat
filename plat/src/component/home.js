@@ -5,18 +5,19 @@ import Trace from '../component/trace/trace'
 import YJCenter from '../component/yjcenter/yjcenter'
 import Bms from './bms/bms.js'
 import User from './users/user'
-import { Tree, Menu, Icon, Button, message } from 'antd';
+import { Tree, Menu, Icon, Button, message, Layout } from 'antd';
 import http from "./server"
 import "./home.scss"
 import Sensor from './sensor/sensor.js'
 import Logo from './../asset/images/logo.jpg'
-
+const { Header, Content, Footer, Sider } = Layout;
 const { TreeNode } = Tree;
 
 export default class Home extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      collapsed: false,
       current: '/home/user',
       eid: '',
       devid: '',
@@ -43,6 +44,10 @@ export default class Home extends Component {
       this.getToken();
     })
   }
+  onCollapse = collapsed => {
+    console.log(collapsed);
+    this.setState({ collapsed });
+  };
   getToken = () => {
     let cookie = document.cookie.split(";");
     let cookieParms = {}
@@ -287,18 +292,20 @@ export default class Home extends Component {
             </Menu.Item>
           </Menu>
         </div>     
-        <div className="tree">
-          <Tree loadData={this.onLoadData} 
-            onExpand={this.onExpand}
-            expandedKeys={this.state.expandedKeys}
-            autoExpandParent={this.state.autoExpandParent}
-            onSelect={this.onSelect}
-            onLoad={this.loadTree}
-            selectedKeys={this.state.selectedKeys}
-            onRightClick={this.rightClickNode}>
-              {this.renderTreeNodes(this.state.treeData)}
-          </Tree>
-        </div>
+        <Layout style={{ minHeight: '100vh' }}>
+          <Sider className="tree" collapsible collapsed={this.state.collapsed} collapsedWidth={0} onCollapse={this.onCollapse}>
+            <Tree loadData={this.onLoadData} 
+              onExpand={this.onExpand}
+              expandedKeys={this.state.expandedKeys}
+              autoExpandParent={this.state.autoExpandParent}
+              onSelect={this.onSelect}
+              onLoad={this.loadTree}
+              selectedKeys={this.state.selectedKeys}
+              onRightClick={this.rightClickNode}>
+                {this.renderTreeNodes(this.state.treeData)}
+            </Tree>
+          </Sider>
+        <Layout>
         <div className="subPage">
           <Switch>
             <Route exact path="/home">
@@ -324,7 +331,9 @@ export default class Home extends Component {
             </Route>
         </Switch>
         </div>
-      </div>
+        </Layout>
+        </Layout>
+        </div>
     )
   }
 }

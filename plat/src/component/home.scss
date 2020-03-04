@@ -46,17 +46,20 @@
     .tree {
       position: absolute;
       padding-top: 114px;
-      width: 200px;
+      max-width: 200px;
       box-sizing: border-box;
       float: left;
-      // background-color: rgb(76, 145, 197);
-      background-color: #ddd;
       height: 100%;
       .ant-tree {
         font-size: 12px;
         max-height: 100%;
         overflow: auto;
-
+        span.ant-tree-title {
+          color: #fff;
+        }
+        .ant-tree-switcher-icon {
+          color: #fff;
+        }
         li .ant-tree-node-content-wrapper.ant-tree-node-selected {
           background-color: rgb(94, 158, 160);
         }
