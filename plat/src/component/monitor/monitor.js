@@ -516,7 +516,7 @@ export default class Monitor extends Component {
           >
             {this.state.deviceList.map(device => {
               return (<Option key={device.imei} value={device.dev_id}>
-                <span className="name">{device.dev_name}</span>
+                {device.dev_name}
                 </Option>)
             })}
           </Select>

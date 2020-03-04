@@ -11,7 +11,9 @@ import './form.scss'
     constructor (props) {
       super(props);
       this.state = {
-        showBmsControl: false
+        showBmsControl: false,
+        displayOpt: [],
+        controlOpt: []
       };
     }
     componentWillReceiveProps() {
@@ -23,19 +25,38 @@ import './form.scss'
       })
       let access_token = cookieParms.access_token;
       let eidLen = parseInt(access_token.substr(3, 2));
-      let eid = access_token.substr(5, eidLen);
-      
-      
-
-
-
+      let eid = access_token.substr(5, eidLen);   
+      let controlOpt = [];
+      let displayOpt = [];
+      if (this.props.rootAcc.bms_permission === "2") {
+        controlOpt.push('bms');
+        displayOpt.push('bms');
+      } else if (this.props.rootAcc.bms_permission === "1") {
+        displayOpt.push('bms');
+      }
+      if (this.props.rootAcc.sensor_permission === "2") {
+        controlOpt.push('sensor');
+        displayOpt.push('sensor');
+      } else if (this.props.rootAcc.sensor_permission === "1") {
+        displayOpt.push('sensor');
+      }
+      if (this.props.rootAcc.gps_permission === "2") {
+        controlOpt.push('gps');
+        displayOpt.push('gps');
+      } else if (this.props.rootAcc.gps_permission === "1") {
+        displayOpt.push('gps');
+      }
       if (this.props.account.eid === Number(eid)){
         this.setState({
-          showBmsControl:false
+          showBmsControl:false,
+          displayOpt,
+          controlOpt
         })
       } else {
         this.setState({
-          showBmsControl:true
+          showBmsControl:true,
+          displayOpt,
+          controlOpt
         })
       }
     }
@@ -88,6 +109,8 @@ import './form.scss'
       http.get(url, data).then(res => {
         if (res.data.errcode === 0) {
           message.success("保存信息成功");
+        } else if (res.data.errcode === 12) {
+          message.error("子账户权限不能大于直属上级");
         } else {
           message.error("保存信息失败");
         }
@@ -151,14 +174,18 @@ import './form.scss'
           xs: { span: 5 },
           sm: { span:5 }}}  wrapperCol={{ xs: { span: 19 }, sm: { span: 19 }}} >
             {getFieldDecorator('displayPermission')(<Select mode="multiple" placeholder="显示权限" onChange={this.handleSelectChange}>
-              {this.renderDisplayOptions}
+            {this.state.displayOpt.map(opt => {
+                return <Option key={opt} value={opt}>{opt}</Option>
+              })}
             </Select>)}
           </Form.Item>
           <Form.Item label="控制权限" style={{width: "310px"}} className={this.state.showBmsControl ? 'show' : "hide"} labelCol={{  
           xs: { span: 5 },
           sm: { span:5 }}}  wrapperCol={{ xs: { span: 19 }, sm: { span: 19 }}} >
             {getFieldDecorator('controlPermission')(<Select mode="multiple" placeholder="显示权限" onChange={this.handleSelectChange}>
-              {this.renderControlOptions}
+              {this.state.controlOpt.map(opt => {
+                return <Option key={opt} value={opt}>{opt}</Option>
+              })}
             </Select>)}
           </Form.Item>
           <Form.Item {...tailFormItemLayout}>

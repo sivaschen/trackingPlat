@@ -42,13 +42,12 @@ export default class User extends React.Component {
         let cookieParms = {};
         let isRoot = false;
         cookie.forEach(item => {
-        let objArr = item.split("=");
-        cookieParms[objArr[0].trim()] = objArr[1];
+            let objArr = item.split("=");
+            cookieParms[objArr[0].trim()] = objArr[1];
         })
         let access_token = cookieParms.access_token;
         let eidLen = parseInt(access_token.substr(3, 2));
         let rootEid = access_token.substr(5, eidLen);
-        console.log(rootEid);
         if (rootEid == 8888 || rootEid == 10000) {
             isRoot = true;
         }
@@ -83,9 +82,9 @@ export default class User extends React.Component {
                     key: 'action',
                     render: (text, record) => (
                         <span>
-                          <a>跟踪</a>
+                          <a onClick={this.monitorDevice.bind(this, record.dev_id)}>GPS</a>
                           <Divider type="vertical" />
-                          <a onClick={this.monitorDevice.bind(this, record.dev_id)}>监控</a>
+                          <a>BMS</a>
                         </span>
                       )
                   }]
@@ -310,7 +309,6 @@ export default class User extends React.Component {
         return true
     }
     init = () => {
-        
         let eid = this.props.eid;
         let url = "/ent/getEntInfoByEid";
         http.get(url, {eid: eid}).then((res) => {
@@ -367,7 +365,7 @@ export default class User extends React.Component {
                 </div>
                 <div className="accInfo">
                     <h3 className="accountTitle">账户信息:</h3>
-                   <MyForm account={permissionAcc}/>
+                   <MyForm account={permissionAcc} rootAcc={this.props.rootAcc}/>
                 </div>
                 <div className="userManage">
                     <h3>下级用户管理：</h3>
