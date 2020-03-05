@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './monitor.scss'
 import http from './../server.js'
-import {message,Icon, Modal, Select, Input, Button, Spin } from 'antd'
+import {message, Modal, Select, Input, Button, Spin, DatePicker  } from 'antd'
 
 import car from './../../asset/images/car.png'
 import tool from './../../asset/js/util.js'
@@ -42,7 +42,13 @@ export default class Monitor extends Component {
       cmdResponse: '',
       searchValue: '',
       searchDataSource: [],
-      searchType: 'account'
+      searchType: 'account',
+      statsLoading: false,
+      statsVisible: false,
+      startValue: null,
+      endValue: null,
+      endOpen: false,
+      mileageStats: []
     }
   }
   init = () => {
@@ -67,9 +73,48 @@ export default class Monitor extends Component {
   }
   componentDidUpdate () {
     let labelCmdDom = document.getElementsByClassName('labelCmd')[0];
+    let statsDom = document.getElementsByClassName('statistics')[0];
     if (labelCmdDom) {
       labelCmdDom.addEventListener("click", this.getCmdList);
+      statsDom.addEventListener("click", this.openStatsModal);
     }
+  }
+  openStatsModal = (e) => {
+    this.setState({
+      statsVisible: true
+    })
+  }
+  queryStats = () => {
+    let {startValue, endValue } = this.state;
+    if (!startValue || !endValue) {
+      message.error("请选择开始和结束时间");
+      return
+    }
+    let startTimestamp = new Date(startValue.format("YYYY-MM-DD HH:mm:ss")).getTime() / 1000
+    let endTimestamp = new Date(endValue.format("YYYY-MM-DD HH:mm:ss")).getTime() / 1000
+    const url = "/device/getMilestatByDevId";
+    let data = {
+      dev_id: this.state.deviceId,
+      begin_tm: startTimestamp,
+      end_tm:endTimestamp,
+    }
+    this.setState({
+      statsLoading:true
+    }, () => {
+      http.get(url, data).then(res => {
+        this.setState({
+          statsLoading: false
+        })
+        if (res.data.errcode === 0) {
+          this.setState({
+            mileageStats: res.data.data.milestat_infos
+          })
+        } else {
+          message.error("查询里程失败");
+        }
+      })
+    })
+    
   }
   onRef = () => {
       this.props.onRef('monitor', this);
@@ -91,6 +136,7 @@ export default class Monitor extends Component {
       str += '<span>离线时长：'+ offlineTime +'</span><br/>'
     }
     str +=  '<span class="labelCmd" data-type='+ content.product_type +'>指令</span><a class="playback" target="_blank" href="/playback?devid=' + content.devid + '">回放</a>';
+    str += '<span class="statistics" data-devid=' +  content.devid + '>里程</span>';
     let label = new window.BMap.Label(str, {
       offset: new window.BMap.Size(40, -65)
     })
@@ -121,15 +167,14 @@ export default class Monitor extends Component {
       map_type: "baidu"
     }
     http.get(url, data).then(res => {
-      console.log(newAccount);
       if (res.data.errcode === 0) {
         let data = res.data.data;
         let { markers, selectedMarker } = this.state;
         for (let i = 0; i < data.length; i++) {          
           let item = data[i];
           for (let j = 0; j < deviceList.length; j++) {
-            if (item.dev_id === deviceList[j].devid) {
-              item.product_type = deviceList[i].product_type;
+            if (item.devid === deviceList[j].dev_id) {
+              item.product_type = deviceList[j].product_type;
             }
           }
           let point = new window.BMap.Point(item.longitude, item.latitude);
@@ -235,6 +280,7 @@ export default class Monitor extends Component {
       str += '<span>离线时长：'+ offlineTime +'</span><br/>'
     }
     str +=  '<span class="labelCmd" data-type='+ content.product_type +'>指令</span><a class="playback" target="_blank" href="/playback?devid=' + content.devid + '">回放</a>';
+    str += '<span class="statistics" data-devid=' +  content.devid + '>里程</span>'
     let label = marker.getLabel();
     if (label) {
       label.setContent(str);
@@ -275,6 +321,7 @@ export default class Monitor extends Component {
       cmdList: []
     })
   }
+  
   getLocation = () => {
     const url =  "/device/getRunInfoByDevid";
     let data = {
@@ -483,17 +530,63 @@ export default class Monitor extends Component {
     this.geoc = new window.BMap.Geocoder();  
     this.init(); 
   }
+  handleStatsOK = ()=> {
+    this.setState({
+      statsVisible:false,
+      startValue: null,
+      endValue: null,
+      mileageStats: []
+    })
+  }
+  handleStatsCancel = () => {
+    this.setState({
+      statsVisible:false,
+      startValue: null,
+      endValue: null,
+      mileageStats: []
+    })
+  }
+  disabledStartDate = startValue => {
+    const { endValue } = this.state;
+    if (!startValue || !endValue) {
+      return false;
+    }
+    return startValue.valueOf() > endValue.valueOf();
+  };
 
+  disabledEndDate = endValue => {
+    const { startValue } = this.state;
+    if (!endValue || !startValue) {
+      return false;
+    }
+    return endValue.valueOf() <= startValue.valueOf();
+  };
+
+  onChange = (field, value) => {
+    this.setState({
+      [field]: value,
+    });
+  };
+
+  onStartChange = value => {
+    this.onChange('startValue', value);
+  };
+
+  onEndChange = value => {
+    this.onChange('endValue', value);
+  };
+
+  handleStartOpenChange = open => {
+    if (!open) {
+      this.setState({ endOpen: true });
+    }
+  };
+
+  handleEndOpenChange = open => {
+    this.setState({ endOpen: open });
+  };
   render() {
-  //   const deviceList = (
-  //     <List size="small" header={<div className="deviceHeader">设备列表</div>} dataSource={this.state.deviceList}
-  //     renderItem={item => <List.Item onClick={this.selectDevice.bind(this, item.dev_id)} className={ item.dev_id == this.state.deviceId ? "selected" :""}>
-  //     {item.dev_name}
-  //     
-  //   </List.Item>}
-  // style={{cursor:"pointer"}}
-  //   />
-  //     )
+    const { startValue, endValue, endOpen } = this.state;
 
     return (      
       <div className="monitor">          
@@ -534,6 +627,41 @@ export default class Monitor extends Component {
                 {this.state.selectedCmd.cmd_id && this.renderInputCmd()} 
 
           </Spin>
+          </Modal>
+            <Modal title="里程统计" visible={this.state.statsVisible} onOk={this.handleStatsOK} onCancel={this.handleStatsCancel}>
+                <Spin spinning={this.state.statsLoading} tip="查询中">
+                <DatePicker
+              disabledDate={this.disabledStartDate}
+              showTime
+              format="YYYY-MM-DD HH:mm:ss"
+              value={startValue}
+              placeholder="Start"
+              onChange={this.onStartChange}
+              onOpenChange={this.handleStartOpenChange}
+            />
+            <span>-</span>
+            <DatePicker
+              disabledDate={this.disabledEndDate}
+              showTime
+              format="YYYY-MM-DD HH:mm:ss"
+              value={endValue}
+              placeholder="End"
+              onChange={this.onEndChange}
+              open={endOpen}
+              onOpenChange={this.handleEndOpenChange}
+            />
+            <Button onClick={this.queryStats} style={{marginLeft: "10px"}}>查询</Button>
+            <div className="mileageData">
+              <ul>
+                {this.state.mileageStats.map(item => {
+                  return (
+                    <li>{item.stat_date.split(' ')[0] + ':' + 
+                    (item.mileage / 1000) + "km"}</li>
+                  )
+                })}
+              </ul>
+            </div>
+            </Spin>
           </Modal>
 
       </div>

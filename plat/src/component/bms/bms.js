@@ -1116,6 +1116,7 @@ export default class Bms extends Component {
         for (let i = 0; i < arr.length; i++) {
             let groupData = arr[i];
             for (let j = 0; j < groupData.length; j++) {
+                console.log(groupData[j]);
                 if (groupData[j] === "0") continue;
                 let batteryStyle;
                 for (let k = volPercentage.length -1; k > 0; k--) {
@@ -1124,6 +1125,7 @@ export default class Bms extends Component {
                         let percentage = volPercentage[k+1].percentage;
                         let bgc = percentage > 20 ? "green" : "rgb(253,132,151)";
                         batteryStyle = {width: (percentage / 100 * 48) + 'px', backgroundColor: bgc};
+                        
                         break;
                     }
                 }
@@ -1195,7 +1197,7 @@ export default class Bms extends Component {
                     }
                 }
                 let bmsData = res.data.data;
-                if (bmsData.relay_status != "0") {
+                if (bmsData) {
                     let tabContent = this.renderTabData(bmsData);
                     panes.push(
                         {title: dev_name, content: tabContent, key: dev_id, closable: true}

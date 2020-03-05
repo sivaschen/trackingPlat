@@ -3,10 +3,12 @@
     width: 100%;
     .labelCmd {
         color: blue;
+        cursor: pointer;
     }
-    .playback {
+    .playback, .statistics {
         color: blue;
         margin-left: 5px;
+        cursor: pointer;
     }
     .mapBox {
         height: 100%;
