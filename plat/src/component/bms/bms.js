@@ -873,7 +873,7 @@ export default class Bms extends Component {
                             <ReactEcharts style={{width:"100%",height: "175px", fontSize: "10px",display: "inline-block", float: "left"}}  option={{
                             textStyle: {fontSize: 12},
                                 tooltip: {
-                                    formatter: '{a} <br/>{b} : {c}%'
+                                    formatter: '{b} : {c} V'
                                 },
                             series: [                            
                                 {
@@ -889,7 +889,8 @@ export default class Bms extends Component {
                                     },
                                     axisLine: {            // 坐标轴线
                                         lineStyle: {       // 属性lineStyle控制线条样式
-                                            width: 10
+                                            width: 10,
+                                            color: [[0.2, '#c23531'], [0.8, '#63869e'], [1, '#91c7ae']]
                                         }
                                     },splitLine: {           // 分隔线
                                         length: 20,         // 属性length控制线长
@@ -906,7 +907,7 @@ export default class Bms extends Component {
                             <div className="currentBox">
                                 <ReactEcharts style={{width:"100%",height: "175px",  fontSize: "10px",display: "inline-block"}} option={{
                                 tooltip: {
-                                    formatter: '{a} <br/>{b} : {c}%'
+                                    formatter: '{b} : {c} A'
                                 },
                             series: [                            
                                 {
@@ -915,14 +916,15 @@ export default class Bms extends Component {
                                     detail: {formatter: '{value} A',fontSize: 12, offsetCenter: [0, "60%"]},
                                     data: [{value: (data.current  / 100), name: '电流'}],
                                     min: 0,
-                                    max: 1000,
+                                    max: 10,
                                     title: {
                                         color: red,
                                         offsetCenter: [0, '40%']
                                     },
                                     axisLine: {            // 坐标轴线
                                         lineStyle: {       // 属性lineStyle控制线条样式
-                                            width: 10
+                                            width: 10,
+                                            color: [[0.2, '#c23531'], [0.8, '#63869e'], [1, '#91c7ae']]
                                         }
                                     },splitLine: {           // 分隔线
                                         length: 20,         // 属性length控制线长
@@ -941,13 +943,13 @@ export default class Bms extends Component {
                         <div className="capacityBox">
                             <ReactEcharts style={{width:"100%",height: "175px",  fontSize: "10px",display: "inline-block" ,float: "left"}} option={{
                                 tooltip: {
-                                    formatter: '{a} <br/>{b} : {c}%'
+                                    formatter: '{b} : {c} Ah'
                                 },
                             series: [                            
                                 {
                                     name: '容量',
                                     type: 'gauge',
-                                    detail: {formatter: '{value}Ah',fontSize: 12, offsetCenter: [0, "60%"]},
+                                    detail: {formatter: '{value} Ah',fontSize: 12, offsetCenter: [0, "60%"]},
                                     data: [{value: data.remaining_capacity, name: '容量'}],
                                     min: 0,
                                     max: data.rated_capacity,
@@ -957,7 +959,8 @@ export default class Bms extends Component {
                                     },
                                     axisLine: {            // 坐标轴线
                                         lineStyle: {       // 属性lineStyle控制线条样式
-                                            width: 10
+                                            width: 10,
+                                            color: [[0.2, '#c23531'], [0.8, '#63869e'], [1, '#91c7ae']]
                                         }
                                     },splitLine: {           // 分隔线
                                         length: 20,         // 属性length控制线长
@@ -974,13 +977,13 @@ export default class Bms extends Component {
                         <div className="socBox">
                             <ReactEcharts style={{width:"100%",height: "175px",  fontSize: "10px",display: "inline-block", float: "left"}}  option={{
                                 tooltip: {
-                                    formatter: '{a} <br/>{b} : {c}%'
+                                    formatter: '{b} : {c}%'
                                 },
                             series: [                            
                                 {
                                     name: 'SOC',
                                     type: 'gauge',
-                                    detail: {formatter: '{value}',fontSize: 12, offsetCenter: [0, "60%"]},
+                                    detail: {formatter: '{value} %',fontSize: 12, offsetCenter: [0, "60%"]},
                                     data: [{value: data.SOH, name: 'SOH'}],
                                     min: 0,
                                     max: 100,
@@ -990,7 +993,8 @@ export default class Bms extends Component {
                                     },
                                     axisLine: {            // 坐标轴线
                                         lineStyle: {       // 属性lineStyle控制线条样式
-                                            width: 10
+                                            width: 10,
+                                            color: [[0.2, '#c23531'], [0.8, '#63869e'], [1, '#91c7ae']]
                                         }
                                     },splitLine: {           // 分隔线
                                         length: 20,         // 属性length控制线长
@@ -1014,9 +1018,9 @@ export default class Bms extends Component {
                             <header>
                                 <i className="sp"></i>
                                 <span className="title">参数配置信息</span>
-                                <span className="setParams" style={this.props.permission === 2 ? {display: 'inline-block'} : {display:'none'}} onClick={this.setProtectedData}>设置<Icon type="right-circle" style={{marginLeft: "3px"}}/></span>
-                                <span className="powerOff" style={this.props.permission === 2 ? {display: 'inline-block'} : {display:'none'}} data-devid={dev_id} onClick={this.switchOff.bind(this)}>断油电</span>
-                                <span className="powerOn" style={this.props.permission === 2 ? {display: 'inline-block'} : {display:'none'}} data-devid={dev_id} onClick={this.switchOn.bind(this)}>开油电</span>
+                                <span className="setParams" onClick={this.setProtectedData}>设置<Icon type="right-circle" style={{marginLeft: "3px"}}/></span>
+                                <span className="powerOff" data-devid={dev_id} onClick={this.switchOff.bind(this)}>断油电</span>
+                                <span className="powerOn" data-devid={dev_id} onClick={this.switchOn.bind(this)}>开油电</span>
                             </header>
                             <ul className="clearfix">
                                 {this.renderProtectedData(data)}
@@ -1084,7 +1088,7 @@ export default class Bms extends Component {
             const url =  "/device/sendBmsRelayCmd";
             let data = {
                 dev_id: dev_id,
-                cmd_content: "RELAY,0#"
+                cmd_content: "RELAY,1#"
             }
             http.get(url, data).then(res => {
                 setTimeout(() => {
@@ -1137,7 +1141,7 @@ export default class Bms extends Component {
                                 <div className="percentage" style={batteryStyle}></div>
                                 <span className="data">{groupData[j] + " mv"}</span>                        
                             </div>
-                            <div className="sequence">{'#' + (i + 1) + '-' + j}</div>
+                            <div className="sequence">{'#' + (4*i + (j+1))}</div>
                         </div>
                     </li>
                         htmlArr.push(str);
