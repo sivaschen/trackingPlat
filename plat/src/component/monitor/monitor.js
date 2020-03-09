@@ -591,29 +591,30 @@ export default class Monitor extends Component {
     return (      
       <div className="monitor">          
         <div className="mapBox">
-          <div className="parseAddress">{this.state.parsedAddress}</div>
-          <div className="deviceList">
-          <Select
-            value={this.state.deviceId}
-            showSearch
-            style={{ width: 150 }}
-            placeholder="选择设备"
-            optionFilterProp="children"
-            onChange={this.selectDevice}
-            onFocus={this.onFocus}
-            onBlur={this.onBlur}
-            onSearch={this.onSearch}
-            filterOption={(input, option) =>
-              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-          >
-            {this.state.deviceList.map(device => {
-              return (<Option key={device.imei} value={device.dev_id}>
-                {device.dev_name}
-                </Option>)
-            })}
-          </Select>
-          </div>
+          <div className="parseAddress">
+            <span>{this.state.parsedAddress}</span>
+            <div className="deviceList">
+              <Select value={this.state.deviceId} showSearch style={{ width: 150 }}
+                placeholder="选择设备"
+                optionFilterProp="children"
+                onChange={this.selectDevice}
+                onFocus={this.onFocus}
+                onBlur={this.onBlur}
+                onSearch={this.onSearch}
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+              >
+                {this.state.deviceList.map(device => {
+                  return (<Option key={device.imei} value={device.dev_id}>
+                    {device.dev_name}
+                    </Option>)
+                })}
+              </Select>
+            </div>
+            
+            </div>
+          
           <div id="map">
           </div>
         </div>
