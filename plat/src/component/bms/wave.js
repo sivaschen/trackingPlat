@@ -24,7 +24,6 @@ export default class Wave extends React.Component {
     // }
     render () {
         let {socPercentage} = this.props;
-        console.log(socPercentage);
         let height = {height: socPercentage + "%"}
         return (
             <div className="fensug">

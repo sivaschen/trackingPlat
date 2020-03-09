@@ -254,12 +254,12 @@ export default class Home extends Component {
       this.subpage.init();
     })
   }
-  monitorDevice = (devid) => {
+  changeRouter = (devid, route) => {
     this.setState({
       devid: devid,
-      current: "/home/monitor"
+      current: "/home/" + route
     }, () => {
-      this.props.history.push("/home/monitor")
+      this.props.history.push("/home/" + route)
     })
   }
   logout = () => {
@@ -309,7 +309,7 @@ export default class Home extends Component {
         <div className="subPage">
           <Switch>
             <Route exact path="/home">
-                <User addNode={this.addNodeCallback} eid={this.state.selectedKeys[0]} rootAcc={this.state.account} onRef={this.onRef.bind(this)} loadTree={this.updateTreeNode} monitorDevice={this.monitorDevice} expandAncestors={this.expandAncestors} />
+                <User addNode={this.addNodeCallback} eid={this.state.selectedKeys[0]} rootAcc={this.state.account} onRef={this.onRef.bind(this)} loadTree={this.updateTreeNode} changeRouter={this.changeRouter} expandAncestors={this.expandAncestors} />
             </Route>
             <Route path="/home/monitor">
                 <Monitor onRef={this.onRef.bind(this)} eid={this.state.selectedKeys[0]} devid={this.state.devid} toPlayback={this.toPlayback} expandAncestors={this.expandAncestors}/>
@@ -321,10 +321,10 @@ export default class Home extends Component {
                 <YJCenter onRef={this.onRef.bind(this)} eid={this.state.selectedKeys[0]}/>
             </Route>
             <Route path="/home/bms">
-                <Bms eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} permission={Number(this.state.account.permission)} bmsNoPerm={this.bmsNoPerm} />
+                <Bms eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} devid={this.state.devid} permission={Number(this.state.account.bms_permission)} bmsNoPerm={this.bmsNoPerm} />
             </Route>
             <Route path="/home/user">
-                <User addNode={this.addNodeCallback} rootAcc={this.state.account} eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} loadTree={this.updateTreeNode} monitorDevice={this.monitorDevice} expandAncestors={this.expandAncestors} />
+                <User addNode={this.addNodeCallback} rootAcc={this.state.account} eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} loadTree={this.updateTreeNode} changeRouter={this.changeRouter} expandAncestors={this.expandAncestors} />
             </Route>
             <Route path="/home/sensor">
                 <Sensor eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} />

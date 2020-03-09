@@ -39,6 +39,7 @@ export default class Monitor extends Component {
         })
       }
     changeDevice = devid => {
+        console.log(devid)
         this.setState({
             currentDevice: devid
         }, () => {
@@ -68,11 +69,15 @@ export default class Monitor extends Component {
             <div className="sensor">
                 <div className="deviceList">
                     <span className="title">选择设备：</span>
-                    <Select style={{width: "100px"}} onChange={this.changeDevice} value={this.state.currentDevice}>
+                    <Select style={{width: "100px"}} onChange={this.changeDevice} value={this.state.currentDevice} showSearch  optionFilterProp="children"
+                    filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }>
                         {deviceList.map(item => {
                             return <Option key={item.imei} value={item.dev_id} >{item.dev_name}</Option>
                         })}
                     </Select>
+                    
                 </div>
                 <div className="gaugeData">
                         <div className="chartBox">

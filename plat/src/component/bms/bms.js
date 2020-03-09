@@ -728,12 +728,14 @@ export default class Bms extends Component {
         this.init();
     }
     init = () => {
+        let { devid } = this.props;
         this.setState({
             deviceList: [],
             selectedDevice: {key: ''},
             activeKey: ''
+        }, () => {
+            this.getDeviceList();
         })
-        this.getDeviceList();
     }
     onRef = () => {
         this.props.onRef('bms', this)
@@ -1271,7 +1273,11 @@ export default class Bms extends Component {
                 <div className="bms">                
                     <div className="selectDevice">
                         <span className="title">查看的设备：</span>
-                        <Select style={{ width: 120 }} onChange={this.selectDevice} value={this.state.selectedDevice} labelInValue>
+                        <Select style={{ width: 120 }} onChange={this.selectDevice} showSearch value={this.state.selectedDevice} labelInValue  placeholder="选择设备"
+                optionFilterProp="children"
+                onChange={this.selectDevice} filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }>
                             {this.state.deviceList.map(device => (
                                 <Option value={device.dev_id} key={device.dev_id}>{device.dev_name}</Option>
                             ))}

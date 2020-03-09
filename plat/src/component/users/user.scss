@@ -40,6 +40,11 @@
             text-align: center;
             margin: 0;
         }
+        .iccid {
+            span {
+                margin-right: 5px;
+            }
+        }
     }
     .rootManage {
         .logo {
@@ -56,4 +61,15 @@
             }
         }
     }
+    
+}
+.cardModal {
+    .cardTable {
+        span.cardTitle {
+            display: inline-block;
+            width: 110px;
+            text-align: right;
+            margin-right: 15px;
+        }
+    }   
 }

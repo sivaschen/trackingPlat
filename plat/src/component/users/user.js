@@ -1,10 +1,21 @@
 import React from 'react'
-import { Button, Icon, message, Popconfirm, Modal, Input, AutoComplete, Select, Table,Divider, Upload } from 'antd'
+import { Button, Icon, message, Popconfirm, Modal,Tooltip, Input, AutoComplete, Select, Table,Divider, Upload } from 'antd'
 import http from './../server'
 import MyForm from './form'
 import "./user.scss"
 const { Option } = Select;
-
+const cardKey = {
+    "iccid": "iccid",
+    "msisdn": "msisdn",
+    "package": "流量",
+    "manufacturer": "制造商",
+    "card_type": "卡类型",
+    "card_status": "卡状态",
+    "plat_start_time": "平台启用时间",
+    "plat_expire_time": "平台过期时间",
+    "create_time": "创建时间",
+    "modify_time": "修改时间"
+}
 export default class User extends React.Component {
     constructor(props) {
         super(props)
@@ -13,6 +24,7 @@ export default class User extends React.Component {
             account: {
                 permission: '00'
             },
+            cardVisible: false,
             email: '',
             visible: false,
             confirmLoading: false,
@@ -31,7 +43,8 @@ export default class User extends React.Component {
             fileLogo: '',
             excelLoading: false,
             logoLoading: false,
-            isRoot:false
+            isRoot:false,
+            cardInfo:  []
         }
     }
     componentDidMount () {
@@ -66,7 +79,13 @@ export default class User extends React.Component {
                 },{
                     title: 'ICCID',
                     dataIndex: 'iccid',
-                    key: 'iccid'
+                    key: 'iccid',
+                    render:(text, record) => (
+                        <div className="iccid" style={ !text ? {display: 'none'} : {} }>
+                            <span>{text}</span>
+                            <Icon onClick={this.showCardInfo.bind(this, text)} type="info-circle" />
+                        </div>
+                    )
                 },
                   {
                     title: '设备型号',
@@ -77,14 +96,18 @@ export default class User extends React.Component {
                     dataIndex: 'CREATE_TIME',
                     key: 'CREATE_TIME',
                   },{
+                    title: '备注',
+                    dataIndex: 'remark',
+                    key: 'remark',
+                  },{
                     title: '操作',
                     dataIndex: 'action',
                     key: 'action',
                     render: (text, record) => (
                         <span>
-                          <a onClick={this.monitorDevice.bind(this, record.dev_id)}>GPS</a>
+                          <a onClick={this.changeRouter.bind(this, record.dev_id, "monitor")}>GPS</a>
                           <Divider type="vertical" />
-                          <a>BMS</a>
+                          <a onClick={this.changeRouter.bind(this, record.dev_id, 'bms')}>BMS</a>
                         </span>
                       )
                   }]
@@ -94,9 +117,36 @@ export default class User extends React.Component {
         }
         })
     }
-
-    monitorDevice = (devid) => {
-        this.props.monitorDevice(devid);
+    showCardInfo = (iccid) => {
+        this.setState({
+            cardVisible: true
+        }, this.getCardInfo(iccid))
+    }
+    getCardInfo = (iccid) => {
+        const url = "/ent/getCardInfoByIccid";
+        let data = {
+            iccid
+        };
+        http.get(url, data).then(res => {
+            if (res.data.errcode === 0) {
+                let cardInfo = res.data.data.card;
+                let arr = [];
+                for (const key in cardInfo) {
+                    arr.push({
+                        key: key,
+                        value: cardInfo[key]
+                    })
+                }
+                this.setState({
+                    cardInfo: arr
+                })
+            } else {
+                message.error("获取卡信息失败")
+            }
+        })
+    }
+    changeRouter = (devid, route) => {
+        this.props.changeRouter(devid, route);
     }
     onRef = () => {
         this.props.onRef('user', this)
@@ -123,9 +173,9 @@ export default class User extends React.Component {
     onSearch = searchText => {
         let url, data;
         if (this.state.searchType === "device") {
-            url = "/device/searchByImei";
+            url = "/device/searchImeiByPattern";
             data = {
-                imei: searchText.trim()
+                pattern: searchText.trim()
             }
         } else {
             url = "/ent/searchEntByLName";   
@@ -135,18 +185,19 @@ export default class User extends React.Component {
         }
         http.get(url, data).then(res => {
             if (res.data.errcode === 0) {
-                console.log(res.data.data.imei)
                 if (this.state.searchType === 'account') {
                     this.setState({
                         searchDataSource: [res.data.data.login_name]
                     })
                 } else {
                     this.setState({
-                        searchDataSource: [res.data.data.imei]
+                        searchDataSource: res.data.data
                     })
-                }
-                
-                
+                }               
+            } else {
+                this.setState({
+                    searchDataSource: []
+                })
             }
         });
     }
@@ -326,7 +377,7 @@ export default class User extends React.Component {
         })
     }
     render () {       
-        let { account } = this.state;
+        let { account, cardInfo } = this.state;
         let permissionAcc = account;
         // bms_permission: "2"
         // sensor_permission: "1"
@@ -403,6 +454,18 @@ export default class User extends React.Component {
                     <Input addonBefore="电话" className="addUserInput" onChange={this.getNewPhone} />
                     <Input addonBefore="地址" className="addUserInput" onChange={this.getNewAddr} />
                     <Input addonBefore="Email" className="addUserInput" onChange={this.getNewEmail} />
+                </Modal>
+                <Modal  onOk={() => this.setState({cardVisible: false})} onCancel={() => this.setState({cardVisible: false})} className="cardModal" title="卡信息" visible={this.state.cardVisible} >
+                    
+                        {cardInfo.map(item => {
+                            return (
+                                <div className="cardTable">
+                                    <span className="cardTitle">{cardKey[item.key] +':'}</span>
+                                    <span className="cardValue">{item.value}</span>
+                                </div>
+                            )
+                        })}
+                    
                 </Modal>
             </div>
         )
