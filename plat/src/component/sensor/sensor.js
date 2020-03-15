@@ -90,17 +90,18 @@ export default class Monitor extends Component {
                                 {
                                     name: '水位',
                                     type: 'gauge',
-                                    detail: {formatter: '{value} %', fontSize:15, offsetCenter: [0, "60%"]},
+                                    detail: {formatter: '{value} %', fontSize:15, offsetCenter: [0, "60%"], color: '#fff'},
                                     data: [{value: water_level, name: '水位'}],
                                     min: 0,
                                     max: 100,
                                     title: {
-                                        color: red,
+                                        color: "#fff",
                                         offsetCenter: [0, '40%']
                                     },
                                     axisLine: {            // 坐标轴线
                                         lineStyle: {       // 属性lineStyle控制线条样式
-                                            width: 15
+                                            width: 15,
+                                            color: [[0.2, '#ff3e3e'], [0.8, '#1d97ff'], [1, '#11d660']]
                                         }
                                     },splitLine: {           // 分隔线
                                         length: 28,         // 属性length控制线长
@@ -124,17 +125,18 @@ export default class Monitor extends Component {
                                 {
                                     name: '温度',
                                     type: 'gauge',
-                                    detail: {formatter: '{value} ℃', fontSize:15, offsetCenter: [0, "60%"]},
+                                    detail: {formatter: '{value} ℃', fontSize:15, offsetCenter: [0, "60%"], color: '#fff'},
                                     data: [{value: 30, name: '温度'}],
                                     min: -100,
                                     max: 100,
                                     title: {
-                                        color: red,
+                                        color: "#fff",
                                         offsetCenter: [0, '40%']
                                     },
                                     axisLine: {            // 坐标轴线
                                         lineStyle: {       // 属性lineStyle控制线条样式
-                                            width: 15
+                                            width: 15,
+                                            color: [[0.2, '#ff3e3e'], [0.8, '#1d97ff'], [1, '#11d660']]
                                         }
                                     },splitLine: {           // 分隔线
                                         length: 28,         // 属性length控制线长
@@ -157,17 +159,18 @@ export default class Monitor extends Component {
                                 {
                                     name: '湿度',
                                     type: 'gauge',
-                                    detail: {formatter: '{value} %', fontSize:15, offsetCenter: [0, "60%"]},
+                                    detail: {formatter: '{value} %', fontSize:15, offsetCenter: [0, "60%"], color: '#fff'},
                                     data: [{value: (10), name: '湿度'}],
                                     min: 0,
                                     max: 40,
                                     title: {
-                                        color: red,
+                                        color: "#fff",
                                         offsetCenter: [0, '40%']
                                     },
                                     axisLine: {            // 坐标轴线
                                         lineStyle: {       // 属性lineStyle控制线条样式
-                                            width: 15
+                                            width: 15,
+                                            color: [[0.2, '#ff3e3e'], [0.8, '#1d97ff'], [1, '#11d660']]
                                         }
                                     },splitLine: {           // 分隔线
                                         length: 28,         // 属性length控制线长
@@ -190,17 +193,18 @@ export default class Monitor extends Component {
                                 {
                                     name: '有害气体',
                                     type: 'gauge',
-                                    detail: {formatter: '{value} %', fontSize:15, offsetCenter: [0, "60%"]},
+                                    detail: {formatter: '{value} %', fontSize:15, offsetCenter: [0, "60%"], color: '#fff'},
                                     data: [{value: 30, name: '有害气体'}],
                                     min: 0,
                                     max: 100,
                                     title: {
-                                        color: red,
+                                        color: "#fff",
                                         offsetCenter: [0, '40%']
                                     },
                                     axisLine: {            // 坐标轴线
                                         lineStyle: {       // 属性lineStyle控制线条样式
-                                            width: 15
+                                            width: 15,
+                                            color: [[0.2, '#ff3e3e'], [0.8, '#1d97ff'], [1, '#11d660']]
                                         }
                                     },splitLine: {           // 分隔线
                                         length: 28,         // 属性length控制线长

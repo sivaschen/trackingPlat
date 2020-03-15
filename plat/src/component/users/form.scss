@@ -1,5 +1,45 @@
+form {
+    vertical-align: middle;
+    display: inline-block;
+    width: 1095px;
+    .ant-form-item {
+        width: 33.33%;
+    }
+    label {
+        span {
+            color: #fff;
+        }
+    }
+    .ant-select-selection--multiple .ant-select-selection__placeholder {
+        margin-left: 12px;
+    }
+    &.ant-form-inline {
+        .ant-form-item {
+            margin-right: 0px;
+            input {
+                background-color:rgba(27,38,49,1);
+                color: #fff;
+                border: none;
+            }
+            .ant-select-selection {
+                background-color:rgba(27,38,49,1);
+                border: none;
+                .ant-select-selection__choice {
+                    background:rgba(40,163,109,1);
+                    border:1px solid rgba(107, 255, 190, 1);
+                    border-radius:4px;
+                    color: #fff;
+                    .ant-select-selection__choice__remove {
+                        color: #fff;
+                    }
+                }
+            }
+        }
+    }
+}
 .ant-form-inline .ant-form-item.show {
     display: inline-block;
+    
 }
 .ant-form-inline .ant-form-item.hide {
     display: none;

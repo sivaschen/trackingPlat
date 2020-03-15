@@ -1,27 +1,40 @@
 .sensor {
-    background-color: rgb(27,53,78);
     min-width: 1000px;
-    height: 100%;
+    margin-top: 10px;
     .deviceList {
-        background-color: rgb(27,53,78);
-        padding: 4px 0px 4px 20px;
-        width: 100%;
-        float: left;
-        border-bottom: 1px solid #888;
+        background-color: #26333F;
+        height:60px;
         .title {
-            color: #ddd;
+            color: #fff;
+            line-height: 60px;
+            margin-left: 20px;
         }
         .ant_select {
-            width: 100px;
+            width: 160px;
+        }
+        .ant-select-selection {
+            background-color: rgba(27,38,49,1);
+            color:#fff;
+            border:none;
+            outline: none;
+            input {
+                outline: none;
+            }
+        }
+        .ant-select-arrow {
+            color: #fff;
         }
     }
     .gaugeData {
-        padding-top: 40px;
-        height: 100%;
+        margin-top: 10px;
         box-sizing: border-box;
         .chartBox {
             display: inline-block;
-            width: 25%;
+            width: 24%;
+            background-color: #26333F;
+        }
+        .chartBox+.chartBox{
+            margin-left: 10px;
         }
     }
 

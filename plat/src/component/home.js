@@ -141,7 +141,6 @@ export default class Home extends Component {
 
   }
   onExpand = expandedKeys => {
-    console.log(expandedKeys)
     this.setState({
       expandedKeys,
       autoExpandParent: false,
@@ -149,7 +148,6 @@ export default class Home extends Component {
   };
 
   onCheck = checkedKeys => {
-    console.log('onCheck', checkedKeys);
     this.setState({ checkedKeys });
   };
   loadTree = (keys, obj) => {
@@ -271,68 +269,69 @@ export default class Home extends Component {
   render() {
     return (
       <div className="home">
-        <header>
-          <img src={"http://" + this.state.account.logo_url}/>
-          <Button onClick={this.logout} type="danger">退 出</Button>
-          <span className="name">{"登陆账户：" + this.state.account.login_name}</span>
-        </header>
-        <div className="menu">
-          <Menu onClick={this.handleMenuClick} selectedKeys={[this.state.current]} mode="horizontal" theme="dark">
-            <Menu.Item key="/home/user">              
-              <NavLink to="/home/user"><Icon type="team"/>客户管理</NavLink>
-            </Menu.Item>
-            <Menu.Item key="/home/monitor">              
-              <NavLink to="/home/monitor"><Icon type="environment" />监控</NavLink>              
-            </Menu.Item>
-            <Menu.Item key="/home/bms" style={this.state.account.permission.substr(0,1) > 0 ? {display: 'inline-block'}: {display: 'none'}}>              
-              <NavLink to="/home/bms"><Icon type="api" />电池管理</NavLink>              
-            </Menu.Item>
-            <Menu.Item key="/home/sensor" style={this.state.account.permission.substr(1,1) > 0 ? {display: 'inline-block'}: {display: 'none'}}>              
-              <NavLink to="/home/sensor"><Icon type="dashboard" />传感器</NavLink>              
-            </Menu.Item>
-          </Menu>
-        </div>     
-        <Layout style={{ minHeight: '100vh' }}>
-          <Sider className="tree" collapsible collapsed={this.state.collapsed} collapsedWidth={0} onCollapse={this.onCollapse}>
-            <Tree loadData={this.onLoadData} 
-              onExpand={this.onExpand}
-              expandedKeys={this.state.expandedKeys}
-              autoExpandParent={this.state.autoExpandParent}
-              onSelect={this.onSelect}
-              onLoad={this.loadTree}
-              selectedKeys={this.state.selectedKeys}
-              onRightClick={this.rightClickNode}>
-                {this.renderTreeNodes(this.state.treeData)}
-            </Tree>
-          </Sider>
-        <Layout>
-        <div className="subPage">
-          <Switch>
-            <Route exact path="/home">
-                <User addNode={this.addNodeCallback} eid={this.state.selectedKeys[0]} rootAcc={this.state.account} onRef={this.onRef.bind(this)} loadTree={this.updateTreeNode} changeRouter={this.changeRouter} expandAncestors={this.expandAncestors} />
-            </Route>
-            <Route path="/home/monitor">
-                <Monitor onRef={this.onRef.bind(this)} eid={this.state.selectedKeys[0]} devid={this.state.devid} toPlayback={this.toPlayback} expandAncestors={this.expandAncestors}/>
-            </Route>
-            <Route path="/home/trace">
-                <Trace/>
-            </Route>
-            <Route path="/home/yjcenter">
-                <YJCenter onRef={this.onRef.bind(this)} eid={this.state.selectedKeys[0]}/>
-            </Route>
-            <Route path="/home/bms">
-                <Bms eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} devid={this.state.devid} permission={Number(this.state.account.bms_permission)} bmsNoPerm={this.bmsNoPerm} />
-            </Route>
-            <Route path="/home/user">
-                <User addNode={this.addNodeCallback} rootAcc={this.state.account} eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} loadTree={this.updateTreeNode} changeRouter={this.changeRouter} expandAncestors={this.expandAncestors} />
-            </Route>
-            <Route path="/home/sensor">
-                <Sensor eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} />
-            </Route>
-        </Switch>
-        </div>
-        </Layout>
-        </Layout>
+          <header>
+            <img src={"http://" + this.state.account.logo_url}/>
+            <span className="btn" onClick={this.logout}>退出登录</span>
+            <span className="name">{"登陆账户：" + this.state.account.login_name}</span>
+          </header>
+   
+          <Layout className="">
+            <Sider className="tree" collapsible collapsed={this.state.collapsed} collapsedWidth={0} onCollapse={this.onCollapse} trigger={null}>
+              <Tree loadData={this.onLoadData} 
+                onExpand={this.onExpand}
+                expandedKeys={this.state.expandedKeys}
+                autoExpandParent={this.state.autoExpandParent}
+                onSelect={this.onSelect}
+                onLoad={this.loadTree}
+                selectedKeys={this.state.selectedKeys}
+                onRightClick={this.rightClickNode}>
+                  {this.renderTreeNodes(this.state.treeData)}
+              </Tree>
+            </Sider>
+            <Layout>
+              <div className="subPage">
+                <div className="menu">
+                  <Menu onClick={this.handleMenuClick} selectedKeys={[this.state.current]} mode="horizontal">
+                    <Menu.Item key="/home/user">              
+                      <NavLink to="/home/user"><Icon type="team"/>客户管理</NavLink>
+                    </Menu.Item>
+                    <Menu.Item key="/home/monitor">              
+                      <NavLink to="/home/monitor"><Icon type="environment" />监控</NavLink>              
+                    </Menu.Item>
+                    <Menu.Item key="/home/bms" style={this.state.account.permission.substr(0,1) > 0 ? {display: 'inline-block'}: {display: 'none'}}>              
+                      <NavLink to="/home/bms"><Icon type="api" />电池管理</NavLink>              
+                    </Menu.Item>
+                    <Menu.Item key="/home/sensor" style={this.state.account.permission.substr(1,1) > 0 ? {display: 'inline-block'}: {display: 'none'}}>              
+                      <NavLink to="/home/sensor"><Icon type="dashboard" />传感器</NavLink>              
+                    </Menu.Item>
+                  </Menu>
+                </div>  
+                  <Switch>
+                    <Route exact path="/home">
+                        <User addNode={this.addNodeCallback} eid={this.state.selectedKeys[0]} rootAcc={this.state.account} onRef={this.onRef.bind(this)} loadTree={this.updateTreeNode} changeRouter={this.changeRouter} expandAncestors={this.expandAncestors} />
+                    </Route>
+                    <Route path="/home/monitor">
+                        <Monitor onRef={this.onRef.bind(this)} eid={this.state.selectedKeys[0]} devid={this.state.devid} toPlayback={this.toPlayback} expandAncestors={this.expandAncestors}/>
+                    </Route>
+                    <Route path="/home/trace">
+                        <Trace/>
+                    </Route>
+                    <Route path="/home/yjcenter">
+                        <YJCenter onRef={this.onRef.bind(this)} eid={this.state.selectedKeys[0]}/>
+                    </Route>
+                    <Route path="/home/bms">
+                        <Bms eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} devid={this.state.devid} permission={Number(this.state.account.bms_permission)} bmsNoPerm={this.bmsNoPerm} />
+                    </Route>
+                    <Route path="/home/user">
+                        <User addNode={this.addNodeCallback} rootAcc={this.state.account} eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} loadTree={this.updateTreeNode} changeRouter={this.changeRouter} expandAncestors={this.expandAncestors} />
+                    </Route>
+                    <Route path="/home/sensor">
+                        <Sensor eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} />
+                    </Route>
+                  </Switch>
+              </div>
+            </Layout>
+          </Layout>
         </div>
     )
   }

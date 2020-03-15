@@ -1,19 +1,23 @@
 import {Form, Input, Button,
     message,
-    Select
+    Select,
+    Upload
   } from 'antd';
   import React from 'react';
 import http from '../server';
 import './form.scss'
   
   const {Option} = Select;
+  const labelCol = {span: 6};
+  const wrapperCol = {span: 18}
   class accountForm extends React.Component {
     constructor (props) {
       super(props);
       this.state = {
         showBmsControl: false,
         displayOpt: [],
-        controlOpt: []
+        controlOpt: [],
+        logoLoading: false
       };
     }
     componentWillReceiveProps() {
@@ -60,8 +64,11 @@ import './form.scss'
         })
       }
     }
+    componentDidMount () {
+      this.props.onRef('form', this);
+    }
     handleSubmit = e => {
-      e.preventDefault();
+      // e.preventDefault();
       this.props.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
           this.saveAccountInfo(values);
@@ -71,6 +78,7 @@ import './form.scss'
     handleSelectChange = e => {
       console.log(e)
     }
+ 
     saveAccountInfo = (value) => {
       const url =  "/ent/updateEnt";
       let formValue = value;
@@ -119,32 +127,10 @@ import './form.scss'
 
     render() {
       const { getFieldDecorator } = this.props.form;
-      const formItemLayout = {
-        labelCol: {
-          xs: { span: 6 },
-          sm: { span:6 },
-        },
-        wrapperCol: {
-          xs: { span: 18 },
-          sm: { span: 18 },
-        },
-      };
-      const tailFormItemLayout = {
-        wrapperCol: {
-          xs: {
-            span: 24,
-            offset: 0,
-          },
-          sm: {
-            span: 20,
-            offset: 4,
-          },
-        },
-      };
-  
+
       return (
-        <Form {...formItemLayout} onSubmit={this.handleSubmit} layout="inline">
-          <Form.Item
+        <Form onSubmit={this.handleSubmit} layout="inline" colon={false}>
+          <Form.Item labelCol={labelCol} wrapperCol={wrapperCol}
             label={
               <span>名称</span>
             }
@@ -152,15 +138,21 @@ import './form.scss'
             {getFieldDecorator('name', {
              })(<Input disabled />)}
           </Form.Item>          
-          <Form.Item label="地址">
+          <Form.Item label={
+              <span>地址</span>
+            } labelCol={labelCol} wrapperCol={wrapperCol}> 
             {getFieldDecorator('addr', {
             })(<Input />)}
           </Form.Item>
-          <Form.Item label="联系电话">
+          <Form.Item label={
+              <span>联系电话</span>
+            } labelCol={labelCol} wrapperCol={wrapperCol}>
             {getFieldDecorator('phone', {
             })(<Input />)}
           </Form.Item>          
-          <Form.Item label="E-mail">
+          <Form.Item label={
+              <span>Email</span>
+            } labelCol={labelCol} wrapperCol={wrapperCol}>
             {getFieldDecorator('email', {
               rules: [
                 {
@@ -170,29 +162,25 @@ import './form.scss'
               ],
             })(<Input />)}
           </Form.Item>
-          <Form.Item label="显示权限" style={{width: "310px"}} className={this.state.showBmsControl ? 'show' : "hide"} labelCol={{  
-          xs: { span: 5 },
-          sm: { span:5 }}}  wrapperCol={{ xs: { span: 19 }, sm: { span: 19 }}} >
-            {getFieldDecorator('displayPermission')(<Select mode="multiple" placeholder="显示权限" onChange={this.handleSelectChange}>
+          <Form.Item label={
+              <span>显示权限</span>
+            } className={this.state.showBmsControl ? 'show' : "hide"} labelCol={labelCol} wrapperCol={wrapperCol} >
+            {getFieldDecorator('displayPermission')(<Select mode="multiple" placeholder=" 显示权限" onChange={this.handleSelectChange}>
             {this.state.displayOpt.map(opt => {
                 return <Option key={opt} value={opt}>{opt}</Option>
               })}
             </Select>)}
           </Form.Item>
-          <Form.Item label="控制权限" style={{width: "310px"}} className={this.state.showBmsControl ? 'show' : "hide"} labelCol={{  
-          xs: { span: 5 },
-          sm: { span:5 }}}  wrapperCol={{ xs: { span: 19 }, sm: { span: 19 }}} >
-            {getFieldDecorator('controlPermission')(<Select mode="multiple" placeholder="显示权限" onChange={this.handleSelectChange}>
+          <Form.Item label={
+              <span>控制权限</span>
+            } className={this.state.showBmsControl ? 'show' : "hide"} labelCol={labelCol} wrapperCol={wrapperCol} >
+            {getFieldDecorator('controlPermission')(<Select mode="multiple" placeholder={"  控制权限"} onChange={this.handleSelectChange}>
               {this.state.controlOpt.map(opt => {
                 return <Option key={opt} value={opt}>{opt}</Option>
               })}
             </Select>)}
           </Form.Item>
-          <Form.Item {...tailFormItemLayout}>
-            <Button type="primary" htmlType="submit">
-              保 存
-            </Button>
-          </Form.Item>
+          
         </Form>
       );
     }

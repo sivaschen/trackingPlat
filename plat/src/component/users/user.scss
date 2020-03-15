@@ -1,14 +1,5 @@
 .user {
-    .userManage {
-        text-align: left;
-        padding: 10px 0px;
-        header {
-            font-size: 15px;
-        }
-        button {
-            margin-right: 30px;
-        }
-    }
+    
     .addUser  {    
         .ant-input-group-addon {
             width: 80px;
@@ -18,27 +9,197 @@
         }
     }
     .accInfo {
-        border-bottom: 1px solid #888;
-    
+        padding: 0px 0px 10px 20px;
+        background-color: #27333f;
+        margin-top: 10px;
+        h3 {
+            font-size:16px;
+            font-family:PingFang SC;
+            color:rgba(255,255,255,1);
+            line-height:36px;
+            height: 36px;
+            margin-bottom: 0px;
+        }
+        
+        .logo {
+            display: inline-block;
+            text-align: center;
+            margin-right: 14px;
+            vertical-align: middle;
+
+            img {
+                width: 100px;
+                height: 100px;
+                vertical-align: middle;
+            }
+            
+            .editUser {
+                vertical-align: middle;
+
+                display: inline-block;
+                margin-left: 14px;
+                .saveAcc {
+                    width:140px;
+                        height:40px;
+                        border-radius:5px;
+                        border: none;
+                }
+                .logoUpload {
+                    display: block;
+                    margin-top: 20px;
+                    button {
+                        width:140px;
+                        height:40px;
+                        border-radius:5px;
+                        background:rgba(40,163,109,1);
+                        border: none;
+
+                    }
+                }
+                
+            }
+        }
+        .userManage {
+            display: inline-block;
+            text-align: left;
+            vertical-align: middle;
+            margin-left: 40px;
+            header {
+                font-size: 15px;
+            }
+            button {
+                display: block;
+                height: 45px;
+                width: 180px;
+                &.ant-btn-primary {
+                    margin-bottom: 10px;
+                }
+            }
+        }
     }
     .deviceSearch {
-        padding: 5px 0px;
-        border-bottom: 1px solid #888;
-    
+        padding: 6px 0px;
+        height:60px;
+        background:rgba(38,51,63,1);
+        margin-top: 10px;
         .searchTitle {
             display: inline-block;
-            width: 100px;
             text-align: center;
-            margin-right: 10px  ;
+            margin-right: 16px;
+            line-height: 48px;
+            margin-left: 20px;
+            color: #fff;
+        }
+        div.ant-select {
+            color: #fff;
+            width:140px;
+            border-radius:4px;
+            margin-right: 10px;
+            > div {
+            background:rgba(27,38,49,1);
+            border: none;
+
+            }
+            .ant-select-arrow {
+                color: #fff;
+            }
+        }
+        div.ant-select-show-search {
+            input {
+                color: #fff;
+                border: none;
+            }
         }
     }
     .deviceList {
         h3 {
             background-color: rgb(39, 160, 241);
             color: #fff;
-            padding: 3px 10px;
-            text-align: center;
+            text-align: left;
+            padding-left: 20px;
             margin: 0;
+            font-size: 16px;
+            line-height: 45px;
+            height:45px;
+            background:rgba(48,64,78,1);
+            >span {
+                line-height: 45px;
+            }
+            .rootManage {
+                float: right;
+                margin-right: 17px;
+                .ant-btn {
+                    background-color: transparent;
+                    border: none;
+                    color: #fff;
+                    padding: 0;
+                    vertical-align: middle;
+                    line-height: 1;
+                }
+                .excelIcon {
+                    vertical-align: middle;
+                    background: url('./../../asset/images/uploadExcel.png') no-repeat center center;
+                    display: inline-block;
+                    width: 20px;
+                    height: 15px;
+                    background-size: contain;
+                    margin-right: 5px;
+                }
+                .excelIcon2 {
+                    vertical-align: middle;
+                    background: url('./../../asset/images/downloadExcel.png') no-repeat center center;
+                    display: inline-block;
+                    width: 20px;
+                    height: 15px;
+                    background-size: contain;
+                    margin-right: 5px;
+                    margin-left: 40px;
+                }
+                a {                    
+                    vertical-align: middle;
+                    color: #fff;
+                    display: inline-block;
+                    height: 32px;
+                    line-height: 32px;
+                    font-size: 14px;
+                    font-weight: normal;
+                }
+            }
+        }
+        .ant-table {
+            color: #fff;
+            thead {
+                height:50px;
+                tr {
+                    th {
+                        background:rgba(38,51,63,1);
+                        border-bottom: 1px solid rgba(56,72,87,1);
+                        text-align: center;
+
+                        span {
+                            color: #fff;
+                        }
+                    }
+
+                }
+            }
+            tbody {
+                tr {
+                    text-align: center;
+                    background:rgba(38,51,63,1);
+                    td {
+                        border-bottom: 1px solid rgba(56,72,87,1);
+                        .tableEdit {
+                            display: inline-block;
+                            display: flex;
+                            justify-content: space-around;
+                            a {
+                                text-decoration: underline;
+                            }
+                        }
+                    }
+                }
+            }
         }
         .iccid {
             span {
@@ -46,21 +207,7 @@
             }
         }
     }
-    .rootManage {
-        .logo {
-            display: inline-block;
-            text-align: center;
-            margin-right: 10px;
-            img {
-                width: 100px;
-                height: 100px;
-                margin-bottom: 10px;
-            }
-            .logoUpload {
-                display: block;
-            }
-        }
-    }
+    
     
 }
 .cardModal {

@@ -3,8 +3,8 @@
     width: 100%;
     position: relative;
     >header {
-      height: 65px;
-      background-color: #fff;
+      height: 140px;
+      background-color: #141C24;
       width: 100%;
       float: left;
       padding: 5px 20px;
@@ -16,40 +16,82 @@
         height: 55px;
       }
       span.name {
-        color: blue;
+        color: #FFFFFF;
         position: absolute;
         right: 180px;
         top: 50%;
         transform: translateY(-50%);
+        font-size:20px;
       }
-      button {
+      span.btn {
+        color: #FFFFFF;
+        text-align: center;
+        line-height: 50px;
         position: absolute;
-        right: 100px;
+        right: 29px;
         top: 50%;
         transform: translateY(-50%);
+        width:120px;
+        height:50px;
+        background:rgba(58,76,92,1);
+        border-radius:5px;
+        border: none;
+        font-size:20px;
+        font-family:PingFang SC;
+        font-weight:bold;
+        cursor: pointer;
       }
 
     }
     .menu {
       position: fixed;
       width: 100%;
-      top: 65px;
+      top: 140px;
       z-index: 999;
-      border-top: 1px solid #ccc;
+      height: 60px;
+      .ant-menu-horizontal {
+        border-bottom: none;
+      }
+      .ant-menu {
+        background-color: rgba(38,51,63,1);
+        line-height: 60px;
+        .ant-menu-item {
+          &.ant-menu-item-selected {
+            border-bottom: 4px solid #00FDAC;
+          }
+          &.ant-menu-item-active {
+            border-bottom: 4px solid #00FDAC;
+          }
+          a {
+            color: #fff;
+            font-size: 22px;    
+            i {
+              font-size: 22px;
+            }      
+          }
+        }
+
+      }
+    }
+    .ant-layout.ant-layout-has-sider {
+      height: 100%;
+      box-sizing: border-box;
+      padding-top: 140px;
+      background-color: #1B2632;
     }
     .subPage {
-      padding-top: 111px;
-      min-height: 100%;
+      height: 100%;
       box-sizing: border-box;
-      padding-left: 200px;
+      padding-top: 60px;
+      overflow: auto;
+      background-color: #1B2632;
     }
     .tree {
-      position: absolute;
-      padding-top: 114px;
-      max-width: 200px;
+      max-width: 230px;
       box-sizing: border-box;
-      float: left;
-      min-height: 100%;
+      height: 100%;
+      background:rgba(38,51,63,1);
+      margin-right: 10px  ;
       .ant-tree {
         font-size: 12px;
         max-height: 100%;
@@ -61,7 +103,7 @@
           color: #fff;
         }
         li .ant-tree-node-content-wrapper.ant-tree-node-selected {
-          background-color: rgb(94, 158, 160);
+          background-color: rgba(51,66,81,1);
         }
       }
     }

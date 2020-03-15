@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Icon, message, Popconfirm, Modal,Tooltip, Input, AutoComplete, Select, Table,Divider, Upload } from 'antd'
+import { Button, Icon, message, Popconfirm, Modal,Tooltip, Input, AutoComplete, Select, Table, Upload } from 'antd'
 import http from './../server'
 import MyForm from './form'
 import "./user.scss"
@@ -104,9 +104,8 @@ export default class User extends React.Component {
                     dataIndex: 'action',
                     key: 'action',
                     render: (text, record) => (
-                        <span>
+                        <span className="tableEdit">
                           <a onClick={this.changeRouter.bind(this, record.dev_id, "monitor")}>GPS</a>
-                          <Divider type="vertical" />
                           <a onClick={this.changeRouter.bind(this, record.dev_id, 'bms')}>BMS</a>
                         </span>
                       )
@@ -333,31 +332,11 @@ export default class User extends React.Component {
         });
         return true
     }
-    customUploadLogo = () => {
-        const url = "/ent/uploadLogo";
-        let {eid} = this.props;
-        let data = new FormData();
-        data.append("file_name", this.state.fileLogo.name);
-        data.append("eid", eid);
-        data.append("file_logo", this.state.fileLogo);
-        http.post(url, data).then(res => {
-            if (res.data.errcode === 0) {
-                message.success("上传Logo成功");
-                this.init();
-            } else {
-                message.error("上传Logo失败");
-            }
-            this.setState({
-                logoLoading: false
-            })
-        })
+    saveAccInfo = () => {
+        this.formPage.handleSubmit();
     }
-    getLogoFile = (file, filelist) => {
-        this.setState({
-            fileLogo: file,
-            logoLoading: true
-        })
-        return true
+    onRef = (name, ref) => {
+        this.formPage = ref;
     }
     init = () => {
         let eid = this.props.eid;
@@ -376,6 +355,32 @@ export default class User extends React.Component {
         }
         })
     }
+    customUploadLogo = () => {
+        const url = "/ent/uploadLogo";
+        let {eid} = this.props;
+        let data = new FormData();
+        data.append("file_name", this.state.fileLogo.name);
+        data.append("eid", eid);
+        data.append("file_logo", this.state.fileLogo);
+        http.post(url, data).then(res => {
+            if (res.data.errcode === 0) {
+                message.success("上传Logo成功");
+                this.init();
+            } else {
+                message.error("上传Logo失败");
+            }
+            this.setState({
+                logoLoading: false
+            })
+        })
+      }
+      getLogoFile = (file, filelist) => {
+          this.setState({
+              fileLogo: file,
+              logoLoading: true
+          })
+          return true
+      }
     render () {       
         let { account, cardInfo } = this.state;
         let permissionAcc = account;
@@ -416,36 +421,42 @@ export default class User extends React.Component {
                 </div>
                 <div className="accInfo">
                     <h3 className="accountTitle">账户信息:</h3>
-                   <MyForm account={permissionAcc} rootAcc={this.props.rootAcc}/>
-                </div>
-                <div className="userManage">
-                    <h3>下级用户管理：</h3>
+                    <div className="logo">
+                        <img src={'http://'+this.state.account.logo_url} alt="#"/>
+                        <div className="editUser">
+                            <Button type="primary" className="saveAcc" onClick={this.saveAccInfo.bind(this)}>保存编辑</Button>
+                            <Upload className="logoUpload" name='cardinfo' beforeUpload={this.getLogoFile} customRequest={this.customUploadLogo} showUploadList={false}>
+                                <Button loading={this.state.logoLoading}>上传经销商Logo</Button>
+                            </Upload>
+                        </div>
+                    </div>
+                   <MyForm account={permissionAcc} rootAcc={this.props.rootAcc} onRef={this.onRef}/>
+                   <div className="userManage">
                     <Button onClick={this.showAddUser} type="primary"><Icon type="user-add" />添加下级客户</Button>
                     <Popconfirm placement="top" title="删除当前账户" onConfirm={this.deleteSubAccount} okText="确定" cancelText="取消">
                         <Button type="danger"><Icon type="user-delete" onClick={this.deleteSubAccount} />删除当前用户</Button>
                     </Popconfirm>
-                </div>
-                <div className="rootManage" style={this.state.isRoot ? {display: 'block'} : {display: 'none'} }>
-                    <h3>管理员操作：</h3>
-                    
-                    <div className="logo">
-                        <img src={'http://'+this.state.account.logo_url} alt="#"/>
-                        <Upload className="logoUpload" name='cardinfo' beforeUpload={this.getLogoFile} customRequest={this.customUploadLogo} showUploadList={false}>
-                            <Button icon="upload" loading={this.state.logoLoading}>
-                            上传经销商Logo
-                            </Button>
-                        </Upload>
                     </div>
-                    <Upload beforeUpload={this.getFile} name='cardinfo' onChange={this.uploadExcel} action="/api/ent/updateCardByFile" showUploadList={false} customRequest={this.customUploadExcel}>
-                        <Button loading={this.state.logoLoading} icon="upload" loading={this.state.excelLoading}>
-                        上传Excel
-                        </Button>
-                        <a href="http://webbo.yunjiwulian.com/template/card.xls">下载Excel模板</a>
-                    </Upload>
                 </div>
+              
+               
            
                 <div className="deviceList">
-                    <h3>设备列表</h3>
+                    <h3>
+                        <span>设备列表</span>
+                        <div className="rootManage" >             
+                            <Upload beforeUpload={this.getFile} name='cardinfo' onChange={this.uploadExcel} action="/api/ent/updateCardByFile" showUploadList={false} customRequest={this.customUploadExcel}>
+                                <i className="excelIcon"></i>
+                                <Button loading={this.state.excelLoading}>
+                                上传Excel
+                                </Button>
+                                <i className="excelIcon2"></i>
+                                <a href="http://webbo.yunjiwulian.com/template/card.xls">
+                                    下载Excel模板
+                                    </a>
+                            </Upload>
+                        </div>
+                    </h3>
                     <Table columns={this.state.deviceColumns} dataSource={this.state.deviceList} rowKey="dev_id" />
                 </div>
                 <Modal title="添加用户" visible={this.state.visible} onOk={this.addUser} confirmLoading={this.confirmLoading} onCancel={this.cancelAddUser} className="addUser">
