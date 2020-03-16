@@ -1,9 +1,7 @@
   
 .fensug{ 
-    width:120px; 
-    height:120px; 
-    background:#fff; 
-    border:9px #5576ac solid;
+    width:150px; 
+    height:150px; 
     margin:0px auto; 
     padding:5px;
     -webkit-border-radius:50%;
@@ -14,8 +12,8 @@
     box-sizing: content-box!important;    
 }
 .wavenum {
-    width:120px;
-    height:120px;
+    width:150px;
+    height:150px;
     overflow:hidden;
     -webkit-border-radius:50%;
     border-radius:50%;
@@ -51,34 +49,65 @@ position:relative;
 z-index:2; 
 font-weight:bold;
 width:120px;
-border-top:2px #fff solid;
 margin:3px auto; 
 line-height:35px;
 }
     
     .waven { 
-        width:120px;
-        height:120px; 
+         
         webkit-border-radius:50%;
         -moz-border-radius:50%;
         border-radius:50%;
-        background:#5576ac;
         overflow:hidden;
         position:relative;
+        
         }
     
     .wave { 
         width:408px;
-        height: 80%;
         position:absolute;
-        left:0px; bottom:0;
+        left:0px; bottom:0px;
         background: url(./../../asset/images/wave.png) no-repeat;
         animation: move_wave 1s linear infinite;
         -webkit-animation: move_wave 1s linear infinite;
     }
     
     
-        
+    .wave1 {
+        margin: 0 auto;
+        width: 150px;
+        height: 150px;
+        .box {
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+            .circle {
+                width:150px;
+                height:150px;
+                background: url('./../../asset/images/circle.png') no-repeat center center;
+                background-size: 150px 150px;
+            }
+            .waveBox {
+                height: 119px;
+                width: 119px;
+                position: absolute;
+                border-radius: 50%;
+                bottom: 12px;
+                left: 15px;
+                overflow: hidden;
+                .value {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%,-50%);
+                    font-size: 20px;
+                    font-weight: bolder;
+                }
+            }
+
+        }
+    }
     @-webkit-keyframes move_wave {
         0% {
             -webkit-transform: translateX(0)

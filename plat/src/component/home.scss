@@ -3,7 +3,7 @@
     width: 100%;
     position: relative;
     >header {
-      height: 140px;
+      height: 70px;
       background-color: #141C24;
       width: 100%;
       float: left;
@@ -26,17 +26,17 @@
       span.btn {
         color: #FFFFFF;
         text-align: center;
-        line-height: 50px;
+        line-height: 40px;
         position: absolute;
         right: 29px;
         top: 50%;
         transform: translateY(-50%);
-        width:120px;
-        height:50px;
+        width:100px;
+        height:40px;
         background:rgba(58,76,92,1);
         border-radius:5px;
         border: none;
-        font-size:20px;
+        font-size:16px;
         font-family:PingFang SC;
         font-weight:bold;
         cursor: pointer;
@@ -46,15 +46,15 @@
     .menu {
       position: fixed;
       width: 100%;
-      top: 140px;
+      top: 70px;
       z-index: 999;
-      height: 60px;
+      height: 50px;
       .ant-menu-horizontal {
         border-bottom: none;
       }
       .ant-menu {
         background-color: rgba(38,51,63,1);
-        line-height: 60px;
+        line-height: 50px;
         .ant-menu-item {
           &.ant-menu-item-selected {
             border-bottom: 4px solid #00FDAC;
@@ -64,9 +64,9 @@
           }
           a {
             color: #fff;
-            font-size: 22px;    
+            font-size: 14px;    
             i {
-              font-size: 22px;
+              font-size: 20px;
             }      
           }
         }
@@ -76,13 +76,13 @@
     .ant-layout.ant-layout-has-sider {
       height: 100%;
       box-sizing: border-box;
-      padding-top: 140px;
+      padding-top: 70px;
       background-color: #1B2632;
     }
     .subPage {
       height: 100%;
       box-sizing: border-box;
-      padding-top: 60px;
+      padding-top: 50px;
       overflow: auto;
       background-color: #1B2632;
     }

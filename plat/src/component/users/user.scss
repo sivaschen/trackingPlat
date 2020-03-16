@@ -69,8 +69,8 @@
             }
             button {
                 display: block;
-                height: 45px;
-                width: 180px;
+                height: 40px;
+                width: 140px;
                 &.ant-btn-primary {
                     margin-bottom: 10px;
                 }
@@ -171,6 +171,7 @@
             thead {
                 height:50px;
                 tr {
+                    
                     th {
                         background:rgba(38,51,63,1);
                         border-bottom: 1px solid rgba(56,72,87,1);
@@ -187,6 +188,9 @@
                 tr {
                     text-align: center;
                     background:rgba(38,51,63,1);
+                    &:hover {
+                        td {background-color: #30404e;}
+                    }
                     td {
                         border-bottom: 1px solid rgba(56,72,87,1);
                         .tableEdit {

@@ -24,11 +24,21 @@ export default class Wave extends React.Component {
     // }
     render () {
         let {socPercentage} = this.props;
-        let height = {height: socPercentage + "%"}
+        let height = {height: 10 + (socPercentage * 130 / 100) + "px"}
         return (
-            <div className="fensug">
-                <div className="wavenum "><b id="denfenjs">{socPercentage + "%"}</b><tt>SOC</tt></div>
-                <div className="waven"> <div className="wave" style={height}>&nbsp;</div></div>
+            // <div className="fensug">
+            //     <div className="wavenum "><b id="denfenjs">{socPercentage + "%"}</b><tt>SOC</tt></div>
+            //     <div className="waven"> </div>
+            //     <div className="wave" style={height}>&nbsp;</div>
+            // </div>
+            <div className="wave1">
+                <div className="box">
+                    <div className="circle"></div>
+                    <div className="waveBox">
+                        <div className="wave" style={height}></div>
+                        <span className="value">{(socPercentage || 0) + '%'}</span>
+                    </div>
+                </div>
             </div>
         )
     }
