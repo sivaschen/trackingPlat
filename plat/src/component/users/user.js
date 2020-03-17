@@ -359,7 +359,7 @@ export default class User extends React.Component {
         const url = "/ent/uploadLogo";
         let {eid} = this.props;
         let data = new FormData();
-        data.append("file_name", this.state.fileLogo.name);
+        data.append("file_name", 'logo');
         data.append("eid", eid);
         data.append("file_logo", this.state.fileLogo);
         http.post(url, data).then(res => {

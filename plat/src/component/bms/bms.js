@@ -1129,7 +1129,7 @@ export default class Bms extends Component {
                         let percentage = volPercentage[k+1].percentage;
                         let bgc = percentage > 20 ? "#1CE697" : "#B73B3E";
                         batteryBox = percentage > 20 ? 'imgBox green' : 'imgBox red';
-                        batteryStyle = {height: (percentage / 100 * 48) + 'px', backgroundColor: bgc};
+                        batteryStyle = {height: (percentage / 100 * 34) + 'px', backgroundColor: bgc};
                         break;
                     }
                 }
@@ -1172,7 +1172,7 @@ export default class Bms extends Component {
             </header>
             <ul className="clearfix">
                 {alarms.map(alarm => {
-                    let alarmClass = (data.bms_status & alarm.value) ? "notice" : '';
+                    let alarmClass = (data.bms_status && alarm.value) ? "notice" : '';
                     if (data.bms_status && alarm.value) {
                         return <li key={alarm.name}>
                             <span className={alarmClass}>{alarm.name}</span>
