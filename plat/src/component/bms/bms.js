@@ -1140,10 +1140,11 @@ export default class Bms extends Component {
                                 <div className={batteryBox}></div>
                                 <div className="percentage" style={batteryStyle}></div>
                                 <span className="data">
-                                    <div className="sequence">{'#' + (4*i + (j+1))}</div>
                                     <div className="dataValue">{groupData[j] + " mv"} </div>
-                                    </span>                        
+                                </span>    
+                            <div className="sequence">{'#' + (4*i + (j+1))}</div>
                             </div>
+
                             
                         </div>
                     </li>

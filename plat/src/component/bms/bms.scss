@@ -92,6 +92,7 @@ ul, li {
             float: left;
             width: 100%;
             z-index: 99;
+            min-width: 1620px;
             .version {
                 background-color: rgba(38,51,63,1);
                 height: 373px;
@@ -469,30 +470,34 @@ ul, li {
                         text-align: center;
                         
                         .img {
-                            width: 70px;
                             display: inline-block;
+                            height: 67px;
+                            font-size: 0px;
                             .battery {                            
                                 position: relative;
                                 height: 46px;
-                                width: 120px;
-
+                                font-size: 0px;
                                 vertical-align: middle;
+                                .sequence {
+                                    color: #fff;
+                                    font-size: 12px;
+                                    display: block;
+                                    width: 54.4px;
+                                    line-height: 1.2;
+                                }
                                 .imgBox {
-                                    
-                                    position: absolute;
-                                    top: 0;
-                                    left: 0;
-                                    width: 68px;
-                                    height: 100%;
+                                    display: inline-block;
+                                    width: 54.4px;
+                                    height: 36.8px;
                                     z-index: 2;
                                     &.green {
                                         background: url('./../../asset/images/batteryGreen.png') no-repeat center center;
-                                    background-size: 68px 46px;
+                                    background-size: 54.4px 36.8px;
 
                                     }
                                     &.red {
                                         background: url('./../../asset/images/batteryRed.png') no-repeat center center;
-                                    background-size: 68px 46px;
+                                        background-size: 54.4px 36.8px;
 
                                     }
                                 }
@@ -500,25 +505,24 @@ ul, li {
                                 .percentage {
                                     line-height: 30px;
                                     position: absolute;
-                                    width: 63px;   
-                                    bottom: 4px;  
+                                    width: 49px;   
+                                    bottom:13px;  
                                     left: 3px;
-                                    height: 25px;
                                     z-index: 1;
                                     border-radius: 0 0 5px 5px;
+
                                 }
                             }
                             .data {
+                                display: inline-block;
                                 font-size: 12px;
-                                float: right;
                                 color: #fff;
                                 vertical-align: middle;
-                                line-height: 23px;
-                                .sequence {
-                                    color: #fff;
-                                    display: inline-block;
-                                }
+                                line-height: 36.8px;
+                                vertical-align: top;
+                               
                             }
+                            
                             
                         }
                         
