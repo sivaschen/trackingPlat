@@ -48,7 +48,7 @@ export default class Monitor extends Component {
       startValue: null,
       endValue: null,
       endOpen: false,
-      mileageStats: []
+      mileageStats: 0
     }
   }
   init = () => {
@@ -92,7 +92,7 @@ export default class Monitor extends Component {
     }
     let startTimestamp = new Date(startValue.format("YYYY-MM-DD HH:mm:ss")).getTime() / 1000
     let endTimestamp = new Date(endValue.format("YYYY-MM-DD HH:mm:ss")).getTime() / 1000
-    const url = "/device/getMilestatByDevId";
+    const url = "/device/getRealMilestatByDevId";
     let data = {
       dev_id: this.state.deviceId,
       begin_tm: startTimestamp,
@@ -107,7 +107,7 @@ export default class Monitor extends Component {
         })
         if (res.data.errcode === 0) {
           this.setState({
-            mileageStats: res.data.data.milestat_infos
+            mileageStats: res.data.data.milestat_infos.mileage
           })
         } else {
           message.error("查询里程失败");
@@ -653,14 +653,9 @@ export default class Monitor extends Component {
             />
             <Button onClick={this.queryStats} style={{marginLeft: "10px"}}>查询</Button>
             <div className="mileageData">
-              <ul>
-                {this.state.mileageStats.map(item => {
-                  return (
-                    <li>{item.stat_date.split(' ')[0] + ':' + 
-                    (item.mileage / 1000) + "km"}</li>
-                  )
-                })}
-              </ul>
+                {
+                  this.state.mileageStats / 1000 + "km"
+                }
             </div>
             </Spin>
           </Modal>
