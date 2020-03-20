@@ -1126,10 +1126,10 @@ export default class Bms extends Component {
                 for (let k = volPercentage.length -1; k > 0; k--) {
                     let vol = volPercentage[k].voltage;
                     if (vol< groupData[j]) {
-                        let percentage = volPercentage[k+1].percentage;
+                        let percentage = volPercentage[(k+1) > 20 ? 20 : (k+1)].percentage;
                         let bgc = percentage > 20 ? "#1CE697" : "#B73B3E";
                         batteryBox = percentage > 20 ? 'imgBox green' : 'imgBox red';
-                        batteryStyle = {height: (percentage / 100 * 34) + 'px', backgroundColor: bgc};
+                        batteryStyle = {height: (percentage / 100 * 26) + 'px', backgroundColor: bgc};
                         break;
                     }
                 }
