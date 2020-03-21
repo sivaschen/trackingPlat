@@ -1136,7 +1136,7 @@ export default class Bms extends Component {
                 let str = 
                     <li className="singleBattery" key={ i + "-" + j}>
                         <div className="img">
-                            <div className="battery">
+                            <div className="battery">                                
                                 <div className={batteryBox}></div>
                                 <div className="percentage" style={batteryStyle}></div>
                                 <span className="data">

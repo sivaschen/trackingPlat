@@ -92,7 +92,6 @@ ul, li {
             float: left;
             width: 100%;
             z-index: 99;
-            min-width: 1620px;
             .version {
                 background-color: rgba(38,51,63,1);
                 height: 373px;
@@ -485,8 +484,10 @@ ul, li {
                                     width: 54.4px;
                                     line-height: 1.2;
                                 }
-                                .imgBox {
-                                    display: inline-block;
+                                .imgBox {                                    
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
                                     width: 54.4px;
                                     height: 36.8px;
                                     z-index: 2;
@@ -506,10 +507,11 @@ ul, li {
                                     line-height: 30px;
                                     position: absolute;
                                     width: 49px;   
-                                    bottom:13px;  
+                                    bottom: 12px;  
                                     left: 3px;
-                                    z-index: 0;
-                                    border-radius: 0px 0px 5px 5px;
+                                    height: 25px;
+                                    z-index: 1;
+                                    border-radius: 0 0 5px 5px;
 
                                 }
                             }
@@ -520,6 +522,7 @@ ul, li {
                                 vertical-align: middle;
                                 line-height: 36.8px;
                                 vertical-align: top;
+                                margin-left: 55px;
                                
                             }
                             
