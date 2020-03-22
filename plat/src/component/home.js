@@ -28,7 +28,8 @@ export default class Home extends Component {
       account: {
         login_name: '',
         permission: "00"
-      }
+      },
+      isYjCenter: false
     }
   }
 
@@ -58,8 +59,10 @@ export default class Home extends Component {
     let access_token = cookieParms.access_token;
     let eidLen = parseInt(access_token.substr(3, 2));
     let eid = access_token.substr(5, eidLen);
+    let {isYjCenter} = this.state;
     if (eid == 8888) {
-      eid = 10000
+      isYjCenter = true;
+      eid = 10000;
     }
     let url =  "/ent/getEntInfoByEid";
     http.get(url, {eid: eid}).then((res) => {
@@ -72,6 +75,7 @@ export default class Home extends Component {
           this.getSubAcc(String(eid)).then(res => {
             if (res) {
               this.setState({
+                isYjCenter,
                 treeData: res,
                 expandedKeys: [String(eid)],
                 selectedKeys: [String(eid)]
@@ -292,16 +296,16 @@ export default class Home extends Component {
               <div className="subPage">
                 <div className="menu">
                   <Menu onClick={this.handleMenuClick} selectedKeys={[this.state.current]} mode="horizontal">
-                    <Menu.Item key="/home/user">              
+                    <Menu.Item key="/home/user" style={ !this.state.isYjCenter ? {display: 'inline-block'}: {display: 'none'}}>              
                       <NavLink to="/home/user"><Icon type="team"/>客户管理</NavLink>
                     </Menu.Item>
-                    <Menu.Item key="/home/monitor">              
+                    <Menu.Item key="/home/monitor" style={ !this.state.isYjCenter ? {display: 'inline-block'}: {display: 'none'} }>              
                       <NavLink to="/home/monitor"><Icon type="environment" />监控</NavLink>              
                     </Menu.Item>
-                    <Menu.Item key="/home/bms" style={this.state.account.permission.substr(0,1) > 0 ? {display: 'inline-block'}: {display: 'none'}}>              
+                    <Menu.Item key="/home/bms" style={(this.state.account.permission.substr(0,1) > 0 && !this.state.isYjCenter) ? {display: 'inline-block'}: {display: 'none'}}>              
                       <NavLink to="/home/bms"><Icon type="api" />电池管理</NavLink>              
                     </Menu.Item>
-                    <Menu.Item key="/home/sensor" style={this.state.account.permission.substr(1,1) > 0 ? {display: 'inline-block'}: {display: 'none'}}>              
+                    <Menu.Item key="/home/sensor" style={(this.state.account.permission.substr(1,1) > 0 && !this.state.isYjCenter) ? {display: 'inline-block'}: {display: 'none'}}>              
                       <NavLink to="/home/sensor"><Icon type="dashboard" />传感器</NavLink>              
                     </Menu.Item>
                   </Menu>

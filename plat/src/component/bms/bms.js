@@ -831,26 +831,26 @@ export default class Bms extends Component {
                                             <span className="dischargeTxt">{data.SOC > 95 ? "满电" : data.SOC > 20 ? "正常" : "亏电"}</span>
                                         </div>
                                     </div>
-                                    <span className="sn">{"产品编号："+ data.SN}</span><br/>
-                                    <span className="sn">{"设备id："+ data.SN}</span><br/>
-                                    <span className="sn">{"产品型号：易电"}</span><br/>
-                                    <span className="sn">{"电池类型：钴酸锂"}</span><br/>
+                                    <span className="sn">{"BMS编号："+ data.SN}</span><br/>
+                                    <span className="sn">{"设备id："+ data.imei}</span><br/>
+                                    <span className="sn">{"产品型号：" + data.product_type}</span><br/>
+                                    <span className="sn">{"电池类型：磷酸铁锂"}</span><br/>
                                 </Col>
                                 <Col className="manufacture" span={8}>
                                     <header className="header">
                                         <span></span>
                                         <span>版本信息<Icon type="info-circle" style={{marginLeft:"5px"}} /></span>
                                     </header>
-                                        <span className="sn">{"出厂日期："+ data.Date}</span><br/>
-                                        <span className="sn">{"开始使用时间："+ data.SN}</span><br/>
-                                        <span className="sn">{"设备制造厂商：易电"}</span><br/>
+                                        <span className="sn">{"出厂日期："+ data.production_date}</span><br/>
+                                        <span className="sn">{"开始使用时间："+ data.first_online_time}</span><br/>
+                                        <span className="sn">{"设备制造厂商：" + data.manufacturer}</span><br/>
                                 </Col>
                             </Row>
                             <Row className="bottom">
                                 <Col className="batteryParam" span={16}>
                                     <Row className="batteryParamTop batteryRow">                            
                                             <Col span={12}><span><i className="sp"></i><i className="title">额定容量</i><br/><span className="data">{data.rated_capacity+" Ah"}</span></span></Col>
-                                            <Col span={12}><span><i className="sp"></i><i className="title">累计放电容量</i><br/><span className="data">{data.discharge_capacity+" Ah"}</span></span></Col>
+                                            <Col span={12}><span><i className="sp"></i><i className="title">累计放电容量</i><br/><span className="data">{data.discharge_capacity/10+" Ah"}</span></span></Col>
                                     </Row>
                                     <Row className="batteryParamMiddle batteryRow">
                                             <Col span={12}><span><i className="sp"></i><i className="title">充放电次数</i><br/><span className="data">{(Number(data.discharge_count) + Number(data.charge_count))+" 次"}</span></span></Col>
