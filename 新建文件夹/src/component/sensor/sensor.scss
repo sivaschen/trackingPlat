@@ -1,0 +1,41 @@
+.sensor {
+    min-width: 1000px;
+    margin-top: 10px;
+    .deviceList {
+        background-color: #26333F;
+        height:60px;
+        .title {
+            color: #fff;
+            line-height: 60px;
+            margin-left: 20px;
+        }
+        .ant_select {
+            width: 160px;
+        }
+        .ant-select-selection {
+            background-color: rgba(27,38,49,1);
+            color:#fff;
+            border:none;
+            outline: none;
+            input {
+                outline: none;
+            }
+        }
+        .ant-select-arrow {
+            color: #fff;
+        }
+    }
+    .gaugeData {
+        margin-top: 10px;
+        box-sizing: border-box;
+        .chartBox {
+            display: inline-block;
+            width: 24%;
+            background-color: #26333F;
+        }
+        .chartBox+.chartBox{
+            margin-left: 10px;
+        }
+    }
+
+}

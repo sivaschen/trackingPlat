@@ -1,0 +1,134 @@
+  
+.fensug{ 
+    width:150px; 
+    height:150px; 
+    margin:0px auto; 
+    padding:5px;
+    -webkit-border-radius:50%;
+    -moz-border-radius:50%;
+    border-radius: 50%;
+    overflow:hidden;
+    position:relative;
+    box-sizing: content-box!important;    
+}
+.wavenum {
+    width:150px;
+    height:150px;
+    overflow:hidden;
+    -webkit-border-radius:50%;
+    border-radius:50%;
+    text-align:center;
+    display:table-cell;
+    vertical-align:middle; 
+    position:absolute; 
+    left:5px; 
+    top:5px; 
+    z-index:5;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+   
+
+}
+b { 
+    color:#fff;
+    font-size:25px;
+    text-align:center;
+    display:block;
+    position:relative;
+    z-index:2;
+    line-height:45px;
+}
+tt{ 
+color:#fff; 
+font-size:18px; 
+text-align:center;
+display:block;
+position:relative;
+z-index:2; 
+font-weight:bold;
+width:120px;
+margin:3px auto; 
+line-height:35px;
+}
+    
+    .waven { 
+         
+        webkit-border-radius:50%;
+        -moz-border-radius:50%;
+        border-radius:50%;
+        overflow:hidden;
+        position:relative;
+        
+        }
+    
+    .wave { 
+        width:408px;
+        position:absolute;
+        left:0px; bottom:0px;
+        background: url(./../../asset/images/wave.png) no-repeat;
+        animation: move_wave 1s linear infinite;
+        -webkit-animation: move_wave 1s linear infinite;
+    }
+    
+    
+    .wave1 {
+        margin: 0 auto;
+        width: 150px;
+        height: 150px;
+        .box {
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+            .circle {
+                width:150px;
+                height:150px;
+                background: url('./../../asset/images/circle.png') no-repeat center center;
+                background-size: 150px 150px;
+            }
+            .waveBox {
+                height: 119px;
+                width: 119px;
+                position: absolute;
+                border-radius: 50%;
+                bottom: 12px;
+                left: 15px;
+                overflow: hidden;
+                .value {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%,-50%);
+                    font-size: 20px;
+                    font-weight: bolder;
+                }
+            }
+
+        }
+    }
+    @-webkit-keyframes move_wave {
+        0% {
+            -webkit-transform: translateX(0)
+        }
+        50% {
+            -webkit-transform: translateX(-25%) 
+        }
+        100% {
+            -webkit-transform: translateX(-50%) 
+        }
+    }
+        
+    @keyframes move_wave {
+        0% {
+            transform: translateX(0)
+        }
+        50% {
+            transform: translateX(-25%) 
+        }
+        100% {
+            transform: translateX(-50%) 
+        }
+    }
+    
