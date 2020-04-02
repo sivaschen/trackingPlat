@@ -44,7 +44,8 @@ export default class User extends React.Component {
             excelLoading: false,
             logoLoading: false,
             isRoot:false,
-            cardInfo:  []
+            cardInfo:  [],
+            totalDeviceCnt: 0
         }
     }
     componentDidMount () {
@@ -290,16 +291,18 @@ export default class User extends React.Component {
             visible: true
         })
     }
-    getDeviceList () {
+    getDeviceList (pageno) {
         const url = "/ent/getSubDeviceInfo"
         let data = {
-            eid: this.state.eid
+            eid: this.state.eid,
+            pageno
         }
         http.get(url, data).then(res => {
             if (res.data.errcode === 0) {
                 if (res.data.errcode === 0) {
                     this.setState({
-                        deviceList: res.data.data.records
+                        deviceList: res.data.data.records,
+                        totalDeviceCnt: res.data.data.total_cnt
                     })
                 }
             } else {
@@ -338,6 +341,9 @@ export default class User extends React.Component {
     onRef = (name, ref) => {
         this.formPage = ref;
     }
+    changeDevicePage = (page) => {
+        this.getDeviceList(page -1);
+    }
     init = () => {
         let eid = this.props.eid;
         let url = "/ent/getEntInfoByEid";
@@ -348,7 +354,7 @@ export default class User extends React.Component {
                 eid: String(eid),
                 account: data
             }, () => {
-                this.getDeviceList();
+                this.getDeviceList(0);
             })
         } else {
             message.error("获取账户信息失败");
@@ -457,7 +463,9 @@ export default class User extends React.Component {
                             </Upload>
                         </div>
                     </h3>
-                    <Table columns={this.state.deviceColumns} dataSource={this.state.deviceList} rowKey="dev_id" />
+                    <Table pagination={
+                        {pageSize: 20, total: this.state.totalDeviceCnt, onChange: this.changeDevicePage}
+                    } columns={this.state.deviceColumns} dataSource={this.state.deviceList} rowKey="dev_id" />
                 </div>
                 <Modal title="添加用户" visible={this.state.visible} onOk={this.addUser} confirmLoading={this.confirmLoading} onCancel={this.cancelAddUser} className="addUser">
                     <Input addonBefore="登录名" className="addUserInput" onChange={this.getNewUserName}/>

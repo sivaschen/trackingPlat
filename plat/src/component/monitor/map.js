@@ -31,7 +31,7 @@ const RenderMap = (props) => {
         let position = {lng: marker.longitude / 1000000, lat: marker.latitude / 1000000};
         let heartTime = tool.formatTimestamp(marker.heart_time || marker.sys_time);
         let gpsTime = tool.formatTimestamp(marker.gps_time);
-        let labelContent = '<span>速 度：'+marker.speed+' km/h</span><br/><span>GPS：'+ gps_status[marker.gps_status]+'</span><br/><span>ACC:'+ acc_status[marker.acc_status] +'</span><br/><span>定位时间：'+ gpsTime +'</span><br/><span>心跳时间：'+ heartTime+'</span><br/>' + '<span>状态：'+ dev_status[marker.dev_status] +'</span><br/>'
+        let labelContent = '<span>速 度：'+marker.speed+' km/h</span><br/><span>GPS：'+ gps_status[marker.gps_status]+'</span><br/><span>ACC:'+ acc_status[marker.acc_status] +'</span><br/><span>定位时间：'+ gpsTime +'</span><br/><span>心跳时间：'+ heartTime+'</span><br/>' + '<span>状态：'+ dev_status[marker.dev_status] +'</span><br/>' + '<span>IMEI：'+ marker.imei +'</span><br/>'
         
         if (marker.dev_status === 'offline') {
             let offlineTime = this.formatTimeSpan(marker.offline_time);
