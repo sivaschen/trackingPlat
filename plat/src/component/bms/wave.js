@@ -35,7 +35,7 @@ export default class Wave extends React.Component {
                 <div className="box">
                     <div className="circle"></div>
                     <div className="waveBox">
-                        <div className="wave" style={height}></div>
+                        {/* <div className="wave" style={height}></div> */}
                         <span className="value">{(socPercentage || 0) + '%'}</span>
                     </div>
                 </div>

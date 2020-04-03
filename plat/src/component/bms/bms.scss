@@ -491,11 +491,8 @@ ul, li {
                                     width: 33px;
                                     height: 23px;
                                     z-index: 2;
-                                    &.green {
-                                        background: url('./../../asset/images/batteryGreen.png') no-repeat center center;
-                                    background-size: 33px 23px;
-
-                                    }
+                                    background: url('./../../asset/images/batteryGreen.png') no-repeat center center;
+                                    background-size: 33px 23px;                                    
                                     &.red {
                                         background: url('./../../asset/images/batteryRed.png') no-repeat center center;
                                         background-size: 33px 23px;

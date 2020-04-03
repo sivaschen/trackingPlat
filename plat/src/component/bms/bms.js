@@ -1123,21 +1123,29 @@ export default class Bms extends Component {
                 if (groupData[j] === "0") continue;
                 let batteryStyle;
                 let batteryBox;
-                for (let k = volPercentage.length -1; k > 0; k--) {
-                    let vol = volPercentage[k].voltage;
-                    if (vol< groupData[j]) {
-                        let percentage = volPercentage[(k+1) > 20 ? 20 : (k+1)].percentage;
-                        let bgc = percentage > 20 ? "#1CE697" : "#B73B3E";
-                        batteryBox = percentage > 20 ? 'imgBox green' : 'imgBox red';
-                        batteryStyle = {height: (percentage / 100 * 18) + 'px', backgroundColor: bgc};
-                        break;
+                if (volPercentage[0].voltage >= groupData[j]) {
+                    let percentage = 0;
+                    let bgc = percentage > 20 ? "#1CE697" : "#B73B3E";
+                    batteryBox = percentage > 20 ? 'green' : 'red';
+                    batteryStyle = {height: (percentage / 100 * 18) + 'px', backgroundColor: bgc};
+                } else {
+                    for (let k = volPercentage.length -1; k > 0; k--) {
+                        let vol = volPercentage[k].voltage;                    
+                        if (vol< groupData[j]) {
+                            let percentage = volPercentage[(k+1) > 20 ? 20 : (k+1)].percentage;
+                            let bgc = percentage > 20 ? "#1CE697" : "#B73B3E";
+                            batteryBox = percentage > 20 ? 'green' : 'red';
+                            batteryStyle = {height: (percentage / 100 * 18) + 'px', backgroundColor: bgc};
+                            break;
+                        }
                     }
                 }
+                
                 let str = 
                     <li className="singleBattery" key={ i + "-" + j}>
                         <div className="img">
                             <div className="battery">                                
-                                <div className={batteryBox}></div>
+                                <div className={"imgBox " + batteryBox}></div>
                                 <div className="percentage" style={batteryStyle}></div>
                                 <span className="data">
                                     <div className="dataValue">{groupData[j] + " mv"} </div>
