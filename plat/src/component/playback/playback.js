@@ -1,6 +1,8 @@
 import React from 'react';
 import "./playback.scss"
 import { DatePicker, Slider, Button, message } from 'antd';
+import locale from 'antd/lib/date-picker/locale/zh_CN';
+import 'moment/locale/zh-cn';
 import http from './../server.js'
 import car from '../../asset/images/car-1.png'
 const { RangePicker } = DatePicker;
@@ -193,7 +195,7 @@ export default class Playback extends React.Component {
         let {sliderValue} = this.state;
         return (<div className="playbackPage">
             <div className="timePicker">
-                <RangePicker showTime={{ format: 'HH:mm' }} format="YYYY-MM-DD HH:mm" placeholder={['开始时间', '结束时间']} onChange={this.onChange} onOk={this.onOk}/>
+                <RangePicker locale={locale} showTime={{ format: 'HH:mm' }} format="YYYY-MM-DD HH:mm" placeholder={['开始时间', '结束时间']} onChange={this.onChange} onOk={this.onOk}/>
                 <span className="sliderTxt fast">快</span>
                 <Slider value={sliderValue} className="slider" defaultValue={0.5} step={0.1} min={0.1} max={1} onChange={this.onFrequencyChange.bind(this)} onAfterChange={this.onAfterFrequencyChange.bind(this)} />
                 <span className="sliderTxt">慢</span>

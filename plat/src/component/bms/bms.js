@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import ReactEcharts from "echarts-for-react";
 import './bms.scss';
 import http from './../server.js'
-import { Select, Tabs, Row, Col, Icon,Modal, Input, Spin, message } from 'antd';
+import { Select, Tabs, Row, Col, Icon,Modal, Input, Spin, message, Button } from 'antd';
 import { red } from 'ansi-colors';
 import Wave from './wave.js'
 const { Option } = Select;
@@ -1170,7 +1170,7 @@ export default class Bms extends Component {
         this.setState({
             selectedDevice: {key: value.key}
         }, () => {
-            this.getBms(value.key, value.label);
+            this.getBms(value.key, value.label, this.setTabContent);
         })
     }
 
@@ -1194,37 +1194,40 @@ export default class Bms extends Component {
             </ul>
         </>
     }
-    getBms = (dev_id, dev_name) => {
+    getBms = (dev_id, dev_name, cb) => {
         const url = "/device/getBmsInfoByDevid";
         let data = {
             dev_id: dev_id
         }
         http.get(url, data).then(res => {
-            if (res.data.errcode === 0) {
-                let { panes } = this.state;
-                for (let i = 0; i < panes.length; i++) {
-                    let item = panes[i];
-                    if (dev_id == item.key) {
-                        this.setState({
-                            activeKey: dev_id
-                        });
-                        return
-                    }
-                }
-                let bmsData = res.data.data;
-                if (bmsData) {
-                    let tabContent = this.renderTabData(bmsData);
-                    panes.push(
-                        {title: dev_name, content: tabContent, key: dev_id, closable: true}
-                    )
-                    this.setState({
-                        panes,
-                        activeKey:dev_id
-                    })
-                }
-                
-            }
+           cb(res, dev_name,dev_id);
         })
+    }
+    setTabContent = (res, dev_name,dev_id) => {
+        if (res.data.errcode === 0) {
+            let { panes } = this.state;
+            for (let i = 0; i < panes.length; i++) {
+                let item = panes[i];
+                if (dev_id == item.key) {
+                    this.setState({
+                        activeKey: dev_id
+                    });
+                    return
+                }
+            }
+            let bmsData = res.data.data;
+            if (bmsData) {
+                let tabContent = this.renderTabData(bmsData);
+                panes.push(
+                    {title: dev_name, content: tabContent, key: dev_id, closable: true}
+                )
+                this.setState({
+                    panes,
+                    activeKey:dev_id
+                })
+            }
+            
+        }
     }
     onEditTab = (targetKey, action) => {
         this[action](targetKey);
@@ -1265,9 +1268,9 @@ export default class Bms extends Component {
                     panes: []
                 }, () => {
                     if (this.props.devid) {
-                        this.getBms(this.props.devid, deviceList[0].dev_name);
+                        this.getBms(this.props.devid, deviceList[0].dev_name, this.setTabContent);
                     } else {
-                        this.getBms(deviceList[0].dev_id, deviceList[0].dev_name);                        
+                        this.getBms(deviceList[0].dev_id, deviceList[0].dev_name, this.setTabContent);                        
                     }
                 })
             } else {
@@ -1278,7 +1281,30 @@ export default class Bms extends Component {
     changeTab = activeKey => {
         this.setState({ activeKey });
     }
- 
+    updateTabContent = (res, dev_name ,dev_id) => {
+        if (res.data.errcode === 0) {            
+            let bmsData = res.data.data;
+            if (bmsData) {
+                let { panes } = this.state;
+                let tabContent = this.renderTabData(bmsData);
+                for (let i = 0; i < panes.length; i++) {
+                    if (dev_id == panes[i].key) {
+                        panes[i] = {title: dev_name, content: tabContent, key: dev_id, closable: true};
+                        this.setState({
+                        panes,
+                        activeKey: dev_id
+                        });
+                        return
+                    }
+                }
+                
+            }
+            
+        }
+    }
+    getNewTabContent = () => {
+        this.getBms(this.state.panes[0].key, this.state.panes[0].title, this.updateTabContent)
+    }
     render () {
         return (
             <Spin size="large" spinning={this.state.loading} className={"loadingData " + (this.state.loading ? "enabled" : 'disabled')}>
@@ -1294,6 +1320,7 @@ export default class Bms extends Component {
                                 <Option value={device.dev_id} key={device.dev_id}>{device.dev_name}</Option>
                             ))}
                         </Select>
+                        <Button onClick={this.getNewTabContent}>刷 新</Button>
                     </div>
                     <div className="tab" style={{width: "100%", height: "100%"}}>
                         <Tabs onChange={this.changeTab} type="editable-card" onEdit={this.onEditTab} activeKey={this.state.activeKey} hideAdd> 

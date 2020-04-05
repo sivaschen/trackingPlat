@@ -45,7 +45,8 @@ export default class User extends React.Component {
             logoLoading: false,
             isRoot:false,
             cardInfo:  [],
-            totalDeviceCnt: 0
+            totalDeviceCnt: 0,
+            dev_status: {}
         }
     }
     componentDidMount () {
@@ -77,6 +78,10 @@ export default class User extends React.Component {
                     title: 'IMEI',
                     dataIndex: 'imei',
                     key: 'imei'
+                },{
+                    title: '状态',
+                    dataIndex: 'dev_status',
+                    key: 'dev_status'
                 },{
                     title: 'ICCID',
                     dataIndex: 'iccid',
@@ -256,6 +261,7 @@ export default class User extends React.Component {
             }
         })
     }
+
     getNewUserName = (e) => {
         this.setState({
             newUserName: e.target.value
@@ -291,18 +297,27 @@ export default class User extends React.Component {
             visible: true
         })
     }
+
     getDeviceList (pageno) {
-        const url = "/ent/getSubDeviceInfo"
+        const url = "/ent/getSubDeviceInfo";
+        let { eid } = this.state;
         let data = {
-            eid: this.state.eid,
+            eid: eid,
             pageno
         }
         http.get(url, data).then(res => {
+            console.log(res);
+            console.log(this.state.dev_status);
+            let {dev_status } =  this.state;
             if (res.data.errcode === 0) {
                 if (res.data.errcode === 0) {
+                    let data = res.data.data;
+                    for (let i = 0; i < data.records.length; i++) {
+                        data.records[i].dev_status = dev_status[data.records[i].dev_id] == 'offline' ? '离线' : "在线";
+                    }
                     this.setState({
-                        deviceList: res.data.data.records,
-                        totalDeviceCnt: res.data.data.total_cnt
+                        deviceList: data.records,
+                        totalDeviceCnt: data.total_cnt
                     })
                 }
             } else {
@@ -347,18 +362,52 @@ export default class User extends React.Component {
     init = () => {
         let eid = this.props.eid;
         let url = "/ent/getEntInfoByEid";
+        let httpData = {};
         http.get(url, {eid: eid}).then((res) => {
-        if (res.data.errcode === 0) {
-            let data = res.data.data;
-            this.setState({
-                eid: String(eid),
-                account: data
-            }, () => {
-                this.getDeviceList(0);
-            })
-        } else {
-            message.error("获取账户信息失败");
-        }
+            if (res.data.errcode === 0) {
+                let data = res.data.data;
+                httpData.account = data;
+                httpData.eid = String(eid);
+                return data
+            } else {
+                message.error("获取账户信息失败");
+                return false
+            }
+        }).then(res => {
+           if (res) {
+            const url = "/ent/getRunInfoByEid";
+            return http.get(url, {eid: res.eid})
+           }
+        }).then(res => {
+            if (res.data.errcode === 0) {
+                let data = res.data.data;
+                let dev_status = {};
+                let dev_status_stat = {
+                    online: 0,
+                    offline: 0
+                };
+                for (let i = 0; i < data.length; i++) {
+                    dev_status[data[i].devid] = data[i].dev_status;
+                    if (data[i].dev_status == "offline") {
+                        dev_status_stat.offline += 1;
+                    } else {
+                        dev_status_stat.online += 1;
+
+                    }
+                }
+                httpData.dev_status = dev_status;
+                return true
+            }
+        }).then(res => {
+            if (res) {
+                this.setState({
+                    eid: httpData.eid,
+                    account: httpData.account,
+                    dev_status: httpData.dev_status
+                }, () => {
+                    this.getDeviceList(0);
+                })
+            }
         })
     }
     customUploadLogo = () => {

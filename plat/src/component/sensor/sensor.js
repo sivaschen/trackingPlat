@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import http from './../server';
 import ReactEcharts from "echarts-for-react";
-import { Select, message } from "antd";
+import { Select, message, Button } from "antd";
 import { red } from 'ansi-colors';
 import './sensor.scss'
 const { Option } = Select;
@@ -39,7 +39,6 @@ export default class Monitor extends Component {
         })
       }
     changeDevice = devid => {
-        console.log(devid)
         this.setState({
             currentDevice: devid
         }, () => {
@@ -58,9 +57,12 @@ export default class Monitor extends Component {
                     deviceData: data
                 })
             } else {
-                message.error("获取数据失败");
+                message.error("暂无数据");
             }
         })
+    }
+    updateSensorData = () => {
+        this.getGaugeData(this.state.currentDevice);
     }
     render () {
         let {deviceList, deviceData} = this.state;
@@ -77,7 +79,7 @@ export default class Monitor extends Component {
                             return <Option key={item.imei} value={item.dev_id} >{item.dev_name}</Option>
                         })}
                     </Select>
-                    
+                    <Button onClick={this.updateSensorData.bind(this)}>刷新</Button>
                 </div>
                 <div className="gaugeData">
                         <div className="chartBox">
