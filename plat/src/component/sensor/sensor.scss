@@ -1,6 +1,14 @@
 .sensor {
     min-width: 1000px;
     margin-top: 10px;
+    .ant-btn.updateCurrentData {
+        background-color: #1b2631;
+        margin-left: 15px;
+        font-size: 16px;
+        color: #fff;
+        border: 1px solid #26333f;
+        vertical-align: middle;
+    }
     .deviceList {
         background-color: #26333F;
         height:60px;

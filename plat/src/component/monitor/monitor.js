@@ -130,7 +130,7 @@ export default class Monitor extends Component {
     this.map.panTo(point);
     let heartTime = tool.formatTimestamp(content.heart_time || content.sys_time);
     let gpsTime = tool.formatTimestamp(content.gps_time);
-    let str = '<span>速 度：'+content.speed+' km/h</span><br/><span>GPS：'+ gps_status[content.gps_status]+'</span><br/><span>定位时间：'+ gpsTime +'</span><br/><span>心跳时间：'+ heartTime+'</span><br/>' + '<span>状态：'+ dev_status[content.dev_status] +'</span><br/>'  + '<span>IMEI：'+ content.imei +'</span><br/>';
+    let str = '<span class="arrowToDev"></span><span>速 度：'+content.speed+' km/h</span><br/><span>GPS：'+ gps_status[content.gps_status]+'</span><br/><span>定位时间：'+ gpsTime +'</span><br/><span>心跳时间：'+ heartTime+'</span><br/>' + '<span>状态：'+ dev_status[content.dev_status] +'</span><br/>'  + '<span>IMEI：'+ content.imei +'</span><br/>';
     if (content.dev_status === 'offline') {
       let offlineTime = this.formatTimeSpan(content.offline_time);
       str += '<span>离线时长：'+ offlineTime +'</span><br/>'
@@ -138,7 +138,7 @@ export default class Monitor extends Component {
     str +=  '<span class="labelCmd" data-type='+ content.product_type +'>指令</span><a class="playback" target="_blank" href="/playback?devid=' + content.devid + '">回放</a>';
     str += '<span class="statistics" data-devid=' +  content.devid + '>里程</span>';
     let label = new window.BMap.Label(str, {
-      offset: new window.BMap.Size(40, -65)
+      offset: new window.BMap.Size(25, -125)
     })
     label.setStyle({
       fontSize : "12px",
@@ -275,7 +275,7 @@ export default class Monitor extends Component {
     let gpsTime = tool.formatTimestamp(content.gps_time);
     let point = marker.getPosition();
     // <span>ACC:'+ acc_status[content.acc_status] +'</span><br/>
-    let str = '<span>速 度：'+content.speed+' km/h</span><br/><span>GPS：'+ gps_status[content.gps_status]+'</span><br/><span>定位时间：'+ gpsTime +'</span><br/><span>心跳时间：'+ heartTime+'</span><br/>' + '<span>状态：'+ dev_status[content.dev_status] +'</span><br/>' + '<span>IMEI：'+ content.imei +'</span><br/>';
+    let str = '<span class="arrowToDev"></span><span>速 度：'+content.speed+' km/h</span><br/><span>GPS：'+ gps_status[content.gps_status]+'</span><br/><span>定位时间：'+ gpsTime +'</span><br/><span>心跳时间：'+ heartTime+'</span><br/>' + '<span>状态：'+ dev_status[content.dev_status] +'</span><br/>' + '<span>IMEI：'+ content.imei +'</span><br/>';
     if (content.dev_status === 'offline') {
       let offlineTime = this.formatTimeSpan(content.offline_time);
       str += '<span>离线时长：'+ offlineTime +'</span><br/>'
@@ -287,7 +287,7 @@ export default class Monitor extends Component {
       label.setContent(str);
     } else {
       let firstLabel = new window.BMap.Label(str, {
-        offset: new window.BMap.Size(40, -65)
+        offset: new window.BMap.Size(25, -125)
       })
       firstLabel.setStyle({
         fontSize : "12px",

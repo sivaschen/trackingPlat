@@ -14,7 +14,7 @@ export default class Monitor extends Component {
         deviceData: {}
       }
     }
-    componentDidMount () {        
+    componentDidMount () {   
         this.props.onRef('yjcenter', this);
         this.init();
     }
@@ -79,7 +79,7 @@ export default class Monitor extends Component {
                             return <Option key={item.imei} value={item.dev_id} >{item.dev_name}</Option>
                         })}
                     </Select>
-                    <Button onClick={this.updateSensorData.bind(this)}>刷新</Button>
+                    <Button className="updateCurrentData" onClick={this.updateSensorData.bind(this)}>刷 新</Button>
                 </div>
                 <div className="gaugeData">
                         <div className="chartBox">

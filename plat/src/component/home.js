@@ -93,7 +93,6 @@ export default class Home extends Component {
   }
   onLoadData = treeNode =>
   new Promise((resolve) => {
-    console.log(treeNode);
     if (treeNode.props.children) {
       resolve();
       return;
@@ -162,8 +161,7 @@ export default class Home extends Component {
     if (!info.selected) return
     this.setState({ selectedKeys, devid: '' }, () => {
       this.subpage.init();
-    });
-    
+    });    
   };
   renderTreeNodes = data =>
     data.map(item => {
@@ -215,6 +213,18 @@ export default class Home extends Component {
   onRef = (name, ref) => {
     this.subpage = ref;
   }
+  reloadHomeTree = () => {
+    let {eid} = this.state;
+    this.getSubAcc(eid).then(res => {
+      if (res) {
+        this.setState({
+          treeData: res,
+        }, () => {
+          this.subpage.init();
+        })              
+      }
+    })
+  }
   handleMenuClick = e => {
     this.setState({
       current: e.key,
@@ -256,12 +266,15 @@ export default class Home extends Component {
       this.subpage.init();
     })
   }
-  changeRouter = (devid, route) => {
+  changeRouter = (devid, route, page) => {
     this.setState({
       devid: devid,
       current: "/home/" + route
     }, () => {
-      this.props.history.push("/home/" + route)
+      this.props.history.push({
+        pathname: "/home/" + route, 
+        state: {page: page}
+      });
     })
   }
   logout = () => {
@@ -312,7 +325,7 @@ export default class Home extends Component {
                 </div>  
                   <Switch>
                     <Route exact path="/home">
-                        <User addNode={this.addNodeCallback} eid={this.state.selectedKeys[0]} rootAcc={this.state.account} onRef={this.onRef.bind(this)} loadTree={this.updateTreeNode} changeRouter={this.changeRouter} expandAncestors={this.expandAncestors} />
+                        <User addNode={this.addNodeCallback} eid={this.state.selectedKeys[0]} rootAcc={this.state.account} onRef={this.onRef.bind(this)} loadTree={this.updateTreeNode} changeRouter={this.changeRouter} expandAncestors={this.expandAncestors} reloadHomeTree={this.reloadHomeTree} />
                     </Route>
                     <Route path="/home/monitor">
                         <Monitor onRef={this.onRef.bind(this)} eid={this.state.selectedKeys[0]} devid={this.state.devid} toPlayback={this.toPlayback} expandAncestors={this.expandAncestors}/>
@@ -327,7 +340,7 @@ export default class Home extends Component {
                         <Bms eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} devid={this.state.devid} permission={Number(this.state.account.bms_permission)} bmsNoPerm={this.bmsNoPerm} />
                     </Route>
                     <Route path="/home/user">
-                        <User addNode={this.addNodeCallback} rootAcc={this.state.account} eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} loadTree={this.updateTreeNode} changeRouter={this.changeRouter} expandAncestors={this.expandAncestors} />
+                        <User  reloadHomeTree={this.reloadHomeTree} addNode={this.addNodeCallback} rootAcc={this.state.account} eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} loadTree={this.updateTreeNode} changeRouter={this.changeRouter} expandAncestors={this.expandAncestors} />
                     </Route>
                     <Route path="/home/sensor">
                         <Sensor eid={this.state.selectedKeys[0]} onRef={this.onRef.bind(this)} />

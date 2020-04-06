@@ -3,6 +3,20 @@ ul, li {
     margin: 0;
     padding: 0;
 }
+.ant-btn.updateCurrentData {
+    background-color: #1b2631;
+    margin-left: 15px;
+    font-size: 16px;
+    color: #fff;
+    border: 1px solid #26333f;
+    vertical-align: middle;
+    &:hover {
+    background-color: #1b2631;
+    color: #fff;
+    border: 1px solid #26333f;
+
+    }
+}
 .clearfix:after {
     visibility: hidden;
     display: block;

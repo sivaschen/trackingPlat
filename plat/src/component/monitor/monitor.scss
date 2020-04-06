@@ -123,3 +123,12 @@
     height: 100%;
     width: 100%;
 }
+.arrowToDev {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -5px;
+    width: 20px;
+    height: 20px;
+    background-color: red;
+}

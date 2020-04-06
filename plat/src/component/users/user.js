@@ -3,6 +3,7 @@ import { Button, Icon, message, Popconfirm, Modal,Tooltip, Input, AutoComplete, 
 import http from './../server'
 import MyForm from './form'
 import "./user.scss"
+import UserTree from './tree'
 const { Option } = Select;
 const cardKey = {
     "iccid": "iccid",
@@ -46,7 +47,14 @@ export default class User extends React.Component {
             isRoot:false,
             cardInfo:  [],
             totalDeviceCnt: 0,
-            dev_status: {}
+            dev_status: {},
+            selectedDev: [],
+            transferVisible:false,
+            dev_status_stat: {
+                offline: 0,
+                online: 0
+            },
+            devPage: 0
         }
     }
     componentDidMount () {
@@ -117,9 +125,9 @@ export default class User extends React.Component {
                       )
                   }]
         }, () => {
-        if (this.props.eid) {
-            this.init();
-        }
+            if (this.props.eid) {
+                this.init();
+            }
         })
     }
     showCardInfo = (iccid) => {
@@ -171,7 +179,11 @@ export default class User extends React.Component {
         }
         http.get(url, data).then(res => {
             if (res.data.errcode === 0) {
-                this.props.expandAncestors(res.data.data);
+                this.setState({
+                    devPage: res.data.data.pagno
+                }, () => {
+                    this.props.expandAncestors(res.data.data);
+                })
             }
         });
     }
@@ -306,14 +318,13 @@ export default class User extends React.Component {
             pageno
         }
         http.get(url, data).then(res => {
-            console.log(res);
-            console.log(this.state.dev_status);
             let {dev_status } =  this.state;
             if (res.data.errcode === 0) {
                 if (res.data.errcode === 0) {
                     let data = res.data.data;
                     for (let i = 0; i < data.records.length; i++) {
-                        data.records[i].dev_status = dev_status[data.records[i].dev_id] == 'offline' ? '离线' : "在线";
+                        let status =  dev_status[data.records[i].dev_id]
+                        data.records[i].dev_status = status ? status == 'offline' ? '离线' : "在线" : '';
                     }
                     this.setState({
                         deviceList: data.records,
@@ -354,60 +365,81 @@ export default class User extends React.Component {
         this.formPage.handleSubmit();
     }
     onRef = (name, ref) => {
-        this.formPage = ref;
+        console.log(name);
+        if (name === 'form') {
+            this.formPage = ref;
+        } else {
+            this.treePage = ref;
+        }
     }
     changeDevicePage = (page) => {
         this.getDeviceList(page -1);
     }
-    init = () => {
-        let eid = this.props.eid;
-        let url = "/ent/getEntInfoByEid";
-        let httpData = {};
-        http.get(url, {eid: eid}).then((res) => {
-            if (res.data.errcode === 0) {
-                let data = res.data.data;
-                httpData.account = data;
-                httpData.eid = String(eid);
-                return data
-            } else {
-                message.error("获取账户信息失败");
-                return false
-            }
-        }).then(res => {
-           if (res) {
-            const url = "/ent/getRunInfoByEid";
-            return http.get(url, {eid: res.eid})
-           }
-        }).then(res => {
+    getDevStatus = () => {
+        const url = "/ent/getRunInfoByEid";
+        let {eid} =  this.state;
+        let dev_status_stat = {
+            online: 0,
+            offline: 0
+        }
+        http.get(url, {eid: eid}).then(res => {
             if (res.data.errcode === 0) {
                 let data = res.data.data;
                 let dev_status = {};
-                let dev_status_stat = {
-                    online: 0,
-                    offline: 0
-                };
                 for (let i = 0; i < data.length; i++) {
                     dev_status[data[i].devid] = data[i].dev_status;
                     if (data[i].dev_status == "offline") {
                         dev_status_stat.offline += 1;
                     } else {
                         dev_status_stat.online += 1;
-
                     }
                 }
-                httpData.dev_status = dev_status;
-                return true
-            }
-        }).then(res => {
-            if (res) {
                 this.setState({
-                    eid: httpData.eid,
-                    account: httpData.account,
-                    dev_status: httpData.dev_status
+                    dev_status,
+                    dev_status_stat,
+                }, () => {
+                    this.getDeviceList(0);
+                })
+            } else {
+                this.setState({
+                    dev_status_stat: {
+                        online: 0,
+                        offline: 0
+                    }
                 }, () => {
                     this.getDeviceList(0);
                 })
             }
+        })
+    }
+    init = () => {
+        let eid = this.props.eid;
+        let url = "/ent/getEntInfoByEid";
+        http.get(url, {eid: eid}).then((res) => {
+            if (res.data.errcode === 0) {
+                let data = res.data.data;
+                this.setState({
+                    eid: String(eid),
+                    account: data
+                },
+                () => {
+                    this.getDevStatus();
+                })
+            } else {                
+                message.error("获取账户信息失败");   
+                this.setState({
+                    eid:String(eid),
+                }, () => {
+                    this.getDevStatus();
+                });             
+            }
+        }).catch(err => {
+            console.log(err);
+        })
+    }
+    transferDevs = () => {
+        this.setState({
+            transferVisible: true
         })
     }
     customUploadLogo = () => {
@@ -429,6 +461,9 @@ export default class User extends React.Component {
             })
         })
       }
+      reloadHomeTree = () => {
+          this.props.reloadHomeTree();
+      }
       getLogoFile = (file, filelist) => {
           this.setState({
               fileLogo: file,
@@ -436,8 +471,9 @@ export default class User extends React.Component {
           })
           return true
       }
+   
     render () {       
-        let { account, cardInfo } = this.state;
+        let { account, cardInfo, isRoot } = this.state;
         let permissionAcc = account;
         // bms_permission: "2"
         // sensor_permission: "1"
@@ -473,6 +509,7 @@ export default class User extends React.Component {
                         <Option value="device">设备搜索</Option>
                     </Select>
                     <AutoComplete value={this.state.searchValue} dataSource={this.state.searchDataSource} style={{ width: 200 }} onSelect={this.onSearchSelect} onSearch={this.onSearch} onChange={this.onSearchChange} placeholder="请输入搜索的关键字"/>
+                    <span className="transferBtn" style={ isRoot ? {} : {display: 'none'}} onClick={this.transferDevs}>批量转移</span>
                 </div>
                 <div className="accInfo">
                     <h3 className="accountTitle">账户信息:</h3>
@@ -480,8 +517,8 @@ export default class User extends React.Component {
                         <img src={'http://'+this.state.account.logo_url} alt="#"/>
                         <div className="editUser">
                             <Button type="primary" className="saveAcc" onClick={this.saveAccInfo.bind(this)}>保存编辑</Button>
-                            <Upload className="logoUpload" name='cardinfo' beforeUpload={this.getLogoFile} customRequest={this.customUploadLogo} showUploadList={false}>
-                                <Button loading={this.state.logoLoading}>上传经销商Logo</Button>
+                            <Upload  className="logoUpload" name='cardinfo' beforeUpload={this.getLogoFile} customRequest={this.customUploadLogo} showUploadList={false}>
+                                <Button style={ isRoot ? {} : {display: 'none'}} loading={this.state.logoLoading}>上传经销商Logo</Button>
                             </Upload>
                         </div>
                     </div>
@@ -499,8 +536,11 @@ export default class User extends React.Component {
                 <div className="deviceList">
                     <h3>
                         <span>设备列表</span>
+                        <span className="onlineCnt">在线：{this.state.dev_status_stat.online}</span>
+                        <span className="offlineCnt">离线：{this.state.dev_status_stat.offline}</span>
                         <div className="rootManage" >             
                             <Upload beforeUpload={this.getFile} name='cardinfo' onChange={this.uploadExcel} action="/api/ent/updateCardByFile" showUploadList={false} customRequest={this.customUploadExcel}>
+                                
                                 <i className="excelIcon"></i>
                                 <Button loading={this.state.excelLoading}>
                                 上传Excel
@@ -534,6 +574,9 @@ export default class User extends React.Component {
                             )
                         })}
                     
+                </Modal>
+                <Modal destroyOnClose={true} onOk={() => this.setState({transferVisible: false})} onCancel={() => this.setState({transferVisible: false})} className="transferModal" title="批量转移" visible={this.state.transferVisible}>
+                            <UserTree reloadHomeTree={this.reloadHomeTree} eid={this.state.eid} onRef={this.onRef} />
                 </Modal>
             </div>
         )

@@ -721,6 +721,7 @@ export default class Bms extends Component {
         }
     }
     componentDidMount () {
+
         if (this.props.permission === 0) {
             this.props.bmsNoPerm();
         }
@@ -1320,7 +1321,7 @@ export default class Bms extends Component {
                                 <Option value={device.dev_id} key={device.dev_id}>{device.dev_name}</Option>
                             ))}
                         </Select>
-                        <Button onClick={this.getNewTabContent}>刷 新</Button>
+                        <Button className="updateCurrentData" onClick={this.getNewTabContent.bind(this)}>刷 新</Button>
                     </div>
                     <div className="tab" style={{width: "100%", height: "100%"}}>
                         <Tabs onChange={this.changeTab} type="editable-card" onEdit={this.onEditTab} activeKey={this.state.activeKey} hideAdd> 

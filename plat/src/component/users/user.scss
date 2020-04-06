@@ -3,6 +3,9 @@
      .ant-select-selection__rendered {
          margin-right: 0px;
      }
+     .ant-table-tbody > tr.ant-table-row-selected td {
+         background-color: #3d566d;
+     }
     .addUser  {    
         .ant-input-group-addon {
             width: 80px;
@@ -227,3 +230,28 @@
         }
     }   
 }
+.transferModal {    
+    .transferTree {
+        max-height: 300px;
+        overflow: auto;
+    }
+    .transferAction {
+        margin-left: 50%;
+        transform: translateX(-50%);
+        margin-top: 10px;
+    }
+}
+    .transferBtn {
+        color: #fff;
+        margin-left: 5px;
+        padding: 5px 10px;
+        background-color: #1b2631;
+        cursor: pointer;
+        
+    }
+    .onlineCnt, .offlineCnt {
+        margin-left: 15px;
+        font-size: 14px;
+        background-color: #1b2631;
+        padding: 5px 10px;
+    }
