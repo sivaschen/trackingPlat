@@ -24,7 +24,8 @@ export default class Monitor extends Component {
     getDeviceList = () => {
         const url =  "/ent/getSubDeviceInfo"
         let data = {
-            eid: this.props.eid
+            eid: this.props.eid,
+            pagesize: 1000
         }
         http.get(url, data).then(res => {
           if (res.data.errcode === 0) {

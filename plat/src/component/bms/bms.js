@@ -713,7 +713,7 @@ export default class Bms extends Component {
             panes: [],
             activeKey: '',
             deviceList: [],
-            selectedDevice: {key: ''},
+            selectedDevice: {key: '', label: ''},
             defaultSelectedDevice: '',
             visible: false,
             loading: false,
@@ -732,7 +732,7 @@ export default class Bms extends Component {
         let { devid } = this.props;
         this.setState({
             deviceList: [],
-            selectedDevice: {key: ''},
+            selectedDevice: {key: '', label: ''},
             activeKey: ''
         }, () => {
             this.getDeviceList();
@@ -1169,7 +1169,7 @@ export default class Bms extends Component {
     }
     selectDevice = (value) => {
         this.setState({
-            selectedDevice: {key: value.key}
+            selectedDevice: value
         }, () => {
             this.getBms(value.key, value.label, this.setTabContent);
         })
@@ -1206,19 +1206,21 @@ export default class Bms extends Component {
     }
     setTabContent = (res, dev_name,dev_id) => {
         if (res.data.errcode === 0) {
-            let { panes } = this.state;
-            for (let i = 0; i < panes.length; i++) {
-                let item = panes[i];
-                if (dev_id == item.key) {
-                    this.setState({
-                        activeKey: dev_id
-                    });
-                    return
-                }
-            }
             let bmsData = res.data.data;
             if (bmsData) {
                 let tabContent = this.renderTabData(bmsData);
+                let { panes } = this.state;
+                for (let i = 0; i < panes.length; i++) {
+                    let item = panes[i];
+                    if (dev_id == item.key) {
+                        panes[i] = {title: dev_name, content: tabContent, key: dev_id, closable: true}
+                        this.setState({
+                            panes,
+                            activeKey:dev_id
+                        })
+                        return
+                    }
+                }
                 panes.push(
                     {title: dev_name, content: tabContent, key: dev_id, closable: true}
                 )
@@ -1226,8 +1228,7 @@ export default class Bms extends Component {
                     panes,
                     activeKey:dev_id
                 })
-            }
-            
+            }         
         }
     }
     onEditTab = (targetKey, action) => {
@@ -1258,21 +1259,30 @@ export default class Bms extends Component {
     getDeviceList = () => {
         const url =  "/ent/getSubDeviceInfo";
         let data = {
-            eid: this.props.eid
+            eid: this.props.eid,
+            pagesize: 1000
         }
         http.get(url, data).then(res => {
             if (res.data.errcode === 0) {
                 let deviceList = res.data.data.records;
+                let selectedDevice = {};
+                if (this.props.devid) {
+                    for (let i = 0; i < deviceList.length; i++) {
+                        if  (deviceList[i].dev_id == this.props.devid) {                            
+                            selectedDevice.key = deviceList[i].dev_id;
+                            selectedDevice.label = deviceList[i].dev_name;
+                        }  
+                    }
+                } else {
+                    selectedDevice = {key: deviceList[0].dev_id,label: deviceList[0].dev_name};
+                }
                 this.setState({
-                    selectedDevice: this.props.devid ? {key: this.props.devid} : {key: deviceList[0].dev_id},
+
+                    selectedDevice,
                     deviceList,
                     panes: []
                 }, () => {
-                    if (this.props.devid) {
-                        this.getBms(this.props.devid, deviceList[0].dev_name, this.setTabContent);
-                    } else {
-                        this.getBms(deviceList[0].dev_id, deviceList[0].dev_name, this.setTabContent);                        
-                    }
+                    this.getBms(selectedDevice.key, selectedDevice.label, this.setTabContent);              
                 })
             } else {
 
@@ -1292,8 +1302,8 @@ export default class Bms extends Component {
                     if (dev_id == panes[i].key) {
                         panes[i] = {title: dev_name, content: tabContent, key: dev_id, closable: true};
                         this.setState({
-                        panes,
-                        activeKey: dev_id
+                            panes,
+                            activeKey: dev_id
                         });
                         return
                     }
@@ -1304,7 +1314,15 @@ export default class Bms extends Component {
         }
     }
     getNewTabContent = () => {
-        this.getBms(this.state.panes[0].key, this.state.panes[0].title, this.updateTabContent)
+        let { panes } = this.state;
+        let name = '';
+        for (let i = 0; i < panes.length; i++) {
+            if (this.state.activeKey === panes[i].key) {
+                name = panes[i].title;
+                break;
+            }
+        }
+        this.getBms(this.state.activeKey, name, this.updateTabContent);
     }
     render () {
         return (

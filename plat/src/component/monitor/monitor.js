@@ -3,7 +3,7 @@ import './monitor.scss'
 import http from './../server.js'
 import {message, Modal, Select, Input, Button, Spin, DatePicker  } from 'antd'
 
-import car from './../../asset/images/car.png'
+import car from './../../asset/images/car2.png'
 import tool from './../../asset/js/util.js'
 import cmd from './cmd.js'
 import {ComplexCustomOverlay} from './cutomOverlay.js'
@@ -48,7 +48,8 @@ export default class Monitor extends Component {
       startValue: null,
       endValue: null,
       endOpen: false,
-      mileageStats: 0
+      mileageStats: 0,
+      showLabel: true
     }
   }
   init = () => {
@@ -130,7 +131,7 @@ export default class Monitor extends Component {
     this.map.panTo(point);
     let heartTime = tool.formatTimestamp(content.heart_time || content.sys_time);
     let gpsTime = tool.formatTimestamp(content.gps_time);
-    let str = '<span class="arrowToDev"></span><span>速 度：'+content.speed+' km/h</span><br/><span>GPS：'+ gps_status[content.gps_status]+'</span><br/><span>定位时间：'+ gpsTime +'</span><br/><span>心跳时间：'+ heartTime+'</span><br/>' + '<span>状态：'+ dev_status[content.dev_status] +'</span><br/>'  + '<span>IMEI：'+ content.imei +'</span><br/>';
+    let str = '<span>速 度：'+content.speed+' km/h</span><br/><span>GPS：'+ gps_status[content.gps_status]+'</span><br/><span>定位时间：'+ gpsTime +'</span><br/><span>心跳时间：'+ heartTime+'</span><br/>' + '<span>状态：'+ dev_status[content.dev_status] +'</span><br/>'  + '<span>IMEI：'+ content.imei +'</span><br/>';
     if (content.dev_status === 'offline') {
       let offlineTime = this.formatTimeSpan(content.offline_time);
       str += '<span>离线时长：'+ offlineTime +'</span><br/>'
@@ -150,6 +151,8 @@ export default class Monitor extends Component {
     let oldLabel = this.state.selectedMarker.getLabel();
     this.map.removeOverlay(oldLabel);
     e.target.setLabel(label);
+    this.state.selectedMarker.setZIndex(99);
+    e.target.setZIndex(100);
     this.geoc.getLocation(point, rs => {
       var addComp = rs.addressComponents;
       this.setState({
@@ -183,6 +186,7 @@ export default class Monitor extends Component {
           marker.content = item;
           if (newAccount) {
             marker.setRotation(item.course);
+            marker.setZIndex(99);
             marker.addEventListener("click", this.changeLabel)
             markers[item.devid] = marker;
             this.map.addOverlay(marker);
@@ -235,7 +239,8 @@ export default class Monitor extends Component {
   getDeviceList = () => {
     const url =  "/ent/getSubDeviceInfo"
     let data = {
-        eid: this.props.eid
+        eid: this.props.eid,
+        pagesize: 1000
     }
     http.get(url, data).then(res => {
       if (res.data.errcode === 0) {
@@ -275,7 +280,7 @@ export default class Monitor extends Component {
     let gpsTime = tool.formatTimestamp(content.gps_time);
     let point = marker.getPosition();
     // <span>ACC:'+ acc_status[content.acc_status] +'</span><br/>
-    let str = '<span class="arrowToDev"></span><span>速 度：'+content.speed+' km/h</span><br/><span>GPS：'+ gps_status[content.gps_status]+'</span><br/><span>定位时间：'+ gpsTime +'</span><br/><span>心跳时间：'+ heartTime+'</span><br/>' + '<span>状态：'+ dev_status[content.dev_status] +'</span><br/>' + '<span>IMEI：'+ content.imei +'</span><br/>';
+    let str = '<span>速 度：'+content.speed+' km/h</span><br/><span>GPS：'+ gps_status[content.gps_status]+'</span><br/><span>定位时间：'+ gpsTime +'</span><br/><span>心跳时间：'+ heartTime+'</span><br/>' + '<span>状态：'+ dev_status[content.dev_status] +'</span><br/>' + '<span>IMEI：'+ content.imei +'</span><br/>';
     if (content.dev_status === 'offline') {
       let offlineTime = this.formatTimeSpan(content.offline_time);
       str += '<span>离线时长：'+ offlineTime +'</span><br/>'
@@ -296,7 +301,9 @@ export default class Monitor extends Component {
         borderColor: 'black',
         borderRadius: "5px"
       });
-      marker.setLabel(firstLabel);
+      if (this.state.showLabel) {
+        marker.setLabel(firstLabel);
+      }
     }
     
     this.geoc.getLocation(point, rs => {
@@ -381,6 +388,7 @@ export default class Monitor extends Component {
   }
   selectDevice = (devId) => {
     let {markers} = this.state;
+    
     let marker = markers[devId];
     this.changeLabel({
       target: marker
@@ -512,6 +520,13 @@ export default class Monitor extends Component {
     });
     this.map.addControl(navigationControl);
     this.geoc = new window.BMap.Geocoder();  
+    this.map.addEventListener('click', () => {
+      let oldLabel = this.state.selectedMarker.getLabel();
+      this.map.removeOverlay(oldLabel);
+      this.setState({
+        showLabel: false
+      })
+    })
     this.init(); 
   }
   handleStatsOK = ()=> {

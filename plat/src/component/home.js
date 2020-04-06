@@ -80,7 +80,7 @@ export default class Home extends Component {
                 expandedKeys: [String(eid)],
                 selectedKeys: [String(eid)]
               }, () => {
-                this.subpage.init();
+                this.subpage.init({page: 0});
               })              
             }
           })
@@ -160,7 +160,7 @@ export default class Home extends Component {
   onSelect = (selectedKeys, info) => {
     if (!info.selected) return
     this.setState({ selectedKeys, devid: '' }, () => {
-      this.subpage.init();
+      this.subpage.init({page: 0});
     });    
   };
   renderTreeNodes = data =>
@@ -220,7 +220,7 @@ export default class Home extends Component {
         this.setState({
           treeData: res,
         }, () => {
-          this.subpage.init();
+          this.subpage.init({page: 0});
         })              
       }
     })
@@ -261,9 +261,10 @@ export default class Home extends Component {
     this.setState({
         treeData: treeData,
         expandedKeys: keys,
-        selectedKeys: [String(ancestors[ancestors.length - 1].eid)]
+        selectedKeys: [String(ancestors[ancestors.length - 1].eid)],
+
     }, () => {
-      this.subpage.init();
+      this.subpage.init({page: data.pageno, imei: data.imei});
     })
   }
   changeRouter = (devid, route, page) => {

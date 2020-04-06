@@ -21,6 +21,7 @@ export default class User extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            searchImei: '',
             eid: '',
             account: {
                 permission: '00'
@@ -54,7 +55,11 @@ export default class User extends React.Component {
                 offline: 0,
                 online: 0
             },
-            devPage: 0
+            currentDevPage: 1,
+            searchObj: {
+                imei: '',
+                page: 0
+            }
         }
     }
     componentDidMount () {
@@ -126,7 +131,7 @@ export default class User extends React.Component {
                   }]
         }, () => {
             if (this.props.eid) {
-                this.init();
+                this.init({page: 0});
             }
         })
     }
@@ -179,11 +184,7 @@ export default class User extends React.Component {
         }
         http.get(url, data).then(res => {
             if (res.data.errcode === 0) {
-                this.setState({
-                    devPage: res.data.data.pagno
-                }, () => {
-                    this.props.expandAncestors(res.data.data);
-                })
+                this.props.expandAncestors(res.data.data);
             }
         });
     }
@@ -310,12 +311,12 @@ export default class User extends React.Component {
         })
     }
 
-    getDeviceList (pageno) {
+    getDeviceList (searchObj) {
         const url = "/ent/getSubDeviceInfo";
         let { eid } = this.state;
         let data = {
             eid: eid,
-            pageno
+            pageno:searchObj.page
         }
         http.get(url, data).then(res => {
             let {dev_status } =  this.state;
@@ -328,7 +329,9 @@ export default class User extends React.Component {
                     }
                     this.setState({
                         deviceList: data.records,
-                        totalDeviceCnt: data.total_cnt
+                        totalDeviceCnt: data.total_cnt,
+                        currentDevPage: searchObj.page + 1,
+                        searchImei: searchObj.imei || ''
                     })
                 }
             } else {
@@ -373,9 +376,10 @@ export default class User extends React.Component {
         }
     }
     changeDevicePage = (page) => {
-        this.getDeviceList(page -1);
+        let imei = this.state.searchObj.imei;
+        this.getDeviceList({page: page -1, imei});
     }
-    getDevStatus = () => {
+    getDevStatus = (searchObj) => {
         const url = "/ent/getRunInfoByEid";
         let {eid} =  this.state;
         let dev_status_stat = {
@@ -398,7 +402,7 @@ export default class User extends React.Component {
                     dev_status,
                     dev_status_stat,
                 }, () => {
-                    this.getDeviceList(0);
+                    this.getDeviceList(searchObj);
                 })
             } else {
                 this.setState({
@@ -407,12 +411,12 @@ export default class User extends React.Component {
                         offline: 0
                     }
                 }, () => {
-                    this.getDeviceList(0);
+                    this.getDeviceList(searchObj);
                 })
             }
         })
     }
-    init = () => {
+    init = (searchObj) => {
         let eid = this.props.eid;
         let url = "/ent/getEntInfoByEid";
         http.get(url, {eid: eid}).then((res) => {
@@ -420,17 +424,18 @@ export default class User extends React.Component {
                 let data = res.data.data;
                 this.setState({
                     eid: String(eid),
-                    account: data
+                    account: data,
+                    searchObj
                 },
                 () => {
-                    this.getDevStatus();
+                    this.getDevStatus(searchObj);
                 })
             } else {                
                 message.error("获取账户信息失败");   
                 this.setState({
                     eid:String(eid),
                 }, () => {
-                    this.getDevStatus();
+                    this.getDevStatus(searchObj);
                 });             
             }
         }).catch(err => {
@@ -452,7 +457,7 @@ export default class User extends React.Component {
         http.post(url, data).then(res => {
             if (res.data.errcode === 0) {
                 message.success("上传Logo成功");
-                this.init();
+                this.init({page: 0});
             } else {
                 message.error("上传Logo失败");
             }
@@ -470,6 +475,13 @@ export default class User extends React.Component {
               logoLoading: true
           })
           return true
+      }
+      rowClassName = (record, index) =>{
+            if (record.imei === this.state.searchImei) {
+                return 'selected'
+            } else {
+                return "normal"
+            }
       }
    
     render () {       
@@ -553,8 +565,8 @@ export default class User extends React.Component {
                         </div>
                     </h3>
                     <Table pagination={
-                        {pageSize: 20, total: this.state.totalDeviceCnt, onChange: this.changeDevicePage}
-                    } columns={this.state.deviceColumns} dataSource={this.state.deviceList} rowKey="dev_id" />
+                        {pageSize: 20, total: this.state.totalDeviceCnt, onChange: this.changeDevicePage, current: this.state.currentDevPage}
+                    } columns={this.state.deviceColumns} dataSource={this.state.deviceList} rowKey="dev_id" rowClassName={this.rowClassName} />
                 </div>
                 <Modal title="添加用户" visible={this.state.visible} onOk={this.addUser} confirmLoading={this.confirmLoading} onCancel={this.cancelAddUser} className="addUser">
                     <Input addonBefore="登录名" className="addUserInput" onChange={this.getNewUserName}/>
