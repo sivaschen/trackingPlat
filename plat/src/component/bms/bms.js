@@ -102,10 +102,10 @@ const protectedData = {
         index:8,
         unit: "℃",
         operation: function (value) {
-            return value
+            return value - 40
         },
         counterOperation: function (value) {
-            return value
+            return value + 40
         }
         
     },
@@ -419,7 +419,6 @@ const option = {
             fontWeight: 'normal',
             fontSize: "12px",
             height:"14px"
-
         }
     },
     tooltip: {

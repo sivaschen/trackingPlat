@@ -158,7 +158,8 @@ export default class Monitor extends Component {
       this.setState({
         parsedAddress: addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber,
         selectedMarker: e.target,
-        deviceId: content.devid
+        deviceId: content.devid,
+        showLabel: true
       })
     }) 
   }
@@ -391,7 +392,8 @@ export default class Monitor extends Component {
     
     let marker = markers[devId];
     this.changeLabel({
-      target: marker
+      target: marker,
+      showLabel: true
     })
   }
 
@@ -521,12 +523,14 @@ export default class Monitor extends Component {
     this.map.addControl(navigationControl);
     this.geoc = new window.BMap.Geocoder();  
     this.map.addEventListener('click', () => {
-      let oldLabel = this.state.selectedMarker.getLabel();
-      this.map.removeOverlay(oldLabel);
-      this.setState({
-        showLabel: false
+      if (this.state.selectedMarker) {
+        let oldLabel = this.state.selectedMarker.getLabel();
+        this.map.removeOverlay(oldLabel);
+        this.setState({
+          showLabel: false
+        })
+      }
       })
-    })
     this.init(); 
   }
   handleStatsOK = ()=> {
